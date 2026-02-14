@@ -51,6 +51,37 @@ Esto te abre la UI en navegador para validar estructura visual y estilos.
 
 ---
 
+## ¿Se puede correr con Docker?
+
+Sí, se puede. Te dejé una configuración lista con `Dockerfile` y `docker-compose.yml`.
+
+### Opción recomendada (docker compose)
+
+```bash
+docker compose up --build
+```
+
+Esto levanta Expo dentro del contenedor y expone puertos:
+- `8081` (Metro)
+- `19000` / `19001` / `19002` (Expo)
+
+Luego abre en tu navegador:
+- `http://localhost:19002` (Expo DevTools, si aplica según versión)
+
+### Detener contenedor
+
+```bash
+docker compose down
+```
+
+### Notas importantes para Docker + Expo
+
+- En algunos entornos corporativos/redes restringidas, Expo Go puede no detectar bien el QR desde contenedor.
+- Si tienes problemas para conectar el teléfono físico, prueba primero con `npm run web` fuera de Docker para validar UI.
+- En Linux, si quieres mejor descubrimiento en red local, puedes usar `network_mode: host` (ajuste opcional).
+
+---
+
 ## Flujo de trabajo recomendado contigo
 
 1. Yo te paso una versión de pantalla.
