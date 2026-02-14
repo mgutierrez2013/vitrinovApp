@@ -1,88 +1,71 @@
 # Vitrinova App (Expo)
 
-## ¿Cómo ver la parte visual?
+## Problema que reportaste
 
-## Local (sin Docker)
+Si abres `172.23.0.2:9006` y no renderiza, es normal en muchos casos:
 
-1. Instala dependencias:
+- `172.23.0.2` es la IP **interna** de la red Docker.
+- Desde tu host debes usar el **puerto publicado** en `localhost`.
+
+## Forma correcta de abrir en navegador
+
+1. Levanta el contenedor:
 
 ```bash
-npm install
+docker compose up --build
 ```
 
-2. Inicia Expo:
+2. Abre una de estas URLs en tu navegador del host:
 
-```bash
-npm run start
+- `http://localhost:19006`
+- `http://localhost:9006`
+
+> Ambas funcionan porque `9006` está mapeado a `19006` dentro del contenedor.
+
+---
+
+## Modos de ejecución en Docker
+
+### A) Web (por defecto)
+
+El `docker-compose.yml` ahora arranca en `EXPO_MODE=web`, ideal para validar UI rápido en navegador.
+
+### B) Nativo (Expo Go con QR)
+
+Si quieres volver a QR + Expo Go, cambia en `docker-compose.yml`:
+
+```yaml
+environment:
+  - EXPO_MODE=native
+  - EXPO_HOST=tunnel
 ```
 
-3. Abre la app:
-- En teléfono: escanea el QR con **Expo Go**.
-- En navegador (vista web):
+Luego reinicia:
 
 ```bash
-npm run web
+docker compose down
+docker compose up --build
 ```
 
 ---
 
-## Docker (recomendado para tu caso)
+## Si sigue en blanco
 
-### Levantar
-
-```bash
-docker compose up --build
-```
-
-### Qué cambió para que funcione mejor
-
-- El contenedor ahora arranca Expo en modo **`tunnel`** por defecto (`EXPO_HOST=tunnel`), que suele funcionar mejor con Expo Go cuando Docker/LAN da problemas.
-- Se agregó script de arranque `docker/start-expo.sh` para controlar modo nativo/web por variables.
-- Se expone también el puerto `19006` para web.
-
-### Importante sobre `http://localhost:19002`
-
-`19002` **no es la app renderizada**. Ese puerto es para herramientas de Expo y puede verse en blanco según versión.
-
-Para ver la UI:
-- Usa el **QR** de Expo Go (ahora en modo tunnel), o
-- Ejecuta Expo Web y abre el puerto web.
-
-### Ver la app en navegador con Docker
-
-Cambia temporalmente a modo web en `docker-compose.yml`:
-
-```yaml
-environment:
-  - EXPO_MODE=web
-```
-
-Luego levanta de nuevo:
-
-```bash
-docker compose up --build
-```
-
-Y abre:
-- `http://localhost:8081` (o `http://localhost:19006`, según salida de Expo)
-
-### Si QR aún no abre en Expo Go
-
-1. Borra cache:
+1. Fuerza rebuild limpio:
 
 ```bash
 docker compose down -v
 docker compose up --build
 ```
 
-2. Asegura que el celular tenga internet (tunnel) y Expo Go actualizado.
-3. Copia manualmente la URL `exp://...` de la consola y ábrela desde Expo Go.
+2. Revisa logs del contenedor y confirma la URL que imprime Expo.
+3. Prueba ambas URLs: `localhost:19006` y `localhost:9006`.
 
 ---
 
 ## Flujo de trabajo
 
 1. Yo te paso la siguiente iteración visual.
-2. Tú validas desde Expo Go o Web.
+2. Tú validas en navegador (`localhost:19006`/`9006`) o Expo Go.
 3. Ajustamos estilo.
 4. Luego conectamos el contrato JSON.
