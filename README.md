@@ -1,71 +1,102 @@
 # Vitrinova App (Expo)
 
-## Problema que reportaste
+Configurado para ejecutarse **en consola local** con **Node.js 24**.
 
-Si abres `172.23.0.2:9006` y no renderiza, es normal en muchos casos:
+## 1) Requisitos
 
-- `172.23.0.2` es la IP **interna** de la red Docker.
-- Desde tu host debes usar el **puerto publicado** en `localhost`.
+- Node.js `24.x`
+- npm (incluido con Node)
+- (Opcional) Expo Go en teléfono Android/iOS
+- (Opcional) Android Studio / Xcode para emuladores
 
-## Forma correcta de abrir en navegador
-
-1. Levanta el contenedor:
+## 2) Verificar versión de Node
 
 ```bash
-docker compose up --build
+node -v
 ```
 
-2. Abre una de estas URLs en tu navegador del host:
+Debe mostrar `v24.x.x`.
 
-- `http://localhost:19006`
-- `http://localhost:9006`
+Si usas `nvm`:
 
-> Ambas funcionan porque `9006` está mapeado a `19006` dentro del contenedor.
+```bash
+nvm use
+```
+
+> Este proyecto incluye `.nvmrc` con versión `24`.
+
+## 3) Instalar dependencias
+
+```bash
+npm install
+```
+
+## 4) Validar entorno Expo
+
+```bash
+npm run doctor
+```
+
+## 5) Levantar la app
+
+### Opción A: modo desarrollo general
+
+```bash
+npm run start
+```
+
+### Opción B: limpiar caché (si algo no carga)
+
+```bash
+npm run start:clear
+```
+
+## 6) Cómo verla
+
+- En teléfono (Expo Go): escanea el QR mostrado en consola.
+- En navegador:
+
+```bash
+npm run web
+```
+
+- En emulador Android:
+
+```bash
+npm run android
+```
+
+- En simulador iOS (macOS):
+
+```bash
+npm run ios
+```
+
+## 7) Problemas comunes
+
+### La app no abre en Expo Go
+
+1. Ejecuta `npm run start:clear`
+2. Asegura que Expo Go esté actualizado
+3. Reintenta escaneo del QR
+
+### Pantalla en blanco en Web
+
+1. Ejecuta `npm run start:clear`
+2. Revisa errores en consola de navegador
+3. Reinstala dependencias:
+
+```bash
+rm -rf node_modules package-lock.json
+npm install
+npm run web
+```
 
 ---
 
-## Modos de ejecución en Docker
+## Flujo de trabajo contigo
 
-### A) Web (por defecto)
-
-El `docker-compose.yml` ahora arranca en `EXPO_MODE=web`, ideal para validar UI rápido en navegador.
-
-### B) Nativo (Expo Go con QR)
-
-Si quieres volver a QR + Expo Go, cambia en `docker-compose.yml`:
-
-```yaml
-environment:
-  - EXPO_MODE=native
-  - EXPO_HOST=tunnel
-```
-
-Luego reinicia:
-
-```bash
-docker compose down
-docker compose up --build
-```
-
----
-
-## Si sigue en blanco
-
-1. Fuerza rebuild limpio:
-
-```bash
-docker compose down -v
-docker compose up --build
-```
-
-2. Revisa logs del contenedor y confirma la URL que imprime Expo.
-3. Prueba ambas URLs: `localhost:19006` y `localhost:9006`.
-
----
-
-## Flujo de trabajo
-
-1. Yo te paso la siguiente iteración visual.
-2. Tú validas en navegador (`localhost:19006`/`9006`) o Expo Go.
-3. Ajustamos estilo.
-4. Luego conectamos el contrato JSON.
+1. Yo implemento la siguiente iteración visual.
+2. Tú la ejecutas en consola con Node 24.
+3. Ajustamos estilos hasta que quede como necesitas.
+4. Luego integramos contratos JSON.
