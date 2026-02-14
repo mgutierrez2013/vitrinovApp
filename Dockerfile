@@ -2,9 +2,9 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Keep this lightweight: source code is mounted as a volume in docker-compose.
 COPY package.json ./
+COPY docker/start-expo.sh /usr/local/bin/start-expo.sh
 
-EXPOSE 8081 19000 19001 19002
+EXPOSE 8081 19000 19001 19002 19006
 
-CMD ["sh", "-c", "npm install && npx expo start --host lan --non-interactive"]
+CMD ["start-expo.sh"]

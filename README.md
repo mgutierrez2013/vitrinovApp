@@ -1,90 +1,88 @@
 # Vitrinova App (Expo)
 
-## ¿Cómo ver la parte visual que voy generando?
+## ¿Cómo ver la parte visual?
 
-Puedes ver los cambios de UI en tiempo real con Expo.
+## Local (sin Docker)
 
-### 1) Instalar dependencias
+1. Instala dependencias:
 
 ```bash
 npm install
 ```
 
-> Si `npm install` falla por políticas del entorno (por ejemplo `403 Forbidden`), ejecútalo en tu máquina local con acceso normal a npm.
-
-### 2) Levantar el proyecto
+2. Inicia Expo:
 
 ```bash
 npm run start
 ```
 
-Expo abrirá un panel con QR y opciones.
-
-### 3) Ver en dispositivo o emulador
-
-- **Android real**
-  1. Instala **Expo Go** desde Play Store.
-  2. Escanea el QR mostrado por Expo.
-- **iPhone real**
-  1. Instala **Expo Go** desde App Store.
-  2. Escanea el QR (desde cámara o app Expo Go).
-- **Emulador Android**
-  - Con el emulador abierto, usa:
-
-```bash
-npm run android
-```
-
-- **iOS Simulator (macOS)**
-
-```bash
-npm run ios
-```
-
-### 4) Ver en navegador (rápido para revisar layout)
+3. Abre la app:
+- En teléfono: escanea el QR con **Expo Go**.
+- En navegador (vista web):
 
 ```bash
 npm run web
 ```
 
-Esto te abre la UI en navegador para validar estructura visual y estilos.
-
 ---
 
-## ¿Se puede correr con Docker?
+## Docker (recomendado para tu caso)
 
-Sí, se puede. Te dejé una configuración lista con `Dockerfile` y `docker-compose.yml`.
-
-### Opción recomendada (docker compose)
+### Levantar
 
 ```bash
 docker compose up --build
 ```
 
-Esto levanta Expo dentro del contenedor y expone puertos:
-- `8081` (Metro)
-- `19000` / `19001` / `19002` (Expo)
+### Qué cambió para que funcione mejor
 
-Luego abre en tu navegador:
-- `http://localhost:19002` (Expo DevTools, si aplica según versión)
+- El contenedor ahora arranca Expo en modo **`tunnel`** por defecto (`EXPO_HOST=tunnel`), que suele funcionar mejor con Expo Go cuando Docker/LAN da problemas.
+- Se agregó script de arranque `docker/start-expo.sh` para controlar modo nativo/web por variables.
+- Se expone también el puerto `19006` para web.
 
-### Detener contenedor
+### Importante sobre `http://localhost:19002`
 
-```bash
-docker compose down
+`19002` **no es la app renderizada**. Ese puerto es para herramientas de Expo y puede verse en blanco según versión.
+
+Para ver la UI:
+- Usa el **QR** de Expo Go (ahora en modo tunnel), o
+- Ejecuta Expo Web y abre el puerto web.
+
+### Ver la app en navegador con Docker
+
+Cambia temporalmente a modo web en `docker-compose.yml`:
+
+```yaml
+environment:
+  - EXPO_MODE=web
 ```
 
-### Notas importantes para Docker + Expo
+Luego levanta de nuevo:
 
-- En algunos entornos corporativos/redes restringidas, Expo Go puede no detectar bien el QR desde contenedor.
-- Si tienes problemas para conectar el teléfono físico, prueba primero con `npm run web` fuera de Docker para validar UI.
-- En Linux, si quieres mejor descubrimiento en red local, puedes usar `network_mode: host` (ajuste opcional).
+```bash
+docker compose up --build
+```
+
+Y abre:
+- `http://localhost:8081` (o `http://localhost:19006`, según salida de Expo)
+
+### Si QR aún no abre en Expo Go
+
+1. Borra cache:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+2. Asegura que el celular tenga internet (tunnel) y Expo Go actualizado.
+3. Copia manualmente la URL `exp://...` de la consola y ábrela desde Expo Go.
 
 ---
 
-## Flujo de trabajo recomendado contigo
+## Flujo de trabajo
 
-1. Yo te paso una versión de pantalla.
-2. Tú la levantas con Expo y me compartes feedback visual.
-3. Ajusto spacing, tamaños, tipografía y estados hasta dejarla igual/superior.
-4. Cuando me pases el contrato JSON, conectamos datos y reglas reales.
+1. Yo te paso la siguiente iteración visual.
+2. Tú validas desde Expo Go o Web.
+3. Ajustamos estilo.
+4. Luego conectamos el contrato JSON.
