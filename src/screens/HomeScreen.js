@@ -72,7 +72,6 @@ export function HomeScreen({ onLogout, onSessionExpired }) {
   const [sales, setSales] = useState('0');
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState('');
-  const [activeRange, setActiveRange] = useState({ startDate: '', endDate: '' });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,7 +83,6 @@ export function HomeScreen({ onLogout, onSessionExpired }) {
       }
 
       const { startDate, endDate } = getCurrentMonthRange();
-      setActiveRange({ startDate, endDate });
 
       try {
         setLoading(true);
@@ -147,10 +145,6 @@ export function HomeScreen({ onLogout, onSessionExpired }) {
           <Text style={homeStyles.sectionLink}>Ver todo</Text>
         </View>
 
-        <Text style={homeStyles.rangeLabel}>
-          Mostrando detalle del {activeRange.startDate || '--'} al {activeRange.endDate || '--'}
-        </Text>
-
         {loading ? (
           <Text style={homeStyles.emptyText}>Cargando transacciones...</Text>
         ) : error ? (
@@ -174,7 +168,9 @@ export function HomeScreen({ onLogout, onSessionExpired }) {
 
                   <View style={homeStyles.transactionBody}>
                     <Text style={homeStyles.transactionTitle}>{isIncome ? 'Vendiste' : 'Egreso'}</Text>
-                    <Text style={homeStyles.transactionSubtitle}>{item.client_name || 'Cliente'}</Text>
+                    <Text style={homeStyles.transactionSubtitle}>
+                      {(item.client_name || 'Cliente').toUpperCase()}
+                    </Text>
                   </View>
 
                   <Text style={[homeStyles.amountText, isIncome ? homeStyles.amountIncome : homeStyles.amountExpense]}>
