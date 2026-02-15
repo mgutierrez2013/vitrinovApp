@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
+import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { LoginScreen } from './src/screens/LoginScreen';
@@ -14,14 +14,21 @@ export default function App() {
       <StatusBar style="light" />
       <SafeAreaView style={authStyles.safeArea}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 18 : 0}
           style={authStyles.keyboardContainer}
         >
-          {screen === 'login' ? (
-            <LoginScreen onGoRegister={() => setScreen('register')} />
-          ) : (
-            <RegisterScreen onGoLogin={() => setScreen('login')} />
-          )}
+          <ScrollView
+            contentContainerStyle={authStyles.keyboardScrollContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            {screen === 'login' ? (
+              <LoginScreen onGoRegister={() => setScreen('register')} />
+            ) : (
+              <RegisterScreen onGoLogin={() => setScreen('login')} />
+            )}
+          </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </LinearGradient>

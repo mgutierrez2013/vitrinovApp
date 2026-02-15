@@ -9,8 +9,12 @@ export const authStyles = StyleSheet.create({
   },
   keyboardContainer: {
     flex: 1,
+  },
+  keyboardScrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 18,
+    paddingVertical: 14,
   },
   card: {
     borderRadius: 32,
