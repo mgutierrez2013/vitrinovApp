@@ -97,6 +97,10 @@ export const authStyles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 0.3,
   },
+
+  ctaButtonDisabled: {
+    opacity: 0.75,
+  },
   switchText: {
     marginTop: 14,
     textAlign: 'center',
@@ -105,11 +109,53 @@ export const authStyles = StyleSheet.create({
     fontWeight: '700',
     textDecorationLine: 'underline',
   },
-  successText: {
-    marginTop: 8,
-    textAlign: 'center',
-    color: '#1f8f46',
-    fontSize: 12,
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    justifyContent: 'center',
+    paddingHorizontal: 22,
+  },
+  modalCard: {
+    borderRadius: 20,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 18,
+    paddingVertical: 18,
+  },
+  modalTitle: {
+    color: '#23283a',
     fontWeight: '700',
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  modalMessage: {
+    color: '#4b5165',
+    fontSize: 14,
+    marginBottom: 14,
+  },
+  modalButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+  },
+  modalButton: {
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  modalButtonSecondary: {
+    backgroundColor: '#edf0f8',
+  },
+  modalButtonPrimary: {
+    backgroundColor: '#7b59df',
+  },
+  modalButtonTextSecondary: {
+    color: '#36415c',
+    fontWeight: '700',
+    fontSize: 13,
+  },
+  modalButtonTextPrimary: {
+    color: '#ffffff',
+    fontWeight: '700',
+    fontSize: 13,
   },
 });

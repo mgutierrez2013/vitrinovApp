@@ -3,13 +3,15 @@ import { Pressable, Text, TextInput, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { AuthCard } from '../components/AuthCard';
 import { authStyles } from '../theme/authStyles';
+import { loginRequest } from '../services/authService';
 
-export function LoginScreen({ onGoRegister }) {
+export function LoginScreen({ onGoRegister, onAuthSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [authOk, setAuthOk] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [apiMessage, setApiMessage] = useState('');
 
   const isEmailValid = /^\S+@\S+\.\S+$/.test(email);
   const isPasswordValid = password.length > 5;
@@ -17,15 +19,29 @@ export function LoginScreen({ onGoRegister }) {
   const hasEmailError = submitted && !isEmailValid;
   const hasPasswordError = submitted && !isPasswordValid;
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setSubmitted(true);
+    setApiMessage('');
 
-    if (isEmailValid && isPasswordValid) {
-      setAuthOk(true);
+    if (!isEmailValid || !isPasswordValid) {
       return;
     }
 
-    setAuthOk(false);
+    try {
+      setLoading(true);
+      const result = await loginRequest({ email, password });
+
+      if (result.ok) {
+        await onAuthSuccess({ token: result.token, user: result.user });
+        return;
+      }
+
+      setApiMessage(result.message);
+    } catch (error) {
+      setApiMessage('No fue posible conectar con el servidor.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -64,11 +80,11 @@ export function LoginScreen({ onGoRegister }) {
         )}
       </View>
 
-      <Pressable style={authStyles.ctaButton} onPress={handleLogin}>
-        <Text style={authStyles.ctaText}>Ingresar →</Text>
-      </Pressable>
+      {apiMessage.length > 0 && <Text style={authStyles.errorText}>{apiMessage}</Text>}
 
-      {authOk && <Text style={authStyles.successText}>Autenticación válida (demo visual)</Text>}
+      <Pressable style={[authStyles.ctaButton, loading && authStyles.ctaButtonDisabled]} onPress={handleLogin}>
+        <Text style={authStyles.ctaText}>{loading ? 'Validando...' : 'Ingresar →'}</Text>
+      </Pressable>
 
       <Pressable onPress={onGoRegister}>
         <Text style={authStyles.switchText}>¿No tienes una cuenta? Registrar</Text>
