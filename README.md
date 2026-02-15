@@ -56,3 +56,19 @@ npm run web
 1. Actualiza Expo Go desde la tienda.
 2. Cierra Metro y reinicia con `npm run start:clear`.
 3. Confirma que `expo`, `react`, `react-native` y `expo-*` estén alineados a SDK 54 (este repo ya lo deja así).
+
+
+## Error común: Cannot find module `babel-preset-expo`
+
+Si aparece este error, instala dependencias nuevamente (el proyecto ya incluye `babel-preset-expo` en `devDependencies`):
+
+```bash
+rm -rf node_modules package-lock.json
+npm install
+```
+
+Luego ejecuta:
+
+```bash
+npm run start:clear
+```
