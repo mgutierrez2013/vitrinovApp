@@ -57,3 +57,22 @@ export async function registerRequest({ name, email, password }) {
     status: response.status,
   };
 }
+
+export async function checkTokenRequest(token) {
+  const response = await fetch(`${API_BASE_URL}/auth/check-token`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await parseResponse(response);
+  const isExpired = data?.msg === 'Token has expired';
+
+  return {
+    ok: response.status >= 200 && response.status < 300,
+    isExpired,
+    message: data?.msg ?? data?.message ?? '',
+    status: response.status,
+  };
+}

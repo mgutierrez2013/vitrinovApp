@@ -1,15 +1,25 @@
 import { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { LoginScreen } from './src/screens/LoginScreen';
 import { RegisterScreen } from './src/screens/RegisterScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { authStyles } from './src/theme/authStyles';
-import { loadSession, saveSession } from './src/services/sessionService';
+import { clearSession, loadSession, saveSession } from './src/services/sessionService';
 
 export default function App() {
   const [screen, setScreen] = useState('login');
+  const [sessionExpiredVisible, setSessionExpiredVisible] = useState(false);
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -28,8 +38,19 @@ export default function App() {
     setScreen('home');
   };
 
+  const handleLogout = async () => {
+    await clearSession();
+    setScreen('login');
+  };
+
+  const handleSessionExpired = async () => {
+    await clearSession();
+    setScreen('login');
+    setSessionExpiredVisible(true);
+  };
+
   if (screen === 'home') {
-    return <HomeScreen />;
+    return <HomeScreen onLogout={handleLogout} onSessionExpired={handleSessionExpired} />;
   }
 
   return (
@@ -57,6 +78,27 @@ export default function App() {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
+
+      <Modal
+        animationType="fade"
+        transparent
+        visible={sessionExpiredVisible}
+        onRequestClose={() => setSessionExpiredVisible(false)}
+      >
+        <View style={authStyles.modalBackdrop}>
+          <View style={authStyles.modalCard}>
+            <Text style={authStyles.modalTitle}>Sesión expirada</Text>
+            <Text style={authStyles.modalMessage}>Tu sesión expiró. Inicia sesión nuevamente.</Text>
+
+            <Pressable
+              style={[authStyles.modalButton, authStyles.modalButtonPrimary, { alignSelf: 'flex-end' }]}
+              onPress={() => setSessionExpiredVisible(false)}
+            >
+              <Text style={authStyles.modalButtonTextPrimary}>Aceptar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </LinearGradient>
   );
 }
