@@ -1,102 +1,58 @@
 # Vitrinova App (Expo)
 
-Configurado para ejecutarse **en consola local** con **Node.js 24**.
+Configurado para ejecutarse en consola local con **Node.js 24** y **Expo SDK 54** (compatible con Expo Go actual).
+
+## Error reportado: `getLoadedFont is not a function`
+
+Ese error suele aparecer cuando hay **desfase de SDK/dependencias** entre el proyecto y Expo Go.
+
+En este repo ya se actualizó a **SDK 54** para evitar ese problema.
 
 ## 1) Requisitos
 
 - Node.js `24.x`
-- npm (incluido con Node)
-- (Opcional) Expo Go en teléfono Android/iOS
-- (Opcional) Android Studio / Xcode para emuladores
+- npm
+- Expo Go actualizado (SDK 54)
 
-## 2) Verificar versión de Node
+## 2) Preparar entorno
 
 ```bash
 node -v
-```
-
-Debe mostrar `v24.x.x`.
-
-Si usas `nvm`:
-
-```bash
 nvm use
 ```
 
-> Este proyecto incluye `.nvmrc` con versión `24`.
+> `.nvmrc` está en `24`.
 
-## 3) Instalar dependencias
+## 3) Instalación limpia recomendada
 
 ```bash
+rm -rf node_modules package-lock.json
 npm install
 ```
 
-## 4) Validar entorno Expo
+## 4) Verificar compatibilidad Expo
 
 ```bash
 npm run doctor
+npx expo install --check
 ```
 
-## 5) Levantar la app
-
-### Opción A: modo desarrollo general
-
-```bash
-npm run start
-```
-
-### Opción B: limpiar caché (si algo no carga)
+## 5) Ejecutar
 
 ```bash
 npm run start:clear
 ```
 
-## 6) Cómo verla
-
-- En teléfono (Expo Go): escanea el QR mostrado en consola.
-- En navegador:
+Luego abre:
+- Expo Go (QR)
+- o web con:
 
 ```bash
 npm run web
 ```
 
-- En emulador Android:
+## 6) Si persiste el error
 
-```bash
-npm run android
-```
-
-- En simulador iOS (macOS):
-
-```bash
-npm run ios
-```
-
-## 7) Problemas comunes
-
-### La app no abre en Expo Go
-
-1. Ejecuta `npm run start:clear`
-2. Asegura que Expo Go esté actualizado
-3. Reintenta escaneo del QR
-
-### Pantalla en blanco en Web
-
-1. Ejecuta `npm run start:clear`
-2. Revisa errores en consola de navegador
-3. Reinstala dependencias:
-
-```bash
-rm -rf node_modules package-lock.json
-npm install
-npm run web
-```
-
----
-
-## Flujo de trabajo contigo
-
-1. Yo implemento la siguiente iteración visual.
-2. Tú la ejecutas en consola con Node 24.
-3. Ajustamos estilos hasta que quede como necesitas.
-4. Luego integramos contratos JSON.
+1. Actualiza Expo Go desde la tienda.
+2. Cierra Metro y reinicia con `npm run start:clear`.
+3. Confirma que `expo`, `react`, `react-native` y `expo-*` estén alineados a SDK 54 (este repo ya lo deja así).
