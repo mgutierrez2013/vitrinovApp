@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -30,7 +31,15 @@ export default function App() {
           style={styles.keyboardContainer}
         >
           <View style={styles.card}>
-            <Text style={styles.brand}>VITRINOVA</Text>
+            <View style={styles.brandContainer}>
+              <Image
+                source={{
+                  uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s',
+                }}
+                style={styles.brandImage}
+                resizeMode="contain"
+              />
+            </View>
             <Text style={styles.title}>Ingresar</Text>
 
             <View style={styles.fieldBlock}>
@@ -102,35 +111,36 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     backgroundColor: '#ffffff',
     paddingHorizontal: 26,
-    paddingVertical: 34,
+    paddingVertical: 30,
     shadowColor: '#151515',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.12,
     shadowRadius: 22,
     elevation: 6,
   },
-  brand: {
-    marginTop: 8,
-    fontSize: 40,
-    textAlign: 'center',
-    letterSpacing: 3,
-    fontWeight: '300',
-    color: '#21222b',
+  brandContainer: {
+    marginTop: 4,
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  brandImage: {
+    width: '86%',
+    height: 88,
   },
   title: {
     textAlign: 'center',
-    marginTop: 24,
-    marginBottom: 30,
-    fontSize: 42,
-    fontWeight: '700',
+    marginTop: 12,
+    marginBottom: 24,
+    fontSize: 30,
+    fontWeight: '600',
     color: '#161823',
   },
   fieldBlock: {
-    marginBottom: 22,
+    marginBottom: 18,
   },
   label: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 16,
+    marginBottom: 8,
     fontWeight: '600',
     color: '#1d2332',
   },
@@ -140,8 +150,8 @@ const styles = StyleSheet.create({
     borderColor: '#d6dbe7',
     backgroundColor: '#f4f7fb',
     paddingHorizontal: 18,
-    height: 56,
-    fontSize: 20,
+    height: 48,
+    fontSize: 18,
     color: '#273143',
   },
   inputError: {
@@ -149,8 +159,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: '#bf4358',
-    marginTop: 8,
-    fontSize: 15,
+    marginTop: 6,
+    fontSize: 14,
     textAlign: 'center',
   },
   passwordContainer: {
@@ -158,19 +168,19 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#d6dbe7',
     backgroundColor: '#f4f7fb',
-    height: 56,
+    height: 48,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 18,
   },
   passwordInput: {
     flex: 1,
-    fontSize: 20,
+    fontSize: 18,
     color: '#273143',
   },
   ctaButton: {
-    marginTop: 10,
-    height: 62,
+    marginTop: 8,
+    height: 52,
     borderRadius: 999,
     backgroundColor: '#bba8f6',
     justifyContent: 'center',
@@ -182,7 +192,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   ctaText: {
-    fontSize: 32,
+    fontSize: 24,
     color: '#ffffff',
     fontWeight: '700',
     letterSpacing: 0.5,
