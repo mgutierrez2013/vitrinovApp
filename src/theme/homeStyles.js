@@ -78,9 +78,15 @@ export const homeStyles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 18,
   },
+  rangeLabel: {
+    color: '#666b7a',
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 6,
+  },
   dateTitle: {
     color: '#2f2f50',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '700',
     marginTop: 10,
     marginBottom: 8,
@@ -102,24 +108,24 @@ export const homeStyles = StyleSheet.create({
   avatarText: {
     color: '#6746be',
     fontWeight: '700',
-    fontSize: 11,
+    fontSize: 13,
   },
   transactionBody: {
     flex: 1,
   },
   transactionTitle: {
     color: '#293040',
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: '700',
     marginBottom: 3,
   },
   transactionSubtitle: {
     color: '#7153c6',
-    fontSize: 11,
+    fontSize: 14,
     fontWeight: '600',
   },
   amountText: {
-    fontSize: 14,
+    fontSize: 18,
     fontWeight: '800',
   },
   amountIncome: {

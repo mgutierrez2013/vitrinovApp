@@ -72,6 +72,7 @@ export function HomeScreen({ onLogout, onSessionExpired }) {
   const [sales, setSales] = useState('0');
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState('');
+  const [activeRange, setActiveRange] = useState({ startDate: '', endDate: '' });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,6 +84,7 @@ export function HomeScreen({ onLogout, onSessionExpired }) {
       }
 
       const { startDate, endDate } = getCurrentMonthRange();
+      setActiveRange({ startDate, endDate });
 
       try {
         setLoading(true);
@@ -144,6 +146,10 @@ export function HomeScreen({ onLogout, onSessionExpired }) {
           <Text style={homeStyles.sectionTitle}>Transacciones</Text>
           <Text style={homeStyles.sectionLink}>Ver todo</Text>
         </View>
+
+        <Text style={homeStyles.rangeLabel}>
+          Mostrando detalle del {activeRange.startDate || '--'} al {activeRange.endDate || '--'}
+        </Text>
 
         {loading ? (
           <Text style={homeStyles.emptyText}>Cargando transacciones...</Text>
