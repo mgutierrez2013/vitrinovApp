@@ -40,8 +40,6 @@ export default function App() {
                 resizeMode="contain"
               />
             </View>
-            <Text style={styles.title}>Ingresar</Text>
-
             <View style={styles.fieldBlock}>
               <Text style={styles.label}>Email</Text>
               <TextInput
@@ -124,19 +122,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   brandImage: {
-    width: '86%',
-    height: 88,
-  },
-  title: {
-    textAlign: 'center',
-    marginTop: 12,
-    marginBottom: 24,
-    fontSize: 30,
-    fontWeight: '600',
-    color: '#161823',
+    width: '94%',
+    height: 108,
   },
   fieldBlock: {
-    marginBottom: 18,
+    marginBottom: 14,
   },
   label: {
     fontSize: 16,
@@ -180,7 +170,7 @@ const styles = StyleSheet.create({
   },
   ctaButton: {
     marginTop: 8,
-    height: 52,
+    height: 44,
     borderRadius: 999,
     backgroundColor: '#bba8f6',
     justifyContent: 'center',
@@ -192,16 +182,16 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   ctaText: {
-    fontSize: 24,
+    fontSize: 20,
     color: '#ffffff',
     fontWeight: '700',
     letterSpacing: 0.5,
   },
   registerText: {
-    marginTop: 24,
+    marginTop: 18,
     textAlign: 'center',
     color: '#7459cd',
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '600',
   },
 });
