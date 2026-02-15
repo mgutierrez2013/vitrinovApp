@@ -14,13 +14,22 @@ import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 
+const logoUri =
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s';
+
 export default function App() {
+  const [screen, setScreen] = useState('login');
+
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const isEmailValid = /^\S+@\S+\.\S+$/.test(email);
   const isPasswordValid = password.length >= 5;
+  const isNameValid = name.trim().length >= 5;
+
+  const isRegister = screen === 'register';
 
   return (
     <LinearGradient colors={['#9968f7', '#58b3ff']} style={styles.gradientBackground}>
@@ -34,12 +43,29 @@ export default function App() {
             <View style={styles.brandContainer}>
               <Image
                 source={{
-                  uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s',
+                  uri: logoUri,
                 }}
-                style={styles.brandImage}
+                style={[styles.brandImage, { width: 200, height: 200 }]}
                 resizeMode="contain"
               />
             </View>
+
+            {isRegister && (
+              <View style={styles.fieldBlock}>
+                <Text style={styles.label}>Nombre</Text>
+                <TextInput
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="Ingresa tu nombre"
+                  style={[styles.input, name.length > 0 && !isNameValid && styles.inputError]}
+                  placeholderTextColor="#9aa3b2"
+                />
+                {name.length > 0 && !isNameValid && (
+                  <Text style={styles.errorText}>El nombre debe tener al menos 5 caracteres.</Text>
+                )}
+              </View>
+            )}
+
             <View style={styles.fieldBlock}>
               <Text style={styles.label}>Email</Text>
               <TextInput
@@ -73,7 +99,7 @@ export default function App() {
                   placeholderTextColor="#9aa3b2"
                 />
                 <Pressable onPress={() => setShowPassword((prev) => !prev)} hitSlop={8}>
-                  <Feather name={showPassword ? 'eye-off' : 'eye'} size={22} color="#7b8699" />
+                  <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color="#7b8699" />
                 </Pressable>
               </View>
               {password.length > 0 && !isPasswordValid && (
@@ -82,10 +108,18 @@ export default function App() {
             </View>
 
             <Pressable style={styles.ctaButton}>
-              <Text style={styles.ctaText}>Ingresar →</Text>
+              <Text style={styles.ctaText}>{isRegister ? 'Registrar →' : 'Ingresar →'}</Text>
             </Pressable>
 
-            <Text style={styles.registerText}>¿No tienes una cuenta? Registrar</Text>
+            {isRegister ? (
+              <Pressable onPress={() => setScreen('login')}>
+                <Text style={styles.registerText}>¿Ya tienes una cuenta? Ingresar Sesión</Text>
+              </Pressable>
+            ) : (
+              <Pressable onPress={() => setScreen('register')}>
+                <Text style={styles.registerText}>¿No tienes una cuenta? Registrar</Text>
+              </Pressable>
+            )}
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -109,7 +143,7 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     backgroundColor: '#ffffff',
     paddingHorizontal: 26,
-    paddingVertical: 30,
+    paddingVertical: 24,
     shadowColor: '#151515',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.12,
@@ -117,21 +151,20 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   brandContainer: {
-    marginTop: 4,
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   brandImage: {
     width: '94%',
     height: 108,
   },
   fieldBlock: {
-    marginBottom: 14,
+    marginBottom: 12,
   },
   label: {
-    fontSize: 16,
-    marginBottom: 8,
-    fontWeight: '600',
+    fontSize: 14,
+    marginBottom: 6,
+    fontWeight: '700',
     color: '#1d2332',
   },
   input: {
@@ -139,9 +172,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#d6dbe7',
     backgroundColor: '#f4f7fb',
-    paddingHorizontal: 18,
-    height: 48,
-    fontSize: 18,
+    paddingHorizontal: 16,
+    height: 44,
+    fontSize: 16,
     color: '#273143',
   },
   inputError: {
@@ -149,8 +182,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: '#bf4358',
-    marginTop: 6,
-    fontSize: 14,
+    marginTop: 5,
+    fontSize: 12,
     textAlign: 'center',
   },
   passwordContainer: {
@@ -158,19 +191,19 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#d6dbe7',
     backgroundColor: '#f4f7fb',
-    height: 48,
+    height: 44,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 18,
+    paddingHorizontal: 16,
   },
   passwordInput: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 16,
     color: '#273143',
   },
   ctaButton: {
-    marginTop: 8,
-    height: 44,
+    marginTop: 6,
+    height: 42,
     borderRadius: 999,
     backgroundColor: '#bba8f6',
     justifyContent: 'center',
@@ -182,16 +215,17 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   ctaText: {
-    fontSize: 20,
+    fontSize: 16,
     color: '#ffffff',
     fontWeight: '700',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
   },
   registerText: {
-    marginTop: 18,
+    marginTop: 14,
     textAlign: 'center',
     color: '#7459cd',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
   },
 });
