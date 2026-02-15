@@ -1,0 +1,115 @@
+import { StyleSheet } from 'react-native';
+
+export const authStyles = StyleSheet.create({
+  gradientBackground: {
+    flex: 1,
+  },
+  safeArea: {
+    flex: 1,
+  },
+  keyboardContainer: {
+    flex: 1,
+  },
+  keyboardScrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+  },
+  card: {
+    borderRadius: 32,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 26,
+    paddingVertical: 24,
+    shadowColor: '#151515',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.12,
+    shadowRadius: 22,
+    elevation: 6,
+  },
+  brandContainer: {
+    alignItems: 'center',
+    marginBottom: 2,
+  },
+  brandImage: {
+    width: '94%',
+    height: 108,
+  },
+  fieldBlock: {
+    marginBottom: 12,
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: 6,
+    fontWeight: '700',
+    color: '#1d2332',
+  },
+  input: {
+    borderRadius: 999,
+    borderWidth: 1.5,
+    borderColor: '#d6dbe7',
+    backgroundColor: '#f4f7fb',
+    paddingHorizontal: 16,
+    height: 44,
+    fontSize: 16,
+    color: '#273143',
+  },
+  inputError: {
+    borderColor: '#d64c62',
+  },
+  errorText: {
+    color: '#bf4358',
+    marginTop: 5,
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  passwordContainer: {
+    borderRadius: 999,
+    borderWidth: 1.5,
+    borderColor: '#d6dbe7',
+    backgroundColor: '#f4f7fb',
+    height: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+  },
+  passwordInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#273143',
+  },
+  ctaButton: {
+    marginTop: 6,
+    height: 42,
+    borderRadius: 999,
+    backgroundColor: '#bba8f6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#7b59df',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 4,
+  },
+  ctaText: {
+    fontSize: 16,
+    color: '#ffffff',
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  switchText: {
+    marginTop: 14,
+    textAlign: 'center',
+    color: '#7459cd',
+    fontSize: 12,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
+  },
+  successText: {
+    marginTop: 8,
+    textAlign: 'center',
+    color: '#1f8f46',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+});
