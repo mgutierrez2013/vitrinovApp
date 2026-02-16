@@ -470,12 +470,7 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
     }
   };
 
-  const renderRightActions = (item) => (
-    <Pressable style={homeStyles.swipeEditAction} onPress={() => openEditModal(item)}>
-      <Feather name="edit-2" size={16} color="#ffffff" />
-      <Text style={homeStyles.swipeEditText}>Editar</Text>
-    </Pressable>
-  );
+  const renderRightActions = () => <View style={homeStyles.swipeGhostAction} />;
 
   return (
     <>
@@ -510,7 +505,12 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
               const sign = isIncome ? '+' : '-';
 
               return (
-                <Swipeable renderRightActions={() => renderRightActions(item)} overshootRight={false} rightThreshold={30}>
+                <Swipeable
+                  renderRightActions={renderRightActions}
+                  overshootRight={false}
+                  rightThreshold={30}
+                  onSwipeableOpen={() => openEditModal(item)}
+                >
                   <View style={homeStyles.transactionRow}>
                     <View style={homeStyles.avatar}>
                       <Text style={homeStyles.avatarText}>{getInitials(item.client_name)}</Text>

@@ -110,6 +110,10 @@ export const homeStyles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
   },
+  swipeGhostAction: {
+    marginBottom: 14,
+    width: 24,
+  },
   avatar: {
     width: 46,
     height: 46,
