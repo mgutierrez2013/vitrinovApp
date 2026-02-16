@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { checkTokenRequest } from './authService';
 
 const API_BASE_URL = 'https://apivitrinovapp.clobitech.com';
