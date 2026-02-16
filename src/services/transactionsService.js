@@ -150,3 +150,48 @@ export async function addTransaction({ token, clientId, amount, notes, transacti
     message: data.message ?? 'No fue posible registrar la transacción.',
   };
 }
+
+
+export async function updateTransaction({ token, transactionId, amount, notes, image }) {
+  const tokenValidation = await ensureToken(token);
+
+  if (!tokenValidation.ok) {
+    return tokenValidation;
+  }
+
+  const formData = new FormData();
+  formData.append('transaction_type', 'income');
+  formData.append('amount', String(amount));
+  formData.append('notes', notes ?? '');
+
+  if (image?.uri) {
+    formData.append('image', {
+      uri: image.uri,
+      name: image.fileName ?? `sale_${Date.now()}.jpg`,
+      type: image.mimeType ?? 'image/jpeg',
+    });
+  }
+
+  const response = await fetch(`${API_BASE_URL}/transactions/update/${transactionId}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  const data = await parseResponse(response);
+
+  if (isSuccessStatus(response.status)) {
+    return {
+      ok: true,
+      message: data.message ?? 'Transacción actualizada exitosamente',
+    };
+  }
+
+  return {
+    ok: false,
+    tokenExpired: false,
+    message: data.message ?? 'No fue posible actualizar la transacción.',
+  };
+}

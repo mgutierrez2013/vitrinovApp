@@ -10,17 +10,20 @@ import {
   View,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { Swipeable } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import {
   addTransaction,
   getClientsList,
   getTransactionsByDateRange,
+  updateTransaction,
 } from '../services/transactionsService';
 import { getCachedSession } from '../services/sessionService';
 import { homeStyles } from '../theme/homeStyles';
 
 const EL_SALVADOR_TZ = 'America/El_Salvador';
+const API_BASE_URL = 'https://apivitrinovapp.clobitech.com';
 
 function formatApiDate(value) {
   return value.toISOString().slice(0, 10);
@@ -123,6 +126,15 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
   const [saleDateDisplay, setSaleDateDisplay] = useState('');
   const [saleLoading, setSaleLoading] = useState(false);
   const [saleMessage, setSaleMessage] = useState('');
+
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState(null);
+  const [editAmount, setEditAmount] = useState('');
+  const [editNotes, setEditNotes] = useState('');
+  const [editImageAsset, setEditImageAsset] = useState(null);
+  const [editImagePreviewUri, setEditImagePreviewUri] = useState('');
+  const [editLoading, setEditLoading] = useState(false);
+  const [editMessage, setEditMessage] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -326,6 +338,145 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
     }
   };
 
+  const getTransactionImageUri = (imagePath = '') => {
+    if (!imagePath) {
+      return '';
+    }
+
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+
+    const normalized = imagePath.replace(/^\/+/, '');
+
+    if (normalized.startsWith('uploads/')) {
+      return `${API_BASE_URL}/static/${normalized}`;
+    }
+
+    return `${API_BASE_URL}/static/uploads/${normalized}`;
+  };
+
+  const closeEditModal = () => {
+    setEditModalVisible(false);
+    setEditingTransaction(null);
+    setEditAmount('');
+    setEditNotes('');
+    setEditImageAsset(null);
+    setEditImagePreviewUri('');
+    setEditMessage('');
+  };
+
+  const openEditModal = (item) => {
+    setEditingTransaction(item);
+    setEditAmount(Number(item?.amount || 0).toFixed(2));
+    setEditNotes(item?.notes || '');
+    setEditImageAsset(null);
+    setEditImagePreviewUri(getTransactionImageUri(item?.image_path || ''));
+    setEditMessage('');
+    setEditModalVisible(true);
+  };
+
+  const handleEditAmountChange = (value) => {
+    const normalized = value.replace(',', '.');
+    if (/^\d*(\.\d{0,2})?$/.test(normalized)) {
+      setEditAmount(normalized);
+    }
+  };
+
+  const pickEditImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        allowsMultipleSelection: false,
+      });
+
+      if (result.canceled || !result.assets?.length) {
+        return;
+      }
+
+      const original = result.assets[0];
+      const manipulated = await ImageManipulator.manipulateAsync(
+        original.uri,
+        [{ resize: { width: 1280 } }],
+        {
+          compress: 0.55,
+          format: ImageManipulator.SaveFormat.JPEG,
+        }
+      );
+
+      const localImage = {
+        ...original,
+        uri: manipulated.uri,
+        mimeType: 'image/jpeg',
+        fileName: original.fileName || `sale_${Date.now()}.jpg`,
+      };
+
+      setEditImageAsset(localImage);
+      setEditImagePreviewUri(localImage.uri);
+    } catch (_errorPick) {
+      setEditMessage('No fue posible seleccionar la imagen.');
+    }
+  };
+
+  const handleUpdateTransaction = async () => {
+    const session = getCachedSession();
+
+    if (!session?.token) {
+      closeEditModal();
+      onSessionExpired();
+      return;
+    }
+
+    if (!editingTransaction?.id) {
+      setEditMessage('No se encontró la transacción a editar.');
+      return;
+    }
+
+    if (!editAmount || Number(editAmount) <= 0) {
+      setEditMessage('Ingresa una cantidad válida.');
+      return;
+    }
+
+    try {
+      setEditLoading(true);
+      setEditMessage('');
+
+      const result = await updateTransaction({
+        token: session.token,
+        transactionId: editingTransaction.id,
+        amount: Number(editAmount).toFixed(2),
+        notes: editNotes,
+        image: editImageAsset,
+      });
+
+      if (result.tokenExpired) {
+        closeEditModal();
+        onSessionExpired();
+        return;
+      }
+
+      if (!result.ok) {
+        setEditMessage(result.message || 'No fue posible actualizar la transacción.');
+        return;
+      }
+
+      closeEditModal();
+      setRefreshTick((prev) => prev + 1);
+    } catch (_e) {
+      setEditMessage('No fue posible actualizar la transacción.');
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  const renderRightActions = (item) => (
+    <Pressable style={homeStyles.swipeEditAction} onPress={() => openEditModal(item)}>
+      <Feather name="edit-2" size={16} color="#ffffff" />
+      <Text style={homeStyles.swipeEditText}>Editar</Text>
+    </Pressable>
+  );
+
   return (
     <>
       <View style={homeStyles.content}>
@@ -359,22 +510,24 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
               const sign = isIncome ? '+' : '-';
 
               return (
-                <View style={homeStyles.transactionRow}>
-                  <View style={homeStyles.avatar}>
-                    <Text style={homeStyles.avatarText}>{getInitials(item.client_name)}</Text>
-                  </View>
+                <Swipeable renderRightActions={() => renderRightActions(item)} overshootRight={false} rightThreshold={30}>
+                  <View style={homeStyles.transactionRow}>
+                    <View style={homeStyles.avatar}>
+                      <Text style={homeStyles.avatarText}>{getInitials(item.client_name)}</Text>
+                    </View>
 
-                  <View style={homeStyles.transactionBody}>
-                    <Text style={homeStyles.transactionTitle}>{isIncome ? 'Vendiste' : 'Egreso'}</Text>
-                    <Text style={homeStyles.transactionSubtitle}>
-                      {(item.client_name || 'Cliente').toUpperCase()}
+                    <View style={homeStyles.transactionBody}>
+                      <Text style={homeStyles.transactionTitle}>{isIncome ? 'Vendiste' : 'Egreso'}</Text>
+                      <Text style={homeStyles.transactionSubtitle}>
+                        {(item.client_name || 'Cliente').toUpperCase()}
+                      </Text>
+                    </View>
+
+                    <Text style={[homeStyles.amountText, isIncome ? homeStyles.amountIncome : homeStyles.amountExpense]}>
+                      {sign}${Number(item.amount || 0).toFixed(2)} USD
                     </Text>
                   </View>
-
-                  <Text style={[homeStyles.amountText, isIncome ? homeStyles.amountIncome : homeStyles.amountExpense]}>
-                    {sign}${Number(item.amount || 0).toFixed(2)} USD
-                  </Text>
-                </View>
+                </Swipeable>
               );
             }}
             ListEmptyComponent={<Text style={homeStyles.emptyText}>No se obtuvieron resultado.</Text>}
@@ -458,6 +611,82 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
                 <Text style={homeStyles.modalActionBtnText}>{saleLoading ? 'Guardando...' : 'Confirmar'}</Text>
               </Pressable>
               <Pressable style={[homeStyles.modalActionBtn, homeStyles.modalCancelBtn]} onPress={closeSaleModal}>
+                <Text style={homeStyles.modalCancelBtnText}>Cancelar</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal transparent animationType="fade" visible={editModalVisible} onRequestClose={closeEditModal}>
+        <View style={homeStyles.saleModalBackdrop}>
+          <View style={homeStyles.saleModalCard}>
+            <View style={homeStyles.saleModalHeader}>
+              <Text style={homeStyles.saleModalTitle}>Editar Venta</Text>
+              <Pressable onPress={closeEditModal}>
+                <Feather name="x" size={28} color="#2a2f3d" />
+              </Pressable>
+            </View>
+
+            <Text style={homeStyles.fieldLabel}>Emprendimiento</Text>
+            <View style={homeStyles.readonlyField}>
+              <Text style={homeStyles.readonlyFieldText} numberOfLines={1}>
+                {(editingTransaction?.client_name || 'Cliente').toUpperCase()}
+              </Text>
+            </View>
+
+            <Text style={homeStyles.fieldLabel}>Cantidad *</Text>
+            <TextInput
+              value={editAmount}
+              onChangeText={handleEditAmountChange}
+              placeholder="Ingrese la cantidad de venta"
+              style={homeStyles.modalInput}
+              keyboardType="decimal-pad"
+              placeholderTextColor="#8a92a1"
+            />
+
+            <Text style={homeStyles.fieldLabel}>Foto (opcional)</Text>
+            <Pressable style={homeStyles.fileButton} onPress={pickEditImage}>
+              <Text style={homeStyles.fileButtonText}>Seleccionar archivo</Text>
+            </Pressable>
+            {editImagePreviewUri ? (
+              <View style={homeStyles.imagePreviewWrap}>
+                <Image source={{ uri: editImagePreviewUri }} style={homeStyles.imagePreview} resizeMode="cover" />
+                <Pressable
+                  style={homeStyles.removeImageBtn}
+                  onPress={() => {
+                    setEditImagePreviewUri('');
+                    setEditImageAsset(null);
+                  }}
+                >
+                  <Feather name="x" size={12} color="#ffffff" />
+                </Pressable>
+              </View>
+            ) : (
+              <Text style={homeStyles.smallText}>Sin archivos seleccionados</Text>
+            )}
+
+            <Text style={homeStyles.fieldLabel}>Notas (opcional)</Text>
+            <TextInput
+              value={editNotes}
+              onChangeText={setEditNotes}
+              placeholder="Escribe una nota (opcional)"
+              style={[homeStyles.modalInput, homeStyles.notesInput]}
+              placeholderTextColor="#8a92a1"
+              multiline
+            />
+
+            {editMessage.length > 0 && <Text style={homeStyles.saleErrorText}>{editMessage}</Text>}
+
+            <View style={homeStyles.modalActionsRow}>
+              <Pressable
+                style={[homeStyles.modalActionBtn, homeStyles.modalConfirmBtn, editLoading && { opacity: 0.6 }]}
+                onPress={handleUpdateTransaction}
+                disabled={editLoading}
+              >
+                <Text style={homeStyles.modalActionBtnText}>{editLoading ? 'Guardando...' : 'Actualizar'}</Text>
+              </Pressable>
+              <Pressable style={[homeStyles.modalActionBtn, homeStyles.modalCancelBtn]} onPress={closeEditModal}>
                 <Text style={homeStyles.modalCancelBtnText}>Cancelar</Text>
               </Pressable>
             </View>

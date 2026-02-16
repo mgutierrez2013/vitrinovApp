@@ -94,6 +94,21 @@ export const homeStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 14,
+    backgroundColor: '#f5f6fb',
+  },
+  swipeEditAction: {
+    marginBottom: 14,
+    backgroundColor: '#7c59d7',
+    borderRadius: 12,
+    width: 88,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  swipeEditText: {
+    color: '#ffffff',
+    fontSize: 13,
+    fontWeight: '700',
   },
   avatar: {
     width: 46,
@@ -114,17 +129,17 @@ export const homeStyles = StyleSheet.create({
   },
   transactionTitle: {
     color: '#293040',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '800',
     marginBottom: 2,
   },
   transactionSubtitle: {
     color: '#7153c6',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
   },
   amountText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '800',
   },
   amountIncome: {
@@ -225,6 +240,21 @@ export const homeStyles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     marginBottom: 6,
+  },
+  readonlyField: {
+    borderWidth: 1,
+    borderColor: '#dfe3ef',
+    borderRadius: 12,
+    backgroundColor: '#f5f6fb',
+    minHeight: 46,
+    paddingHorizontal: 14,
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  readonlyFieldText: {
+    color: '#5f4bb5',
+    fontSize: 14,
+    fontWeight: '700',
   },
   modalInput: {
     borderWidth: 1,

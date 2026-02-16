@@ -24,7 +24,8 @@
     "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-native-community/datetimepicker": "^8.2.0",
     "expo-image-picker": "~16.0.6",
-    "expo-image-manipulator": "~13.0.6"
+    "expo-image-manipulator": "~13.0.6",
+    "react-native-gesture-handler": "~2.28.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^54.0.0"
