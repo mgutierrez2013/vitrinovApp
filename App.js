@@ -95,7 +95,7 @@ export default function App() {
           entrepreneur={selectedEntrepreneur}
           onGoHome={() => {
             setSelectedEntrepreneur(null);
-            setScreen('home');
+            setScreen('entrepreneurs');
           }}
           onSessionExpired={handleSessionExpired}
         />

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, Image, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
+import { FlatList, Image, Modal, Platform, Pressable, Share, Text, TextInput, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
@@ -7,6 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import {
   deleteTransaction,
+  exportTransactionsReport,
   getTransactionsByDateRange,
   updateTransaction,
 } from '../services/transactionsService';
@@ -105,6 +106,7 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
   const [sales, setSales] = useState('0');
   const [rows, setRows] = useState([]);
   const [error, setError] = useState('');
+  const [reportLoading, setReportLoading] = useState(false);
 
   const [pickerVisible, setPickerVisible] = useState(false);
   const [pickerField, setPickerField] = useState('start');
@@ -399,6 +401,61 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
     }
   };
 
+
+  const handleShareReport = async () => {
+    const session = getCachedSession();
+
+    if (!session?.token) {
+      onSessionExpired();
+      return;
+    }
+
+    try {
+      setReportLoading(true);
+      setError('');
+
+      const startDateApi = toApiDate(startDate);
+      const endDateApi = toApiDate(endDate);
+      const clientName = entrepreneur?.name || '';
+      const result = await exportTransactionsReport({
+        token: session.token,
+        startDate: startDateApi,
+        endDate: endDateApi,
+        clientName,
+      });
+
+      if (result.tokenExpired) {
+        onSessionExpired();
+        return;
+      }
+
+      if (!result.ok) {
+        setError(result.message || 'No fue posible generar el reporte.');
+        return;
+      }
+
+      const fileName = `reporte_${clientName.replace(/[^a-z0-9]+/gi, '_') || 'cliente'}_${startDateApi}_${endDateApi}.csv`;
+      const reportText = [
+        `Reporte de transacciones (${startDateApi} a ${endDateApi})`,
+        `Emprendimiento: ${clientName}`,
+        '',
+        result.csvContent || 'Sin contenido',
+      ].join('
+');
+
+      await Share.share({
+        message: `${reportText}
+
+Archivo: ${fileName}`,
+        title: 'Compartir reporte',
+      });
+    } catch (_errorSharing) {
+      setError('No fue posible compartir el reporte.');
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
   const renderSwipeGhost = () => <View style={styles.swipeGhostAction} />;
 
   return (
@@ -430,10 +487,12 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
       </View>
 
       <View style={styles.reportRow}>
-        <Pressable style={styles.reportBtn}>
-          <Text style={styles.reportBtnText}>Reportes</Text>
+        <Pressable style={[styles.reportBtn, reportLoading && { opacity: 0.6 }]} onPress={handleShareReport} disabled={reportLoading}>
+          <Text style={styles.reportBtnText}>{reportLoading ? 'Generando...' : 'Reportes'}</Text>
         </Pressable>
       </View>
+
+      {error.length > 0 && rows.length > 0 && !loading && <Text style={styles.errorText}>{error}</Text>}
 
       {loading ? (
         <Text style={styles.emptyText}>Cargando transacciones...</Text>

@@ -321,3 +321,54 @@ export async function deleteClient({ token, clientId }) {
     message: data.message ?? 'No fue posible eliminar el emprendedor.',
   };
 }
+
+
+export async function exportTransactionsReport({ token, startDate, endDate, clientName = '' }) {
+  const tokenValidation = await ensureToken(token);
+
+  if (!tokenValidation.ok) {
+    return tokenValidation;
+  }
+
+  const params = new URLSearchParams({
+    fechaIni: startDate,
+    fechaFin: endDate,
+    clientName: clientName.trim(),
+  });
+
+  const response = await fetch(`${API_BASE_URL}/export/export?${params.toString()}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const csvContent = await response.text();
+
+  if (isSuccessStatus(response.status)) {
+    return {
+      ok: true,
+      csvContent,
+      message: 'Reporte generado exitosamente',
+    };
+  }
+
+  let message = 'No fue posible generar el reporte.';
+
+  try {
+    const parsed = JSON.parse(csvContent);
+    if (parsed?.message) {
+      message = parsed.message;
+    }
+  } catch (_errorParsing) {
+    if (csvContent?.trim()) {
+      message = csvContent.trim();
+    }
+  }
+
+  return {
+    ok: false,
+    tokenExpired: false,
+    message,
+  };
+}
