@@ -229,6 +229,8 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
               );
             }}
             showsVerticalScrollIndicator={false}
+            style={styles.list}
+            contentContainerStyle={styles.listContent}
           />
         )}
       </View>

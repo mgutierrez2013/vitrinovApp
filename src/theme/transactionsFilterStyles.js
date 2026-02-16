@@ -6,6 +6,7 @@ export const transactionsFilterStyles = StyleSheet.create({
     backgroundColor: '#f5f6fb',
   },
   content: {
+    flex: 1,
     paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 110,
@@ -29,7 +30,7 @@ export const transactionsFilterStyles = StyleSheet.create({
   },
   title: {
     color: '#252a38',
-    fontSize: 34,
+    fontSize: 28,
     fontWeight: '800',
     marginBottom: 16,
   },
@@ -130,6 +131,12 @@ export const transactionsFilterStyles = StyleSheet.create({
     color: '#c85353',
     fontSize: 15,
     fontWeight: '800',
+  },
+  list: {
+    flex: 1,
+  },
+  listContent: {
+    paddingBottom: 20,
   },
   emptyText: {
     color: '#666b7a',
