@@ -1,12 +1,28 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Image, Pressable, SectionList, Text, View } from 'react-native';
+import {
+  Image,
+  Modal,
+  Pressable,
+  ScrollView,
+  SectionList,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { getTransactionsByDateRange } from '../services/transactionsService';
+import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
+import {
+  addTransaction,
+  getClientsList,
+  getTransactionsByDateRange,
+} from '../services/transactionsService';
 import { getCachedSession } from '../services/sessionService';
 import { homeStyles } from '../theme/homeStyles';
 
 const logoUri =
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s';
+const EL_SALVADOR_TZ = 'America/El_Salvador';
 
 function formatApiDate(value) {
   return value.toISOString().slice(0, 10);
@@ -67,11 +83,47 @@ function getInitials(clientName = '') {
   return words.slice(0, 2).map((w) => w[0]).join('').toUpperCase() || 'CL';
 }
 
+function formatDatePartsInElSalvador(date) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: EL_SALVADOR_TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  }).formatToParts(date);
+
+  const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+
+  return {
+    dateApi: `${map.year}-${map.month}-${map.day}`,
+    dateDisplay: `${Number(map.day)}/${Number(map.month)}/${map.year}, ${map.hour}:${map.minute}:${map.second} ${map.dayPeriod}`,
+  };
+}
+
 export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions }) {
   const [loading, setLoading] = useState(true);
   const [sales, setSales] = useState('0');
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState('');
+  const [refreshTick, setRefreshTick] = useState(0);
+
+  const [saleModalVisible, setSaleModalVisible] = useState(false);
+  const [clients, setClients] = useState([]);
+  const [clientsLoading, setClientsLoading] = useState(false);
+  const [clientSelectorVisible, setClientSelectorVisible] = useState(false);
+
+  const [selectedClientId, setSelectedClientId] = useState('');
+  const [selectedClientName, setSelectedClientName] = useState('Selecciona un emprendedor');
+  const [amount, setAmount] = useState('');
+  const [notes, setNotes] = useState('');
+  const [imageAsset, setImageAsset] = useState(null);
+  const [saleDateApi, setSaleDateApi] = useState('');
+  const [saleDateDisplay, setSaleDateDisplay] = useState('');
+  const [saleLoading, setSaleLoading] = useState(false);
+  const [saleMessage, setSaleMessage] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -118,9 +170,152 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions }) 
     };
 
     fetchData();
-  }, [onSessionExpired]);
+  }, [onSessionExpired, refreshTick]);
 
   const sections = useMemo(() => groupTransactionsByDate(transactions), [transactions]);
+
+  const openSaleModal = async () => {
+    const now = formatDatePartsInElSalvador(new Date());
+    setSaleDateApi(now.dateApi);
+    setSaleDateDisplay(now.dateDisplay);
+    setSaleModalVisible(true);
+    setSaleMessage('');
+
+    const session = getCachedSession();
+
+    if (!session?.token) {
+      onSessionExpired();
+      return;
+    }
+
+    try {
+      setClientsLoading(true);
+      const result = await getClientsList({ token: session.token });
+
+      if (result.tokenExpired) {
+        setSaleModalVisible(false);
+        onSessionExpired();
+        return;
+      }
+
+      if (result.ok) {
+        setClients(result.clients);
+      } else {
+        setClients([]);
+        setSaleMessage(result.message || 'No se obtuvieron resultado.');
+      }
+    } catch (e) {
+      setClients([]);
+      setSaleMessage('No se obtuvieron resultado.');
+    } finally {
+      setClientsLoading(false);
+    }
+  };
+
+  const closeSaleModal = () => {
+    setSaleModalVisible(false);
+    setClientSelectorVisible(false);
+    setSelectedClientId('');
+    setSelectedClientName('Selecciona un emprendedor');
+    setAmount('');
+    setNotes('');
+    setImageAsset(null);
+    setSaleMessage('');
+  };
+
+  const pickImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        allowsMultipleSelection: false,
+      });
+
+      if (result.canceled || !result.assets?.length) {
+        return;
+      }
+
+      const original = result.assets[0];
+      const manipulated = await ImageManipulator.manipulateAsync(
+        original.uri,
+        [{ resize: { width: 1280 } }],
+        {
+          compress: 0.55,
+          format: ImageManipulator.SaveFormat.JPEG,
+        }
+      );
+
+      setImageAsset({
+        ...original,
+        uri: manipulated.uri,
+        mimeType: 'image/jpeg',
+        fileName: original.fileName || `sale_${Date.now()}.jpg`,
+      });
+    } catch (errorPick) {
+      setSaleMessage('No fue posible seleccionar la imagen.');
+    }
+  };
+
+  const handleAmountChange = (value) => {
+    const normalized = value.replace(',', '.');
+    if (/^\d*(\.\d{0,2})?$/.test(normalized)) {
+      setAmount(normalized);
+    }
+  };
+
+  const handleConfirmSale = async () => {
+    const session = getCachedSession();
+
+    if (!session?.token) {
+      setSaleModalVisible(false);
+      onSessionExpired();
+      return;
+    }
+
+    if (!selectedClientId) {
+      setSaleMessage('Selecciona un emprendedor.');
+      return;
+    }
+
+    if (!amount || Number(amount) <= 0) {
+      setSaleMessage('Ingresa una cantidad válida.');
+      return;
+    }
+
+    const timestamp = formatDatePartsInElSalvador(new Date());
+
+    try {
+      setSaleLoading(true);
+      setSaleMessage('');
+
+      const result = await addTransaction({
+        token: session.token,
+        clientId: selectedClientId,
+        amount: Number(amount).toFixed(2),
+        notes,
+        transactionDate: timestamp.dateApi,
+        image: imageAsset,
+      });
+
+      if (result.tokenExpired) {
+        setSaleModalVisible(false);
+        onSessionExpired();
+        return;
+      }
+
+      if (!result.ok) {
+        setSaleMessage(result.message || 'No fue posible registrar la transacción.');
+        return;
+      }
+
+      closeSaleModal();
+      setRefreshTick((prev) => prev + 1);
+    } catch (e) {
+      setSaleMessage('No fue posible registrar la transacción.');
+    } finally {
+      setSaleLoading(false);
+    }
+  };
 
   return (
     <View style={homeStyles.container}>
@@ -192,7 +387,7 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions }) 
 
         <View style={homeStyles.divider} />
 
-        <Pressable style={homeStyles.registerSaleButton}>
+        <Pressable style={homeStyles.registerSaleButton} onPress={openSaleModal}>
           <Text style={homeStyles.registerSaleText}>Registrar Venta</Text>
         </Pressable>
       </View>
@@ -208,6 +403,112 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions }) 
           <Feather name="settings" size={24} color="#7c59d7" />
         </View>
       </View>
+
+      <Modal transparent animationType="fade" visible={saleModalVisible} onRequestClose={closeSaleModal}>
+        <View style={homeStyles.saleModalBackdrop}>
+          <View style={homeStyles.saleModalCard}>
+            <View style={homeStyles.saleModalHeader}>
+              <Text style={homeStyles.saleModalTitle}>Registrar Venta</Text>
+              <Pressable onPress={closeSaleModal}>
+                <Feather name="x" size={28} color="#2a2f3d" />
+              </Pressable>
+            </View>
+
+            <Pressable style={homeStyles.clientSelect} onPress={() => setClientSelectorVisible(true)}>
+              <Text style={homeStyles.clientSelectText} numberOfLines={1}>
+                {selectedClientName}
+              </Text>
+            </Pressable>
+
+            <Text style={homeStyles.fieldLabel}>Cantidad *</Text>
+            <TextInput
+              value={amount}
+              onChangeText={handleAmountChange}
+              placeholder="Ingrese la cantidad de venta"
+              style={homeStyles.modalInput}
+              keyboardType="decimal-pad"
+              placeholderTextColor="#8a92a1"
+            />
+
+            <Text style={homeStyles.fieldLabel}>Foto (opcional)</Text>
+            <Pressable style={homeStyles.fileButton} onPress={pickImage}>
+              <Text style={homeStyles.fileButtonText}>Seleccionar archivo</Text>
+            </Pressable>
+            {imageAsset?.uri ? (
+              <Image source={{ uri: imageAsset.uri }} style={homeStyles.imagePreview} resizeMode="cover" />
+            ) : (
+              <Text style={homeStyles.smallText}>Sin archivos seleccionados</Text>
+            )}
+
+            <Text style={homeStyles.fieldLabel}>Notas (opcional)</Text>
+            <TextInput
+              value={notes}
+              onChangeText={setNotes}
+              placeholder="Escribe una nota (opcional)"
+              style={[homeStyles.modalInput, homeStyles.notesInput]}
+              placeholderTextColor="#8a92a1"
+              multiline
+            />
+
+            <Text style={homeStyles.fieldLabel}>Fecha</Text>
+            <View style={homeStyles.dateDisplayWrap}>
+              <Text style={homeStyles.dateDisplayText}>{saleDateDisplay}</Text>
+            </View>
+
+            {saleMessage.length > 0 && <Text style={homeStyles.saleErrorText}>{saleMessage}</Text>}
+
+            <View style={homeStyles.modalActionsRow}>
+              <Pressable
+                style={[homeStyles.modalActionBtn, homeStyles.modalConfirmBtn, saleLoading && { opacity: 0.6 }]}
+                onPress={handleConfirmSale}
+                disabled={saleLoading || clientsLoading}
+              >
+                <Text style={homeStyles.modalActionBtnText}>{saleLoading ? 'Guardando...' : 'Confirmar'}</Text>
+              </Pressable>
+              <Pressable style={[homeStyles.modalActionBtn, homeStyles.modalCancelBtn]} onPress={closeSaleModal}>
+                <Text style={homeStyles.modalCancelBtnText}>Cancelar</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        transparent
+        animationType="fade"
+        visible={clientSelectorVisible}
+        onRequestClose={() => setClientSelectorVisible(false)}
+      >
+        <View style={homeStyles.saleModalBackdrop}>
+          <View style={homeStyles.clientListCard}>
+            <Text style={homeStyles.clientListTitle}>Selecciona un emprendedor</Text>
+
+            {clientsLoading ? (
+              <Text style={homeStyles.smallText}>Cargando emprendedores...</Text>
+            ) : (
+              <ScrollView style={{ maxHeight: 280 }}>
+                {clients.map((item) => (
+                  <Pressable
+                    key={item.id}
+                    style={homeStyles.clientRow}
+                    onPress={() => {
+                      setSelectedClientId(item.id);
+                      setSelectedClientName(item.name);
+                      setClientSelectorVisible(false);
+                    }}
+                  >
+                    <Text style={homeStyles.clientRowText}>{item.name}</Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            )}
+
+            <Pressable style={[homeStyles.modalActionBtn, homeStyles.modalCancelBtn]} onPress={() => setClientSelectorVisible(false)}>
+              <Text style={homeStyles.modalCancelBtnText}>Cerrar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
