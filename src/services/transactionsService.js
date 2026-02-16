@@ -53,6 +53,7 @@ export async function getTransactionsByDateRange({ token, startDate, endDate, cl
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     },
   });
 
@@ -85,6 +86,7 @@ export async function getClientsList({ token }) {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     },
   });
 
@@ -132,6 +134,7 @@ export async function addTransaction({ token, clientId, amount, notes, transacti
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     },
     body: formData,
   });
@@ -177,6 +180,7 @@ export async function updateTransaction({ token, transactionId, amount, notes, i
     method: 'PUT',
     headers: {
       Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     },
     body: formData,
   });
@@ -209,6 +213,7 @@ export async function deleteTransaction({ token, transactionId }) {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     },
   });
 
@@ -240,6 +245,7 @@ export async function addClient({ token, name }) {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ name }),
@@ -272,6 +278,7 @@ export async function updateClient({ token, clientId, name }) {
     method: 'PUT',
     headers: {
       Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ name }),
@@ -304,6 +311,7 @@ export async function deleteClient({ token, clientId }) {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     },
   });
 
@@ -337,7 +345,7 @@ export async function exportTransactionsReport({ token, startDate, endDate, clie
     clientName: clientName.trim(),
   });
 
-  const fileName = `reporte_${clientName.trim().replace(/[^a-z0-9]+/gi, '_') || 'cliente'}_${startDate}_${endDate}.csv`;
+  const fileName = `reporte_${clientName.trim().replace(/[^a-z0-9]+/gi, '_') || 'cliente'}_${startDate}_${endDate}.xlsx`;
   const outputUri = `${FileSystem.cacheDirectory}${fileName}`;
 
   const result = await FileSystem.downloadAsync(
@@ -346,6 +354,7 @@ export async function exportTransactionsReport({ token, startDate, endDate, clie
     {
       headers: {
         Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       },
     }
   );

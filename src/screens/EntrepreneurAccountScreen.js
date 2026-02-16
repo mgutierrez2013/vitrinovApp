@@ -442,9 +442,9 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
       }
 
       await Sharing.shareAsync(result.fileUri, {
-        mimeType: 'text/csv',
+        mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         dialogTitle: 'Compartir reporte',
-        UTI: 'public.comma-separated-values-text',
+        UTI: 'org.openxmlformats.spreadsheetml.sheet',
       });
 
     } catch (_errorSharing) {
