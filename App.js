@@ -17,6 +17,7 @@ import { LoginScreen } from './src/screens/LoginScreen';
 import { RegisterScreen } from './src/screens/RegisterScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { TransactionsFilterScreen } from './src/screens/TransactionsFilterScreen';
+import { EntrepreneursScreen } from './src/screens/EntrepreneursScreen';
 import { authStyles } from './src/theme/authStyles';
 import { clearSession, loadSession, saveSession } from './src/services/sessionService';
 
@@ -59,6 +60,20 @@ export default function App() {
           onLogout={handleLogout}
           onSessionExpired={handleSessionExpired}
           onGoAllTransactions={() => setScreen('transactions')}
+          onGoEntrepreneurs={() => setScreen('entrepreneurs')}
+        />
+      </GestureHandlerRootView>
+    );
+  }
+
+
+  if (screen === 'entrepreneurs') {
+    return (
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <EntrepreneursScreen
+          onGoHome={() => setScreen('home')}
+          onSessionExpired={handleSessionExpired}
+          onLogout={handleLogout}
         />
       </GestureHandlerRootView>
     );
