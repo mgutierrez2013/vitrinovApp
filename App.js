@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import { useEffect, useState } from 'react';
 import {
   KeyboardAvoidingView,
@@ -9,6 +10,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { LoginScreen } from './src/screens/LoginScreen';
@@ -52,25 +54,30 @@ export default function App() {
 
   if (screen === 'home') {
     return (
-      <HomeScreen
-        onLogout={handleLogout}
-        onSessionExpired={handleSessionExpired}
-        onGoAllTransactions={() => setScreen('transactions')}
-      />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <HomeScreen
+          onLogout={handleLogout}
+          onSessionExpired={handleSessionExpired}
+          onGoAllTransactions={() => setScreen('transactions')}
+        />
+      </GestureHandlerRootView>
     );
   }
 
   if (screen === 'transactions') {
     return (
-      <TransactionsFilterScreen
-        onGoHome={() => setScreen('home')}
-        onSessionExpired={handleSessionExpired}
-      />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <TransactionsFilterScreen
+          onGoHome={() => setScreen('home')}
+          onSessionExpired={handleSessionExpired}
+        />
+      </GestureHandlerRootView>
     );
   }
 
   return (
-    <LinearGradient colors={['#9968f7', '#58b3ff']} style={authStyles.gradientBackground}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <LinearGradient colors={['#9968f7', '#58b3ff']} style={authStyles.gradientBackground}>
       <StatusBar style="light" />
       <SafeAreaView style={authStyles.safeArea}>
         <KeyboardAvoidingView
@@ -115,6 +122,7 @@ export default function App() {
           </View>
         </View>
       </Modal>
-    </LinearGradient>
+      </LinearGradient>
+    </GestureHandlerRootView>
   );
 }
