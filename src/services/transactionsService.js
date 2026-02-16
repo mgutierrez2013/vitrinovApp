@@ -1,3 +1,4 @@
+import * as FileSystem from 'expo-file-system';
 import { checkTokenRequest } from './authService';
 
 const API_BASE_URL = 'https://apivitrinovapp.clobitech.com';
@@ -336,19 +337,24 @@ export async function exportTransactionsReport({ token, startDate, endDate, clie
     clientName: clientName.trim(),
   });
 
-  const response = await fetch(`${API_BASE_URL}/export/export?${params.toString()}`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const fileName = `reporte_${clientName.trim().replace(/[^a-z0-9]+/gi, '_') || 'cliente'}_${startDate}_${endDate}.csv`;
+  const outputUri = `${FileSystem.cacheDirectory}${fileName}`;
 
-  const csvContent = await response.text();
+  const result = await FileSystem.downloadAsync(
+    `${API_BASE_URL}/reports/export?${params.toString()}`,
+    outputUri,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
-  if (isSuccessStatus(response.status)) {
+  if (isSuccessStatus(result.status)) {
     return {
       ok: true,
-      csvContent,
+      fileUri: result.uri,
+      fileName,
       message: 'Reporte generado exitosamente',
     };
   }
@@ -356,14 +362,14 @@ export async function exportTransactionsReport({ token, startDate, endDate, clie
   let message = 'No fue posible generar el reporte.';
 
   try {
-    const parsed = JSON.parse(csvContent);
+    const raw = await FileSystem.readAsStringAsync(result.uri);
+    const parsed = JSON.parse(raw);
+
     if (parsed?.message) {
       message = parsed.message;
     }
-  } catch (_errorParsing) {
-    if (csvContent?.trim()) {
-      message = csvContent.trim();
-    }
+  } catch (_parseError) {
+    message = 'No fue posible generar el reporte.';
   }
 
   return {

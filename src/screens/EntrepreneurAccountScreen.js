@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, Image, Modal, Platform, Pressable, Share, Text, TextInput, View } from 'react-native';
+import { FlatList, Image, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
+import * as Sharing from 'expo-sharing';
 import {
   deleteTransaction,
   exportTransactionsReport,
@@ -433,17 +434,17 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
         setError(result.message || 'No fue posible generar el reporte.');
         return;
       }
-      const fileName = `reporte_${clientName.replace(/[^a-z0-9]+/gi, '_') || 'cliente'}_${startDateApi}_${endDateApi}.csv`;
-      const reportText = [
-        `Reporte de transacciones (${startDateApi} a ${endDateApi})`,
-        `Emprendimiento: ${clientName}`,
-        '',
-        result.csvContent || 'Sin contenido',
-      ].join('\n');
+      const canShare = await Sharing.isAvailableAsync();
 
-      await Share.share({
-        message: `${reportText}\n\nArchivo: ${fileName}`,
-        title: 'Compartir reporte',
+      if (!canShare) {
+        setError('No es posible compartir archivos en este dispositivo.');
+        return;
+      }
+
+      await Sharing.shareAsync(result.fileUri, {
+        mimeType: 'text/csv',
+        dialogTitle: 'Compartir reporte',
+        UTI: 'public.comma-separated-values-text',
       });
 
     } catch (_errorSharing) {
