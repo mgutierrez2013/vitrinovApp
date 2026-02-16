@@ -44,7 +44,7 @@ export const entrepreneursStyles = StyleSheet.create({
   },
   title: {
     color: '#35257c',
-    fontSize: 42,
+    fontSize: 28,
     fontWeight: '800',
     marginBottom: 10,
   },
@@ -65,12 +65,16 @@ export const entrepreneursStyles = StyleSheet.create({
   listContent: {
     paddingBottom: 14,
   },
+  swipeGhostAction: {
+    marginBottom: 12,
+    width: 24,
+  },
   clientCard: {
     borderWidth: 1,
     borderColor: '#ececf5',
     borderRadius: 14,
     backgroundColor: '#ffffff',
-    minHeight: 96,
+    minHeight: 88,
     paddingHorizontal: 14,
     paddingVertical: 12,
     marginBottom: 12,
@@ -78,9 +82,9 @@ export const entrepreneursStyles = StyleSheet.create({
     alignItems: 'center',
   },
   clientIconWrap: {
-    width: 62,
-    height: 62,
-    borderRadius: 31,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
     backgroundColor: '#d7beff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -92,11 +96,11 @@ export const entrepreneursStyles = StyleSheet.create({
   clientName: {
     color: '#3b2f7c',
     fontWeight: '800',
-    fontSize: 23,
+    fontSize: 17,
   },
   clientSubtitle: {
     color: '#4a5060',
-    fontSize: 20,
+    fontSize: 14,
     marginTop: 2,
   },
   emptyText: {
@@ -109,13 +113,13 @@ export const entrepreneursStyles = StyleSheet.create({
     marginBottom: 6,
     backgroundColor: '#7c59d7',
     borderRadius: 12,
-    minHeight: 58,
+    minHeight: 54,
     alignItems: 'center',
     justifyContent: 'center',
   },
   primaryButtonText: {
     color: '#ffffff',
-    fontSize: 19,
+    fontSize: 18,
     fontWeight: '800',
   },
   bottomBar: {
@@ -145,5 +149,140 @@ export const entrepreneursStyles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'center',
+    paddingHorizontal: 14,
+  },
+  modalCard: {
+    borderRadius: 14,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 14,
+  },
+  modalTitle: {
+    color: '#3b2f7c',
+    fontSize: 22,
+    fontWeight: '800',
+  },
+  fieldLabel: {
+    color: '#1f2433',
+    fontSize: 15,
+    fontWeight: '700',
+    marginBottom: 6,
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: '#dfe3ef',
+    borderRadius: 12,
+    backgroundColor: '#ffffff',
+    minHeight: 46,
+    paddingHorizontal: 14,
+    fontSize: 16,
+    color: '#263143',
+    marginBottom: 6,
+  },
+  modalInputError: {
+    borderColor: '#cc4a59',
+    borderWidth: 2,
+  },
+  errorText: {
+    color: '#c2475b',
+    fontSize: 13,
+    marginBottom: 8,
+  },
+  modalActionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+    marginTop: 12,
+  },
+  modalActionBtn: {
+    minWidth: 130,
+    borderRadius: 12,
+    minHeight: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  modalConfirmBtn: {
+    backgroundColor: '#bfaef1',
+  },
+  modalCancelBtn: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#dfe3ef',
+  },
+  modalActionBtnText: {
+    color: '#ffffff',
+    fontWeight: '800',
+    fontSize: 17,
+  },
+  modalCancelBtnText: {
+    color: '#1f2433',
+    fontWeight: '800',
+    fontSize: 17,
+  },
+
+  deleteModalCard: {
+    borderRadius: 14,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+  },
+  deleteModalTitle: {
+    color: '#1f2433',
+    fontSize: 22,
+    fontWeight: '800',
+  },
+  deleteModalMessage: {
+    color: '#2e3442',
+    fontSize: 17,
+    lineHeight: 32,
+    marginVertical: 16,
+  },
+  deleteModalStrong: {
+    color: '#1f2433',
+    fontWeight: '800',
+  },
+  deleteActionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+  },
+  deleteBtn: {
+    minWidth: 130,
+    borderRadius: 12,
+    minHeight: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  deleteCancelBtn: {
+    borderWidth: 1,
+    borderColor: '#dfdfec',
+    backgroundColor: '#ffffff',
+  },
+  deleteConfirmBtn: {
+    backgroundColor: '#ef4040',
+  },
+  deleteCancelText: {
+    color: '#1f2433',
+    fontSize: 17,
+    fontWeight: '700',
+  },
+  deleteConfirmText: {
+    color: '#ffffff',
+    fontSize: 17,
+    fontWeight: '800',
   },
 });

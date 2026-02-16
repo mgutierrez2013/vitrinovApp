@@ -226,3 +226,98 @@ export async function deleteTransaction({ token, transactionId }) {
     message: data.message ?? 'No fue posible eliminar la transacción.',
   };
 }
+
+
+export async function addClient({ token, name }) {
+  const tokenValidation = await ensureToken(token);
+
+  if (!tokenValidation.ok) {
+    return tokenValidation;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/clients/add`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name }),
+  });
+
+  const data = await parseResponse(response);
+
+  if (isSuccessStatus(response.status)) {
+    return {
+      ok: true,
+      message: data.message ?? 'Emprendedor agregado exitosamente',
+    };
+  }
+
+  return {
+    ok: false,
+    tokenExpired: false,
+    message: data.message ?? 'No fue posible agregar el emprendedor.',
+  };
+}
+
+export async function updateClient({ token, clientId, name }) {
+  const tokenValidation = await ensureToken(token);
+
+  if (!tokenValidation.ok) {
+    return tokenValidation;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/clients/update/${clientId}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name }),
+  });
+
+  const data = await parseResponse(response);
+
+  if (isSuccessStatus(response.status)) {
+    return {
+      ok: true,
+      message: data.message ?? 'Emprendedor actualizado exitosamente',
+    };
+  }
+
+  return {
+    ok: false,
+    tokenExpired: false,
+    message: data.message ?? 'No fue posible actualizar el emprendedor.',
+  };
+}
+
+export async function deleteClient({ token, clientId }) {
+  const tokenValidation = await ensureToken(token);
+
+  if (!tokenValidation.ok) {
+    return tokenValidation;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/clients/delete/${clientId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await parseResponse(response);
+
+  if (isSuccessStatus(response.status)) {
+    return {
+      ok: true,
+      message: data.message ?? 'Emprendedor eliminado exitosamente',
+    };
+  }
+
+  return {
+    ok: false,
+    tokenExpired: false,
+    message: data.message ?? 'No fue posible eliminar el emprendedor.',
+  };
+}
