@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FlatList, Image, Pressable, Text, TextInput, View } from 'react-native';
+import { FlatList, Image, Platform, Pressable, Text, TextInput, View } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { getTransactionsByDateRange } from '../services/transactionsService';
 import { getCachedSession } from '../services/sessionService';
@@ -7,31 +8,38 @@ import { transactionsFilterStyles as styles } from '../theme/transactionsFilterS
 
 const logoUri =
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s';
+const EL_SALVADOR_TZ = 'America/El_Salvador';
 
-function toApiDate(input) {
-  if (/^\d{4}-\d{2}-\d{2}$/.test(input)) {
-    return input;
-  }
+function formatDatePartsInElSalvador(date) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: EL_SALVADOR_TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(date);
 
-  if (/^\d{2}\/\d{2}\/\d{4}$/.test(input)) {
-    const [dd, mm, yyyy] = input.split('/');
-    return `${yyyy}-${mm}-${dd}`;
-  }
-
-  return '';
+  const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+  return {
+    year: map.year,
+    month: map.month,
+    day: map.day,
+  };
 }
 
-function toDisplayDate(apiDate) {
-  if (!apiDate || !/^\d{4}-\d{2}-\d{2}$/.test(apiDate)) {
-    return '';
-  }
-
-  const [yyyy, mm, dd] = apiDate.split('-');
-  return `${dd}/${mm}/${yyyy}`;
+function toApiDate(date) {
+  const { year, month, day } = formatDatePartsInElSalvador(date);
+  return `${year}-${month}-${day}`;
 }
 
-function todayApiDate() {
-  return new Date().toISOString().slice(0, 10);
+function toDisplayDate(date) {
+  const { year, month, day } = formatDatePartsInElSalvador(date);
+  return `${day}/${month}/${year}`;
+}
+
+function todayInElSalvador() {
+  const now = new Date();
+  const { year, month, day } = formatDatePartsInElSalvador(now);
+  return new Date(`${year}-${month}-${day}T00:00:00`);
 }
 
 function formatTxnDate(date) {
@@ -64,9 +72,9 @@ function getInitials(clientName = '') {
 }
 
 export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
-  const today = useMemo(() => todayApiDate(), []);
-  const [startDateInput, setStartDateInput] = useState(toDisplayDate(today));
-  const [endDateInput, setEndDateInput] = useState(toDisplayDate(today));
+  const today = useMemo(() => todayInElSalvador(), []);
+  const [startDate, setStartDate] = useState(today);
+  const [endDate, setEndDate] = useState(today);
   const [clientName, setClientName] = useState('');
 
   const [loading, setLoading] = useState(false);
@@ -74,21 +82,14 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
   const [rows, setRows] = useState([]);
   const [error, setError] = useState('');
 
+  const [pickerVisible, setPickerVisible] = useState(false);
+  const [pickerField, setPickerField] = useState('start');
+
   useEffect(() => {
     const session = getCachedSession();
 
     if (!session?.token) {
       onSessionExpired();
-      return;
-    }
-
-    const startDateApi = toApiDate(startDateInput);
-    const endDateApi = toApiDate(endDateInput);
-
-    if (!startDateApi || !endDateApi) {
-      setRows([]);
-      setSales('0');
-      setError('No se encontraron transacciones.');
       return;
     }
 
@@ -99,8 +100,8 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
 
         const result = await getTransactionsByDateRange({
           token: session.token,
-          startDate: startDateApi,
-          endDate: endDateApi,
+          startDate: toApiDate(startDate),
+          endDate: toApiDate(endDate),
           clientName,
         });
 
@@ -128,12 +129,39 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
     }, 320);
 
     return () => clearTimeout(timeout);
-  }, [clientName, endDateInput, onSessionExpired, startDateInput]);
+  }, [clientName, endDate, onSessionExpired, startDate]);
 
   const handleClear = () => {
-    setEndDateInput(toDisplayDate(today));
-    setStartDateInput(toDisplayDate(today));
+    setStartDate(today);
+    setEndDate(today);
     setClientName('');
+  };
+
+  const openDatePicker = (field) => {
+    setPickerField(field);
+    setPickerVisible(true);
+  };
+
+  const handleDateChange = (_event, selectedDate) => {
+    if (Platform.OS !== 'ios') {
+      setPickerVisible(false);
+    }
+
+    if (!selectedDate) {
+      return;
+    }
+
+    if (pickerField === 'start') {
+      setStartDate(selectedDate);
+      if (selectedDate > endDate) {
+        setEndDate(selectedDate);
+      }
+    } else {
+      setEndDate(selectedDate);
+      if (selectedDate < startDate) {
+        setStartDate(selectedDate);
+      }
+    }
   };
 
   return (
@@ -149,20 +177,12 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
         <Text style={styles.title}>Filtrar Transacciones</Text>
 
         <View style={styles.datesRow}>
-          <TextInput
-            value={startDateInput}
-            onChangeText={setStartDateInput}
-            placeholder="DD/MM/YYYY"
-            style={styles.dateInput}
-            placeholderTextColor="#8791a2"
-          />
-          <TextInput
-            value={endDateInput}
-            onChangeText={setEndDateInput}
-            placeholder="DD/MM/YYYY"
-            style={styles.dateInput}
-            placeholderTextColor="#8791a2"
-          />
+          <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('start')}>
+            <Text style={styles.dateInputButtonText}>{toDisplayDate(startDate)}</Text>
+          </Pressable>
+          <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('end')}>
+            <Text style={styles.dateInputButtonText}>{toDisplayDate(endDate)}</Text>
+          </Pressable>
         </View>
 
         <TextInput
@@ -221,6 +241,15 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
           <Text style={styles.actionText}>Regresar Home</Text>
         </Pressable>
       </View>
+
+      {pickerVisible && (
+        <DateTimePicker
+          value={pickerField === 'start' ? startDate : endDate}
+          mode="date"
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          onChange={handleDateChange}
+        />
+      )}
     </View>
   );
 }

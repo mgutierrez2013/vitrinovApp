@@ -29,7 +29,7 @@ export const transactionsFilterStyles = StyleSheet.create({
   },
   title: {
     color: '#252a38',
-    fontSize: 48,
+    fontSize: 34,
     fontWeight: '800',
     marginBottom: 16,
   },
@@ -38,7 +38,7 @@ export const transactionsFilterStyles = StyleSheet.create({
     gap: 10,
     marginBottom: 12,
   },
-  dateInput: {
+  dateInputButton: {
     flex: 1,
     backgroundColor: '#ffffff',
     borderColor: '#dfe3ef',
@@ -46,6 +46,9 @@ export const transactionsFilterStyles = StyleSheet.create({
     borderRadius: 12,
     height: 48,
     paddingHorizontal: 14,
+    justifyContent: 'center',
+  },
+  dateInputButtonText: {
     fontSize: 16,
     color: '#273143',
   },
