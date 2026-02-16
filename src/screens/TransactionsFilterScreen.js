@@ -105,6 +105,8 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
   const today = useMemo(() => todayInElSalvador(), []);
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
+  const [webStartDateInput, setWebStartDateInput] = useState(toApiDate(today));
+  const [webEndDateInput, setWebEndDateInput] = useState(toApiDate(today));
   const [clientName, setClientName] = useState('');
   const [refreshTick, setRefreshTick] = useState(0);
 
@@ -178,14 +180,32 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
     return () => clearTimeout(timeout);
   }, [clientName, endDate, onSessionExpired, refreshTick, startDate]);
 
+
+  useEffect(() => {
+    if (Platform.OS !== 'web') {
+      return;
+    }
+
+    setWebStartDateInput(toApiDate(startDate));
+    setWebEndDateInput(toApiDate(endDate));
+  }, [startDate, endDate]);
+
   const handleClear = () => {
     setStartDate(today);
     setEndDate(today);
+    setWebStartDateInput(toApiDate(today));
+    setWebEndDateInput(toApiDate(today));
     setClientName('');
   };
 
 
   const handleWebDateChange = (field, value) => {
+    if (field === 'start') {
+      setWebStartDateInput(value);
+    } else {
+      setWebEndDateInput(value);
+    }
+
     const nextDate = parseApiDate(value);
 
     if (!nextDate) {
@@ -196,6 +216,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
       setStartDate(nextDate);
       if (nextDate > endDate) {
         setEndDate(nextDate);
+        setWebEndDateInput(value);
       }
       return;
     }
@@ -203,6 +224,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
     setEndDate(nextDate);
     if (nextDate < startDate) {
       setStartDate(nextDate);
+      setWebStartDateInput(value);
     }
   };
 
@@ -442,7 +464,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
           {Platform.OS === 'web' ? (
             <>
               <TextInput
-                value={toApiDate(startDate)}
+                value={webStartDateInput}
                 onChangeText={(value) => handleWebDateChange('start', value)}
                 style={styles.webDateInput}
                 placeholder="YYYY-MM-DD"
@@ -450,7 +472,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
                 type="date"
               />
               <TextInput
-                value={toApiDate(endDate)}
+                value={webEndDateInput}
                 onChangeText={(value) => handleWebDateChange('end', value)}
                 style={styles.webDateInput}
                 placeholder="YYYY-MM-DD"

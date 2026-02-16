@@ -55,6 +55,7 @@ export const transactionsFilterStyles = StyleSheet.create({
   },
   webDateInput: {
     flex: 1,
+    minWidth: 0,
     backgroundColor: '#ffffff',
     borderColor: '#dfe3ef',
     borderWidth: 1,
