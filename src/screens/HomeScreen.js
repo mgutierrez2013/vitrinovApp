@@ -114,6 +114,7 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions }) 
   const [clients, setClients] = useState([]);
   const [clientsLoading, setClientsLoading] = useState(false);
   const [clientSelectorVisible, setClientSelectorVisible] = useState(false);
+  const [clientSearch, setClientSearch] = useState('');
 
   const [selectedClientId, setSelectedClientId] = useState('');
   const [selectedClientName, setSelectedClientName] = useState('Selecciona un emprendedor');
@@ -173,6 +174,15 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions }) 
   }, [onSessionExpired, refreshTick]);
 
   const sections = useMemo(() => groupTransactionsByDate(transactions), [transactions]);
+  const filteredClients = useMemo(() => {
+    const term = clientSearch.trim().toLowerCase();
+
+    if (!term) {
+      return clients;
+    }
+
+    return clients.filter((item) => (item?.name || '').toLowerCase().includes(term));
+  }, [clientSearch, clients]);
 
   const openSaleModal = async () => {
     const now = formatDatePartsInElSalvador(new Date());
@@ -221,6 +231,7 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions }) 
     setNotes('');
     setImageAsset(null);
     setSaleMessage('');
+    setClientSearch('');
   };
 
   const pickImage = async () => {
@@ -435,7 +446,12 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions }) 
               <Text style={homeStyles.fileButtonText}>Seleccionar archivo</Text>
             </Pressable>
             {imageAsset?.uri ? (
-              <Image source={{ uri: imageAsset.uri }} style={homeStyles.imagePreview} resizeMode="cover" />
+              <View style={homeStyles.imagePreviewWrap}>
+                <Image source={{ uri: imageAsset.uri }} style={homeStyles.imagePreview} resizeMode="cover" />
+                <Pressable style={homeStyles.removeImageBtn} onPress={() => setImageAsset(null)}>
+                  <Feather name="x" size={12} color="#ffffff" />
+                </Pressable>
+              </View>
             ) : (
               <Text style={homeStyles.smallText}>Sin archivos seleccionados</Text>
             )}
@@ -483,23 +499,35 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions }) 
           <View style={homeStyles.clientListCard}>
             <Text style={homeStyles.clientListTitle}>Selecciona un emprendedor</Text>
 
+            <TextInput
+              value={clientSearch}
+              onChangeText={setClientSearch}
+              placeholder="Buscar emprendedor..."
+              style={homeStyles.clientSearchInput}
+              placeholderTextColor="#8a92a1"
+            />
+
             {clientsLoading ? (
               <Text style={homeStyles.smallText}>Cargando emprendedores...</Text>
             ) : (
               <ScrollView style={{ maxHeight: 280 }}>
-                {clients.map((item) => (
+                {filteredClients.map((item) => (
                   <Pressable
                     key={item.id}
                     style={homeStyles.clientRow}
                     onPress={() => {
                       setSelectedClientId(item.id);
                       setSelectedClientName(item.name);
+                      setClientSearch('');
                       setClientSelectorVisible(false);
                     }}
                   >
                     <Text style={homeStyles.clientRowText}>{item.name}</Text>
                   </Pressable>
                 ))}
+                {!filteredClients.length && (
+                  <Text style={homeStyles.smallText}>No se encontraron emprendedores.</Text>
+                )}
               </ScrollView>
             )}
 
