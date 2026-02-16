@@ -195,3 +195,34 @@ export async function updateTransaction({ token, transactionId, amount, notes, i
     message: data.message ?? 'No fue posible actualizar la transacción.',
   };
 }
+
+
+export async function deleteTransaction({ token, transactionId }) {
+  const tokenValidation = await ensureToken(token);
+
+  if (!tokenValidation.ok) {
+    return tokenValidation;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/transactions/delete/${transactionId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await parseResponse(response);
+
+  if (isSuccessStatus(response.status)) {
+    return {
+      ok: true,
+      message: data.message ?? 'Transacción eliminada exitosamente',
+    };
+  }
+
+  return {
+    ok: false,
+    tokenExpired: false,
+    message: data.message ?? 'No fue posible eliminar la transacción.',
+  };
+}

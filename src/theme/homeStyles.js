@@ -365,6 +365,57 @@ export const homeStyles = StyleSheet.create({
     fontSize: 14,
   },
 
+
+  deleteModalCard: {
+    borderRadius: 14,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+  },
+  deleteModalTitle: {
+    color: '#3b2f7c',
+    fontSize: 22,
+    fontWeight: '800',
+  },
+  deleteModalMessage: {
+    color: '#3d4352',
+    fontSize: 18,
+    lineHeight: 30,
+    textAlign: 'center',
+    marginTop: 14,
+    marginBottom: 22,
+  },
+  deleteActionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 14,
+  },
+  deleteBtn: {
+    flex: 1,
+    borderRadius: 26,
+    minHeight: 52,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  deleteCancelBtn: {
+    borderWidth: 1,
+    borderColor: '#dfdfec',
+    backgroundColor: '#ffffff',
+  },
+  deleteConfirmBtn: {
+    backgroundColor: '#ef4040',
+  },
+  deleteCancelText: {
+    color: '#2d3342',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  deleteConfirmText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '800',
+  },
+
   clientListCard: {
     borderRadius: 14,
     backgroundColor: '#ffffff',

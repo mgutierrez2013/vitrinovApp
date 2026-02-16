@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, Image, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
-import { getTransactionsByDateRange, updateTransaction } from '../services/transactionsService';
+import { deleteTransaction, getTransactionsByDateRange, updateTransaction } from '../services/transactionsService';
 import { getCachedSession } from '../services/sessionService';
 import { transactionsFilterStyles as styles } from '../theme/transactionsFilterStyles';
 
@@ -116,6 +116,12 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
   const [editImagePreviewUri, setEditImagePreviewUri] = useState('');
   const [editLoading, setEditLoading] = useState(false);
   const [editMessage, setEditMessage] = useState('');
+  const swipeableRefs = useRef({});
+
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deletingTransaction, setDeletingTransaction] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteMessage, setDeleteMessage] = useState('');
 
   useEffect(() => {
     const session = getCachedSession();
@@ -196,7 +202,12 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
     }
   };
 
+  const closeAllSwipeables = () => {
+    Object.values(swipeableRefs.current).forEach((ref) => ref?.close?.());
+  };
+
   const closeEditModal = () => {
+    closeAllSwipeables();
     setEditModalVisible(false);
     setEditingTransaction(null);
     setEditAmount('');
@@ -310,6 +321,77 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
     }
   };
 
+  const openDeleteModal = (item) => {
+    setDeletingTransaction(item);
+    setDeleteMessage('');
+    setDeleteModalVisible(true);
+  };
+
+  const closeDeleteModal = () => {
+    closeAllSwipeables();
+    setDeleteModalVisible(false);
+    setDeletingTransaction(null);
+    setDeleteMessage('');
+  };
+
+  const handleDeleteTransaction = async () => {
+    const session = getCachedSession();
+
+    if (!session?.token) {
+      closeDeleteModal();
+      onSessionExpired();
+      return;
+    }
+
+    if (!deletingTransaction?.id) {
+      setDeleteMessage('No se encontró la transacción a eliminar.');
+      return;
+    }
+
+    try {
+      setDeleteLoading(true);
+      setDeleteMessage('');
+
+      const result = await deleteTransaction({
+        token: session.token,
+        transactionId: deletingTransaction.id,
+      });
+
+      if (result.tokenExpired) {
+        closeDeleteModal();
+        onSessionExpired();
+        return;
+      }
+
+      if (!result.ok) {
+        setDeleteMessage(result.message || 'No fue posible eliminar la transacción.');
+        return;
+      }
+
+      closeDeleteModal();
+      setRefreshTick((prev) => prev + 1);
+    } catch (_e) {
+      setDeleteMessage('No fue posible eliminar la transacción.');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const handleSwipeOpen = (direction, item) => {
+    const ref = swipeableRefs.current[item.id];
+
+    ref?.close?.();
+
+    if (direction === 'left') {
+      openEditModal(item);
+      return;
+    }
+
+    if (direction === 'right') {
+      openDeleteModal(item);
+    }
+  };
+
   const renderSwipeGhost = () => <View style={styles.swipeGhostAction} />;
 
   return (
@@ -360,10 +442,18 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
 
               return (
                 <Swipeable
+                  ref={(ref) => {
+                    if (ref) {
+                      swipeableRefs.current[item.id] = ref;
+                    }
+                  }}
+                  renderLeftActions={renderSwipeGhost}
                   renderRightActions={renderSwipeGhost}
+                  overshootLeft={false}
                   overshootRight={false}
+                  leftThreshold={30}
                   rightThreshold={30}
-                  onSwipeableOpen={() => openEditModal(item)}
+                  onSwipeableOpen={(direction) => handleSwipeOpen(direction, item)}
                 >
                   <View style={styles.row}>
                     <View style={styles.avatar}>
@@ -398,6 +488,38 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
           <Text style={styles.actionText}>Regresar Home</Text>
         </Pressable>
       </View>
+
+      <Modal transparent animationType="fade" visible={deleteModalVisible} onRequestClose={closeDeleteModal}>
+        <View style={styles.modalBackdrop}>
+          <View style={styles.deleteModalCard}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.deleteModalTitle}>Eliminar Transacción</Text>
+              <Pressable onPress={closeDeleteModal}>
+                <Feather name="x" size={28} color="#2a2f3d" />
+              </Pressable>
+            </View>
+
+            <Text style={styles.deleteModalMessage}>
+              ¿Estás seguro de que deseas eliminar esta transacción? Esta acción no se puede deshacer.
+            </Text>
+
+            {deleteMessage.length > 0 && <Text style={styles.errorText}>{deleteMessage}</Text>}
+
+            <View style={styles.deleteActionsRow}>
+              <Pressable style={[styles.deleteBtn, styles.deleteCancelBtn]} onPress={closeDeleteModal}>
+                <Text style={styles.deleteCancelText}>Cancelar</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.deleteBtn, styles.deleteConfirmBtn, deleteLoading && { opacity: 0.6 }]}
+                onPress={handleDeleteTransaction}
+                disabled={deleteLoading}
+              >
+                <Text style={styles.deleteConfirmText}>{deleteLoading ? 'Eliminando...' : 'Eliminar'}</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       <Modal transparent animationType="fade" visible={editModalVisible} onRequestClose={closeEditModal}>
         <View style={styles.modalBackdrop}>

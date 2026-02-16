@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Image,
   Modal,
@@ -18,6 +18,7 @@ import {
   getClientsList,
   getTransactionsByDateRange,
   updateTransaction,
+  deleteTransaction,
 } from '../services/transactionsService';
 import { getCachedSession } from '../services/sessionService';
 import { homeStyles } from '../theme/homeStyles';
@@ -135,6 +136,12 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
   const [editImagePreviewUri, setEditImagePreviewUri] = useState('');
   const [editLoading, setEditLoading] = useState(false);
   const [editMessage, setEditMessage] = useState('');
+  const swipeableRefs = useRef({});
+
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deletingTransaction, setDeletingTransaction] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteMessage, setDeleteMessage] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -356,7 +363,12 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
     return `${API_BASE_URL}/static/uploads/${normalized}`;
   };
 
+  const closeAllSwipeables = () => {
+    Object.values(swipeableRefs.current).forEach((ref) => ref?.close?.());
+  };
+
   const closeEditModal = () => {
+    closeAllSwipeables();
     setEditModalVisible(false);
     setEditingTransaction(null);
     setEditAmount('');
@@ -470,7 +482,79 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
     }
   };
 
+  const openDeleteModal = (item) => {
+    setDeletingTransaction(item);
+    setDeleteMessage('');
+    setDeleteModalVisible(true);
+  };
+
+  const closeDeleteModal = () => {
+    closeAllSwipeables();
+    setDeleteModalVisible(false);
+    setDeletingTransaction(null);
+    setDeleteMessage('');
+  };
+
+  const handleDeleteTransaction = async () => {
+    const session = getCachedSession();
+
+    if (!session?.token) {
+      closeDeleteModal();
+      onSessionExpired();
+      return;
+    }
+
+    if (!deletingTransaction?.id) {
+      setDeleteMessage('No se encontró la transacción a eliminar.');
+      return;
+    }
+
+    try {
+      setDeleteLoading(true);
+      setDeleteMessage('');
+
+      const result = await deleteTransaction({
+        token: session.token,
+        transactionId: deletingTransaction.id,
+      });
+
+      if (result.tokenExpired) {
+        closeDeleteModal();
+        onSessionExpired();
+        return;
+      }
+
+      if (!result.ok) {
+        setDeleteMessage(result.message || 'No fue posible eliminar la transacción.');
+        return;
+      }
+
+      closeDeleteModal();
+      setRefreshTick((prev) => prev + 1);
+    } catch (_e) {
+      setDeleteMessage('No fue posible eliminar la transacción.');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const handleSwipeOpen = (direction, item) => {
+    const ref = swipeableRefs.current[item.id];
+
+    ref?.close?.();
+
+    if (direction === 'left') {
+      openEditModal(item);
+      return;
+    }
+
+    if (direction === 'right') {
+      openDeleteModal(item);
+    }
+  };
+
   const renderRightActions = () => <View style={homeStyles.swipeGhostAction} />;
+  const renderLeftActions = () => <View style={homeStyles.swipeGhostAction} />;
 
   return (
     <>
@@ -506,10 +590,18 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
 
               return (
                 <Swipeable
+                  ref={(ref) => {
+                    if (ref) {
+                      swipeableRefs.current[item.id] = ref;
+                    }
+                  }}
+                  renderLeftActions={renderLeftActions}
                   renderRightActions={renderRightActions}
+                  overshootLeft={false}
                   overshootRight={false}
+                  leftThreshold={30}
                   rightThreshold={30}
-                  onSwipeableOpen={() => openEditModal(item)}
+                  onSwipeableOpen={(direction) => handleSwipeOpen(direction, item)}
                 >
                   <View style={homeStyles.transactionRow}>
                     <View style={homeStyles.avatar}>
@@ -688,6 +780,38 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
               </Pressable>
               <Pressable style={[homeStyles.modalActionBtn, homeStyles.modalCancelBtn]} onPress={closeEditModal}>
                 <Text style={homeStyles.modalCancelBtnText}>Cancelar</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal transparent animationType="fade" visible={deleteModalVisible} onRequestClose={closeDeleteModal}>
+        <View style={homeStyles.saleModalBackdrop}>
+          <View style={homeStyles.deleteModalCard}>
+            <View style={homeStyles.saleModalHeader}>
+              <Text style={homeStyles.deleteModalTitle}>Eliminar Transacción</Text>
+              <Pressable onPress={closeDeleteModal}>
+                <Feather name="x" size={28} color="#2a2f3d" />
+              </Pressable>
+            </View>
+
+            <Text style={homeStyles.deleteModalMessage}>
+              ¿Estás seguro de que deseas eliminar esta transacción? Esta acción no se puede deshacer.
+            </Text>
+
+            {deleteMessage.length > 0 && <Text style={homeStyles.saleErrorText}>{deleteMessage}</Text>}
+
+            <View style={homeStyles.deleteActionsRow}>
+              <Pressable style={[homeStyles.deleteBtn, homeStyles.deleteCancelBtn]} onPress={closeDeleteModal}>
+                <Text style={homeStyles.deleteCancelText}>Cancelar</Text>
+              </Pressable>
+              <Pressable
+                style={[homeStyles.deleteBtn, homeStyles.deleteConfirmBtn, deleteLoading && { opacity: 0.6 }]}
+                onPress={handleDeleteTransaction}
+                disabled={deleteLoading}
+              >
+                <Text style={homeStyles.deleteConfirmText}>{deleteLoading ? 'Eliminando...' : 'Eliminar'}</Text>
               </Pressable>
             </View>
           </View>
