@@ -14,6 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { LoginScreen } from './src/screens/LoginScreen';
 import { RegisterScreen } from './src/screens/RegisterScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
+import { TransactionsFilterScreen } from './src/screens/TransactionsFilterScreen';
 import { authStyles } from './src/theme/authStyles';
 import { clearSession, loadSession, saveSession } from './src/services/sessionService';
 
@@ -50,7 +51,22 @@ export default function App() {
   };
 
   if (screen === 'home') {
-    return <HomeScreen onLogout={handleLogout} onSessionExpired={handleSessionExpired} />;
+    return (
+      <HomeScreen
+        onLogout={handleLogout}
+        onSessionExpired={handleSessionExpired}
+        onGoAllTransactions={() => setScreen('transactions')}
+      />
+    );
+  }
+
+  if (screen === 'transactions') {
+    return (
+      <TransactionsFilterScreen
+        onGoHome={() => setScreen('home')}
+        onSessionExpired={handleSessionExpired}
+      />
+    );
   }
 
   return (

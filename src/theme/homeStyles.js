@@ -71,7 +71,7 @@ export const homeStyles = StyleSheet.create({
   sectionTitle: {
     color: '#35257c',
     fontWeight: '800',
-    fontSize: 26,
+    fontSize: 18,
   },
   sectionLink: {
     color: '#8f68d9',

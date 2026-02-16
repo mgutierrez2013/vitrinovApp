@@ -67,7 +67,7 @@ function getInitials(clientName = '') {
   return words.slice(0, 2).map((w) => w[0]).join('').toUpperCase() || 'CL';
 }
 
-export function HomeScreen({ onLogout, onSessionExpired }) {
+export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions }) {
   const [loading, setLoading] = useState(true);
   const [sales, setSales] = useState('0');
   const [transactions, setTransactions] = useState([]);
@@ -142,7 +142,9 @@ export function HomeScreen({ onLogout, onSessionExpired }) {
 
         <View style={homeStyles.sectionHeader}>
           <Text style={homeStyles.sectionTitle}>Transacciones</Text>
-          <Text style={homeStyles.sectionLink}>Ver todo</Text>
+          <Pressable onPress={onGoAllTransactions}>
+            <Text style={homeStyles.sectionLink}>Ver todo</Text>
+          </Pressable>
         </View>
 
         {loading ? (

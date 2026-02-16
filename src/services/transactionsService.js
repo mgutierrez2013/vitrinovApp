@@ -14,7 +14,7 @@ async function parseResponse(response) {
   return data;
 }
 
-export async function getTransactionsByDateRange({ token, startDate, endDate }) {
+export async function getTransactionsByDateRange({ token, startDate, endDate, clientName = '' }) {
   const tokenCheck = await checkTokenRequest(token);
 
   if (tokenCheck.isExpired) {
@@ -25,15 +25,21 @@ export async function getTransactionsByDateRange({ token, startDate, endDate }) 
     };
   }
 
-  const response = await fetch(
-    `${API_BASE_URL}/transactions/filter?start_date=${startDate}&end_date=${endDate}`,
-    {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const params = new URLSearchParams({
+    start_date: startDate,
+    end_date: endDate,
+  });
+
+  if (clientName.trim().length > 0) {
+    params.append('client_name', clientName.trim());
+  }
+
+  const response = await fetch(`${API_BASE_URL}/transactions/filter?${params.toString()}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   const data = await parseResponse(response);
 
