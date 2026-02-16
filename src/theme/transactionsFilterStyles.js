@@ -53,6 +53,17 @@ export const transactionsFilterStyles = StyleSheet.create({
     fontSize: 16,
     color: '#273143',
   },
+  webDateInput: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    borderColor: '#dfe3ef',
+    borderWidth: 1,
+    borderRadius: 12,
+    height: 48,
+    paddingHorizontal: 14,
+    fontSize: 16,
+    color: '#273143',
+  },
   clientInput: {
     backgroundColor: '#ffffff',
     borderColor: '#dfe3ef',

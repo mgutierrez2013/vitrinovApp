@@ -40,6 +40,14 @@ function toDisplayDate(date) {
   return `${day}/${month}/${year}`;
 }
 
+function parseApiDate(dateString) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString || '')) {
+    return null;
+  }
+
+  return new Date(`${dateString}T00:00:00`);
+}
+
 function todayInElSalvador() {
   const now = new Date();
   const { year, month, day } = formatDatePartsInElSalvador(now);
@@ -174,6 +182,28 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
     setStartDate(today);
     setEndDate(today);
     setClientName('');
+  };
+
+
+  const handleWebDateChange = (field, value) => {
+    const nextDate = parseApiDate(value);
+
+    if (!nextDate) {
+      return;
+    }
+
+    if (field === 'start') {
+      setStartDate(nextDate);
+      if (nextDate > endDate) {
+        setEndDate(nextDate);
+      }
+      return;
+    }
+
+    setEndDate(nextDate);
+    if (nextDate < startDate) {
+      setStartDate(nextDate);
+    }
   };
 
   const openDatePicker = (field) => {
@@ -409,12 +439,35 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
         <Text style={styles.title}>Filtrar Transacciones</Text>
 
         <View style={styles.datesRow}>
-          <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('start')}>
-            <Text style={styles.dateInputButtonText}>{toDisplayDate(startDate)}</Text>
-          </Pressable>
-          <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('end')}>
-            <Text style={styles.dateInputButtonText}>{toDisplayDate(endDate)}</Text>
-          </Pressable>
+          {Platform.OS === 'web' ? (
+            <>
+              <TextInput
+                value={toApiDate(startDate)}
+                onChangeText={(value) => handleWebDateChange('start', value)}
+                style={styles.webDateInput}
+                placeholder="YYYY-MM-DD"
+                placeholderTextColor="#8a92a1"
+                type="date"
+              />
+              <TextInput
+                value={toApiDate(endDate)}
+                onChangeText={(value) => handleWebDateChange('end', value)}
+                style={styles.webDateInput}
+                placeholder="YYYY-MM-DD"
+                placeholderTextColor="#8a92a1"
+                type="date"
+              />
+            </>
+          ) : (
+            <>
+              <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('start')}>
+                <Text style={styles.dateInputButtonText}>{toDisplayDate(startDate)}</Text>
+              </Pressable>
+              <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('end')}>
+                <Text style={styles.dateInputButtonText}>{toDisplayDate(endDate)}</Text>
+              </Pressable>
+            </>
+          )}
         </View>
 
         <TextInput
