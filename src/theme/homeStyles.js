@@ -114,17 +114,17 @@ export const homeStyles = StyleSheet.create({
   },
   transactionTitle: {
     color: '#293040',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '800',
-    marginBottom: 3,
+    marginBottom: 2,
   },
   transactionSubtitle: {
     color: '#7153c6',
-    fontSize: 13,
+    fontSize: 18,
     fontWeight: '700',
   },
   amountText: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: '800',
   },
   amountIncome: {
@@ -145,15 +145,15 @@ export const homeStyles = StyleSheet.create({
   },
   registerSaleButton: {
     backgroundColor: '#7c59d7',
-    borderRadius: 12,
-    paddingVertical: 14,
+    borderRadius: 10,
+    paddingVertical: 11,
     alignItems: 'center',
     marginTop: 2,
   },
   registerSaleText: {
     color: '#ffffff',
     fontWeight: '800',
-    fontSize: 18,
+    fontSize: 16,
   },
   bottomBar: {
     position: 'absolute',
