@@ -18,12 +18,14 @@ import { RegisterScreen } from './src/screens/RegisterScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { TransactionsFilterScreen } from './src/screens/TransactionsFilterScreen';
 import { EntrepreneursScreen } from './src/screens/EntrepreneursScreen';
+import { EntrepreneurAccountScreen } from './src/screens/EntrepreneurAccountScreen';
 import { authStyles } from './src/theme/authStyles';
 import { clearSession, loadSession, saveSession } from './src/services/sessionService';
 
 export default function App() {
   const [screen, setScreen] = useState('login');
   const [sessionExpiredVisible, setSessionExpiredVisible] = useState(false);
+  const [selectedEntrepreneur, setSelectedEntrepreneur] = useState(null);
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -44,11 +46,13 @@ export default function App() {
 
   const handleLogout = async () => {
     await clearSession();
+    setSelectedEntrepreneur(null);
     setScreen('login');
   };
 
   const handleSessionExpired = async () => {
     await clearSession();
+    setSelectedEntrepreneur(null);
     setScreen('login');
     setSessionExpiredVisible(true);
   };
@@ -74,6 +78,26 @@ export default function App() {
           onGoHome={() => setScreen('home')}
           onSessionExpired={handleSessionExpired}
           onLogout={handleLogout}
+          onOpenAccount={(client) => {
+            setSelectedEntrepreneur(client);
+            setScreen('entrepreneurAccount');
+          }}
+        />
+      </GestureHandlerRootView>
+    );
+  }
+
+
+  if (screen === 'entrepreneurAccount') {
+    return (
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <EntrepreneurAccountScreen
+          entrepreneur={selectedEntrepreneur}
+          onGoHome={() => {
+            setSelectedEntrepreneur(null);
+            setScreen('home');
+          }}
+          onSessionExpired={handleSessionExpired}
         />
       </GestureHandlerRootView>
     );

@@ -14,7 +14,7 @@ import { entrepreneursStyles as styles } from '../theme/entrepreneursStyles';
 const logoUri =
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s';
 
-export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome }) {
+export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOpenAccount }) {
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState([]);
   const [error, setError] = useState('');
@@ -321,7 +321,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome }) {
                 rightThreshold={30}
                 onSwipeableOpen={(direction) => handleSwipeOpen(direction, item)}
               >
-                <View style={styles.clientCard}>
+                <Pressable style={styles.clientCard} onPress={() => onOpenAccount(item)}>
                   <View style={styles.clientIconWrap}>
                     <Feather name="users" size={24} color="#1f2433" />
                   </View>
@@ -332,7 +332,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome }) {
                     </Text>
                     <Text style={styles.clientSubtitle}>Emprendedor</Text>
                   </View>
-                </View>
+                </Pressable>
               </Swipeable>
             )}
             ListEmptyComponent={
