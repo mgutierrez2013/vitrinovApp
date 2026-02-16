@@ -433,22 +433,19 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
         setError(result.message || 'No fue posible generar el reporte.');
         return;
       }
-
       const fileName = `reporte_${clientName.replace(/[^a-z0-9]+/gi, '_') || 'cliente'}_${startDateApi}_${endDateApi}.csv`;
       const reportText = [
         `Reporte de transacciones (${startDateApi} a ${endDateApi})`,
         `Emprendimiento: ${clientName}`,
         '',
         result.csvContent || 'Sin contenido',
-      ].join('
-');
+      ].join('\n');
 
       await Share.share({
-        message: `${reportText}
-
-Archivo: ${fileName}`,
+        message: `${reportText}\n\nArchivo: ${fileName}`,
         title: 'Compartir reporte',
       });
+
     } catch (_errorSharing) {
       setError('No fue posible compartir el reporte.');
     } finally {
