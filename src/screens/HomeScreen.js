@@ -154,7 +154,9 @@ export function HomeScreen({ onLogout, onSessionExpired }) {
             sections={sections}
             keyExtractor={(item) => String(item.id)}
             renderSectionHeader={({ section: { title } }) => (
-              <Text style={homeStyles.dateTitle}>{title}</Text>
+              <View style={homeStyles.stickyDateHeaderWrap}>
+                <Text style={homeStyles.dateTitle}>{title}</Text>
+              </View>
             )}
             renderItem={({ item }) => {
               const isIncome = item.transaction_type === 'income';
@@ -180,7 +182,7 @@ export function HomeScreen({ onLogout, onSessionExpired }) {
               );
             }}
             ListEmptyComponent={<Text style={homeStyles.emptyText}>No se obtuvieron resultado.</Text>}
-            stickySectionHeadersEnabled={false}
+            stickySectionHeadersEnabled
             showsVerticalScrollIndicator={false}
             style={{ maxHeight: 320 }}
           />

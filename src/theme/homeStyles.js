@@ -80,10 +80,15 @@ export const homeStyles = StyleSheet.create({
   },
   dateTitle: {
     color: '#2f2f50',
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '800',
-    marginTop: 6,
-    marginBottom: 8,
+    marginTop: 2,
+    marginBottom: 6,
+  },
+  stickyDateHeaderWrap: {
+    backgroundColor: '#f5f6fb',
+    paddingTop: 4,
+    paddingBottom: 2,
   },
   transactionRow: {
     flexDirection: 'row',
@@ -109,17 +114,17 @@ export const homeStyles = StyleSheet.create({
   },
   transactionTitle: {
     color: '#293040',
-    fontSize: 19,
+    fontSize: 16,
     fontWeight: '800',
     marginBottom: 3,
   },
   transactionSubtitle: {
     color: '#7153c6',
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: '700',
   },
   amountText: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '800',
   },
   amountIncome: {
