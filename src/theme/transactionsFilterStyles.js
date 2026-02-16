@@ -225,6 +225,33 @@ export const transactionsFilterStyles = StyleSheet.create({
     fontWeight: '800',
   },
 
+
+  imageZoomBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.86)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+  },
+  imageZoomHeader: {
+    position: 'absolute',
+    top: 48,
+    right: 18,
+    zIndex: 5,
+  },
+  imageZoomCloseBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.16)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  imageZoomImage: {
+    width: '100%',
+    height: '72%',
+  },
+
   modalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.42)',

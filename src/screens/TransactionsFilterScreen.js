@@ -116,6 +116,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
   const [editImagePreviewUri, setEditImagePreviewUri] = useState('');
   const [editLoading, setEditLoading] = useState(false);
   const [editMessage, setEditMessage] = useState('');
+  const [imageZoomVisible, setImageZoomVisible] = useState(false);
   const swipeableRefs = useRef({});
 
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -215,6 +216,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
     setEditImageAsset(null);
     setEditImagePreviewUri('');
     setEditMessage('');
+    setImageZoomVisible(false);
   };
 
   const openEditModal = (item) => {
@@ -554,12 +556,15 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
             </Pressable>
             {editImagePreviewUri ? (
               <View style={styles.imagePreviewWrap}>
-                <Image source={{ uri: editImagePreviewUri }} style={styles.imagePreview} resizeMode="cover" />
+                <Pressable onPress={() => setImageZoomVisible(true)}>
+                  <Image source={{ uri: editImagePreviewUri }} style={styles.imagePreview} resizeMode="cover" />
+                </Pressable>
                 <Pressable
                   style={styles.removeImageBtn}
                   onPress={() => {
                     setEditImagePreviewUri('');
                     setEditImageAsset(null);
+                    setImageZoomVisible(false);
                   }}
                 >
                   <Feather name="x" size={12} color="#ffffff" />
@@ -594,6 +599,18 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
               </Pressable>
             </View>
           </View>
+        </View>
+      </Modal>
+
+
+      <Modal transparent animationType="fade" visible={imageZoomVisible} onRequestClose={() => setImageZoomVisible(false)}>
+        <View style={styles.imageZoomBackdrop}>
+          <View style={styles.imageZoomHeader}>
+            <Pressable style={styles.imageZoomCloseBtn} onPress={() => setImageZoomVisible(false)}>
+              <Feather name="x" size={28} color="#ffffff" />
+            </Pressable>
+          </View>
+          <Image source={{ uri: editImagePreviewUri }} style={styles.imageZoomImage} resizeMode="contain" />
         </View>
       </Modal>
 
