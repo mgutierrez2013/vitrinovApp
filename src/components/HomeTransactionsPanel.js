@@ -544,12 +544,12 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
     ref?.close?.();
 
     if (direction === 'left') {
-      openEditModal(item);
+      openDeleteModal(item);
       return;
     }
 
     if (direction === 'right') {
-      openDeleteModal(item);
+      openEditModal(item);
     }
   };
 
