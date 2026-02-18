@@ -568,7 +568,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
                   type="date"
                 />
                 <Pressable style={styles.clearDateButtonWeb} onPress={() => { setEditChargeDate(''); setEditErrorField((prev) => (prev === 'chargeDate' ? '' : prev)); }}>
-                  <Text style={styles.clearDateButtonText}>Limpiar fecha</Text>
+                  <Feather name="x" size={14} color="#4d5570" />
                 </Pressable>
                 </>
               ) : (
@@ -577,7 +577,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
                     <Text style={styles.datePickerButtonText}>{editChargeDate ? toDisplayDate(editChargeDate) : 'Seleccionar fecha'}</Text>
                   </Pressable>
                   <Pressable style={styles.clearDateButton} onPress={() => { setEditChargeDate(''); setEditErrorField((prev) => (prev === 'chargeDate' ? '' : prev)); }}>
-                    <Text style={styles.clearDateButtonText}>Limpiar</Text>
+                    <Feather name="x" size={14} color="#4d5570" />
                   </Pressable>
                 </View>
               )}
@@ -594,7 +594,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
                   type="date"
                 />
                 <Pressable style={styles.clearDateButtonWeb} onPress={() => { setEditPickupDate(''); setEditErrorField((prev) => (prev === 'pickupDate' ? '' : prev)); }}>
-                  <Text style={styles.clearDateButtonText}>Limpiar fecha</Text>
+                  <Feather name="x" size={14} color="#4d5570" />
                 </Pressable>
                 </>
               ) : (
@@ -603,7 +603,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
                     <Text style={styles.datePickerButtonText}>{editPickupDate ? toDisplayDate(editPickupDate) : 'Seleccionar fecha'}</Text>
                   </Pressable>
                   <Pressable style={styles.clearDateButton} onPress={() => { setEditPickupDate(''); setEditErrorField((prev) => (prev === 'pickupDate' ? '' : prev)); }}>
-                    <Text style={styles.clearDateButtonText}>Limpiar</Text>
+                    <Feather name="x" size={14} color="#4d5570" />
                   </Pressable>
                 </View>
               )}
