@@ -393,3 +393,42 @@ export async function exportTransactionsReport({ token, startDate, endDate, clie
     message,
   };
 }
+
+
+export async function addBankAccount({ token, idCliente, nameBank, nameClient, numAccount, typeAccount }) {
+  const tokenValidation = await ensureToken(token);
+
+  if (!tokenValidation.ok) {
+    return tokenValidation;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/bankaccount/add`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id_cliente: idCliente,
+      name_bank: nameBank,
+      name_client: nameClient,
+      num_account: numAccount,
+      type_account: typeAccount,
+    }),
+  });
+
+  const data = await parseResponse(response);
+
+  if (isSuccessStatus(response.status)) {
+    return {
+      ok: true,
+      message: data.message ?? 'Cuenta bancaria agregada exitosamente',
+    };
+  }
+
+  return {
+    ok: false,
+    tokenExpired: false,
+    message: data.message ?? 'No fue posible agregar la cuenta bancaria.',
+  };
+}

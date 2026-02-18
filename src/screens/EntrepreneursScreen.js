@@ -67,7 +67,7 @@ function toDisplayDate(dateString) {
   return `${day}/${month}/${year}`;
 }
 
-export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOpenAccount }) {
+export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOpenAccount, onGoBankAccounts }) {
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState([]);
   const [error, setError] = useState('');
@@ -485,9 +485,9 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
         <View style={styles.bottomIconWrapActive}>
           <Feather name="users" size={24} color="#ffffff" />
         </View>
-        <View style={styles.bottomIconWrap}>
-          <Feather name="settings" size={24} color="#7c59d7" />
-        </View>
+        <Pressable style={styles.bottomIconWrap} onPress={onGoBankAccounts}>
+          <Feather name="credit-card" size={24} color="#7c59d7" />
+        </Pressable>
       </View>
 
       <Modal transparent animationType="fade" visible={addModalVisible} onRequestClose={closeAddModal}>

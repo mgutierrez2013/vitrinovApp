@@ -6,7 +6,7 @@ import { homeStyles } from '../theme/homeStyles';
 const logoUri =
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s';
 
-export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, onGoEntrepreneurs }) {
+export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, onGoEntrepreneurs, onGoBankAccounts }) {
   return (
     <View style={homeStyles.container}>
       <View style={homeStyles.header}>
@@ -34,9 +34,9 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, on
         <Pressable style={homeStyles.bottomIconWrap} onPress={onGoEntrepreneurs}>
           <Feather name="users" size={24} color="#7c59d7" />
         </Pressable>
-        <View style={homeStyles.bottomIconWrap}>
-          <Feather name="settings" size={24} color="#7c59d7" />
-        </View>
+        <Pressable style={homeStyles.bottomIconWrap} onPress={onGoBankAccounts}>
+          <Feather name="credit-card" size={24} color="#7c59d7" />
+        </Pressable>
       </View>
     </View>
   );

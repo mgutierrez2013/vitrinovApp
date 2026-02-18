@@ -19,6 +19,7 @@ import { HomeScreen } from './src/screens/HomeScreen';
 import { TransactionsFilterScreen } from './src/screens/TransactionsFilterScreen';
 import { EntrepreneursScreen } from './src/screens/EntrepreneursScreen';
 import { EntrepreneurAccountScreen } from './src/screens/EntrepreneurAccountScreen';
+import { BankAccountsScreen } from './src/screens/BankAccountsScreen';
 import { authStyles } from './src/theme/authStyles';
 import { clearSession, loadSession, saveSession } from './src/services/sessionService';
 
@@ -65,6 +66,7 @@ export default function App() {
           onSessionExpired={handleSessionExpired}
           onGoAllTransactions={() => setScreen('transactions')}
           onGoEntrepreneurs={() => setScreen('entrepreneurs')}
+          onGoBankAccounts={() => setScreen('bankAccounts')}
         />
       </GestureHandlerRootView>
     );
@@ -82,6 +84,7 @@ export default function App() {
             setSelectedEntrepreneur(client);
             setScreen('entrepreneurAccount');
           }}
+          onGoBankAccounts={() => setScreen('bankAccounts')}
         />
       </GestureHandlerRootView>
     );
@@ -98,6 +101,20 @@ export default function App() {
             setScreen('entrepreneurs');
           }}
           onSessionExpired={handleSessionExpired}
+        />
+      </GestureHandlerRootView>
+    );
+  }
+
+
+  if (screen === 'bankAccounts') {
+    return (
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <BankAccountsScreen
+          onGoHome={() => setScreen('home')}
+          onGoEntrepreneurs={() => setScreen('entrepreneurs')}
+          onSessionExpired={handleSessionExpired}
+          onLogout={handleLogout}
         />
       </GestureHandlerRootView>
     );
