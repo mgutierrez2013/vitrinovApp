@@ -166,11 +166,11 @@ export function BankAccountsClientScreen({ client, onGoBack, onSessionExpired, o
       return;
     }
 
-    const number = editAccountNumber.trim();
+    const number = (selectedAccount?.num_account || '').trim();
     const holder = editAccountHolder.trim();
 
     if (!/^\d+$/.test(number)) {
-      setFormError('Número de cuenta: solo números.');
+      setFormError('Número de cuenta no válido.');
       return;
     }
 
@@ -326,14 +326,13 @@ export function BankAccountsClientScreen({ client, onGoBack, onSessionExpired, o
               <Pressable onPress={closeEditModal}><Feather name="x" size={24} color="#2a2f3d" /></Pressable>
             </View>
 
-            <Text style={styles.fieldLabel}>Número de Cuenta *</Text>
+            <Text style={styles.fieldLabel}>Número de Cuenta * (no editable)</Text>
             <TextInput
               value={editAccountNumber}
-              onChangeText={(value) => setEditAccountNumber(value.replace(/[^0-9]/g, ''))}
-              placeholder="Solo números"
+              editable={false}
+              selectTextOnFocus={false}
               placeholderTextColor="#8a92a1"
-              style={styles.modalInput}
-              keyboardType="number-pad"
+              style={[styles.modalInput, styles.modalInputDisabled]}
             />
 
             <Text style={styles.fieldLabel}>Titular Cuenta *</Text>

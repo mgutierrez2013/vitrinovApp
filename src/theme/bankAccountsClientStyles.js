@@ -96,6 +96,7 @@ export const bankAccountsClientStyles = StyleSheet.create({
     color: '#263143',
     marginBottom: 8,
   },
+  modalInputDisabled: { backgroundColor: '#f2f3f8', color: '#8b90a1' },
   pickerButton: {
     borderWidth: 1,
     borderColor: '#dfe3ef',
