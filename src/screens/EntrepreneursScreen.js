@@ -457,7 +457,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
                   <View style={styles.clientBody}>
                     <View style={styles.clientNameRow}>
-                      <Feather name="contact" size={14} color="#7c59d7" />
+                      <Feather name="user" size={14} color="#7c59d7" />
                       <Text style={styles.clientName} numberOfLines={1}>
                         {(item.name || 'EMPRENDEDOR').toUpperCase()}
                       </Text>

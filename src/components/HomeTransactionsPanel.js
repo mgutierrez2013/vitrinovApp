@@ -558,6 +558,18 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
   const renderRightActions = () => <View style={homeStyles.swipeGhostAction} />;
   const renderLeftActions = () => <View style={homeStyles.swipeGhostAction} />;
 
+  const handleGoNotificationReports = () => {
+    if (typeof onGoNotificationReports === 'function') {
+      onGoNotificationReports();
+    }
+  };
+
+  const handleGoTransactionReports = () => {
+    if (typeof onGoTransactionReports === 'function') {
+      onGoTransactionReports();
+    }
+  };
+
   return (
     <>
       <View style={homeStyles.content}>
@@ -637,11 +649,11 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
           <Text style={homeStyles.registerSaleText}>Registrar Venta</Text>
         </Pressable>
 
-        <Pressable style={homeStyles.notificationReportButton} onPress={onGoNotificationReports}>
+        <Pressable style={homeStyles.notificationReportButton} onPress={handleGoNotificationReports}>
           <Text style={homeStyles.notificationReportButtonText}>Reporte Notificaciones</Text>
         </Pressable>
 
-        <Pressable style={homeStyles.transactionReportButton} onPress={onGoTransactionReports}>
+        <Pressable style={homeStyles.transactionReportButton} onPress={handleGoTransactionReports}>
           <Text style={homeStyles.transactionReportButtonText}>Reporte Transacciones</Text>
         </Pressable>
       </View>
