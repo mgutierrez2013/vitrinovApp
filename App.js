@@ -20,6 +20,7 @@ import { TransactionsFilterScreen } from './src/screens/TransactionsFilterScreen
 import { EntrepreneursScreen } from './src/screens/EntrepreneursScreen';
 import { EntrepreneurAccountScreen } from './src/screens/EntrepreneurAccountScreen';
 import { BankAccountsScreen } from './src/screens/BankAccountsScreen';
+import { BankAccountsClientScreen } from './src/screens/BankAccountsClientScreen';
 import { authStyles } from './src/theme/authStyles';
 import { clearSession, loadSession, saveSession } from './src/services/sessionService';
 
@@ -27,6 +28,7 @@ export default function App() {
   const [screen, setScreen] = useState('login');
   const [sessionExpiredVisible, setSessionExpiredVisible] = useState(false);
   const [selectedEntrepreneur, setSelectedEntrepreneur] = useState(null);
+  const [selectedBankClient, setSelectedBankClient] = useState(null);
 
   useEffect(() => {
     const bootstrap = async () => {
@@ -48,12 +50,14 @@ export default function App() {
   const handleLogout = async () => {
     await clearSession();
     setSelectedEntrepreneur(null);
+    setSelectedBankClient(null);
     setScreen('login');
   };
 
   const handleSessionExpired = async () => {
     await clearSession();
     setSelectedEntrepreneur(null);
+    setSelectedBankClient(null);
     setScreen('login');
     setSessionExpiredVisible(true);
   };
@@ -113,6 +117,25 @@ export default function App() {
         <BankAccountsScreen
           onGoHome={() => setScreen('home')}
           onGoEntrepreneurs={() => setScreen('entrepreneurs')}
+          onSessionExpired={handleSessionExpired}
+          onLogout={handleLogout}
+          onOpenClientAccounts={(client) => {
+            setSelectedBankClient(client);
+            setScreen('bankAccountsClient');
+          }}
+        />
+      </GestureHandlerRootView>
+    );
+  }
+
+  if (screen === 'bankAccountsClient') {
+    return (
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <BankAccountsClientScreen
+          client={selectedBankClient}
+          onGoBack={() => {
+            setScreen('bankAccounts');
+          }}
           onSessionExpired={handleSessionExpired}
           onLogout={handleLogout}
         />
