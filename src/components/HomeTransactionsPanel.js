@@ -105,7 +105,7 @@ function formatDatePartsInElSalvador(date) {
   };
 }
 
-export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions }) {
+export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, onGoNotificationReports }) {
   const [loading, setLoading] = useState(true);
   const [sales, setSales] = useState('0');
   const [transactions, setTransactions] = useState([]);
@@ -635,6 +635,10 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions })
 
         <Pressable style={homeStyles.registerSaleButton} onPress={openSaleModal}>
           <Text style={homeStyles.registerSaleText}>Registrar Venta</Text>
+        </Pressable>
+
+        <Pressable style={homeStyles.notificationReportButton} onPress={onGoNotificationReports}>
+          <Text style={homeStyles.notificationReportButtonText}>Reporte Notificaciones</Text>
         </Pressable>
       </View>
 

@@ -532,3 +532,40 @@ export async function deleteBankAccount({ token, accountId }) {
     message: data.message ?? 'No fue posible eliminar la cuenta bancaria.',
   };
 }
+
+export async function getTransferNotificationReport({ token, userId, startDate, endDate }) {
+  const tokenValidation = await ensureToken(token);
+
+  if (!tokenValidation.ok) {
+    return tokenValidation;
+  }
+
+  const params = new URLSearchParams({
+    user_id: String(userId ?? ''),
+    fecha_inicio: startDate,
+    fecha_fin: endDate,
+  });
+
+  const response = await fetch(`${API_BASE_URL}/transfernoti/transfer/notify?${params.toString()}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await parseResponse(response);
+
+  if (isSuccessStatus(response.status)) {
+    return {
+      ok: true,
+      cantidad: Number(data?.cantidad ?? 0),
+      message: data?.mensaje ?? '',
+    };
+  }
+
+  return {
+    ok: false,
+    tokenExpired: false,
+    message: data?.message ?? 'No fue posible obtener el reporte de notificaciones.',
+  };
+}

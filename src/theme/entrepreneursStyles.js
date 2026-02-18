@@ -96,7 +96,7 @@ export const entrepreneursStyles = StyleSheet.create({
   clientName: {
     color: '#3b2f7c',
     fontWeight: '800',
-    fontSize: 17,
+    fontSize: 16,
   },
   clientSubtitle: {
     color: '#4a5060',

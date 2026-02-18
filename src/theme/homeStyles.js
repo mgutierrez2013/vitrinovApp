@@ -174,6 +174,20 @@ export const homeStyles = StyleSheet.create({
     fontWeight: '800',
     fontSize: 16,
   },
+  notificationReportButton: {
+    backgroundColor: '#e8dcff',
+    borderRadius: 10,
+    paddingVertical: 11,
+    alignItems: 'center',
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: '#c9b2f8',
+  },
+  notificationReportButtonText: {
+    color: '#5d3ab5',
+    fontWeight: '800',
+    fontSize: 15,
+  },
   bottomBar: {
     position: 'absolute',
     left: 0,
