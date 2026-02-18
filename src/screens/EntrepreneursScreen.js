@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, Image, Modal, Pressable, Text, TextInput, View } from 'react-native';
+import { FlatList, Image, Modal, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import {
@@ -30,6 +30,10 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingClient, setEditingClient] = useState(null);
   const [editName, setEditName] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editChargeDate, setEditChargeDate] = useState('');
+  const [editPickupDate, setEditPickupDate] = useState('');
+  const [editNotified, setEditNotified] = useState(false);
   const [editError, setEditError] = useState('');
   const [editLoading, setEditLoading] = useState(false);
 
@@ -141,6 +145,10 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
   const openEditModal = (item) => {
     setEditingClient(item);
     setEditName(item?.name || '');
+    setEditPhone(String(item?.num_cliente || ''));
+    setEditChargeDate(item?.fecha_cobro || '');
+    setEditPickupDate(item?.fecha_retiro || '');
+    setEditNotified(Number(item?.notificado || 0) === 1);
     setEditError('');
     setEditModalVisible(true);
   };
@@ -150,6 +158,10 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
     setEditModalVisible(false);
     setEditingClient(null);
     setEditName('');
+    setEditPhone('');
+    setEditChargeDate('');
+    setEditPickupDate('');
+    setEditNotified(false);
     setEditError('');
   };
 
@@ -168,9 +180,27 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
     }
 
     const trimmed = editName.trim();
+    const phone = editPhone.trim();
+    const chargeDate = editChargeDate.trim();
+    const pickupDate = editPickupDate.trim();
 
     if (trimmed.length < 5) {
       setEditError('El nombre debe tener al menos 5 caracteres.');
+      return;
+    }
+
+    if (phone.length > 0 && !/^\d{8}$/.test(phone)) {
+      setEditError('El teléfono debe contener exactamente 8 números.');
+      return;
+    }
+
+    if (chargeDate.length > 0 && !/^\d{4}-\d{2}-\d{2}$/.test(chargeDate)) {
+      setEditError('La fecha de cobro debe tener formato YYYY-MM-DD.');
+      return;
+    }
+
+    if (pickupDate.length > 0 && !/^\d{4}-\d{2}-\d{2}$/.test(pickupDate)) {
+      setEditError('La fecha de retiro debe tener formato YYYY-MM-DD.');
       return;
     }
 
@@ -182,6 +212,10 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
         token: session.token,
         clientId: editingClient.id,
         name: trimmed,
+        numCliente: phone || null,
+        fechaCobro: chargeDate || null,
+        fechaRetiro: pickupDate || null,
+        notificado: editNotified ? 1 : 0,
       });
 
       if (result.tokenExpired) {
@@ -407,15 +441,56 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
               </Pressable>
             </View>
 
-            <Text style={styles.fieldLabel}>Nombre</Text>
-            <TextInput
-              value={editName}
-              onChangeText={setEditName}
-              placeholder="Nombre"
-              placeholderTextColor="#8a92a1"
-              style={[styles.modalInput, editError ? styles.modalInputError : null]}
-            />
-            {editError.length > 0 && <Text style={styles.errorText}>{editError}</Text>}
+            <ScrollView style={styles.editFormScroll} contentContainerStyle={styles.editFormContent} showsVerticalScrollIndicator={false}>
+              <Text style={styles.fieldLabel}>Nombre *</Text>
+              <TextInput
+                value={editName}
+                onChangeText={setEditName}
+                placeholder="Nombre"
+                placeholderTextColor="#8a92a1"
+                style={[styles.modalInput, editError ? styles.modalInputError : null]}
+              />
+
+              <Text style={styles.fieldLabel}>Teléfono (opcional)</Text>
+              <TextInput
+                value={editPhone}
+                onChangeText={(value) => setEditPhone(value.replace(/[^0-9]/g, '').slice(0, 8))}
+                placeholder="00000000"
+                placeholderTextColor="#8a92a1"
+                style={styles.modalInput}
+                keyboardType="number-pad"
+              />
+
+              <Text style={styles.fieldLabel}>Fecha Cobro (opcional)</Text>
+              <TextInput
+                value={editChargeDate}
+                onChangeText={setEditChargeDate}
+                placeholder="YYYY-MM-DD"
+                placeholderTextColor="#8a92a1"
+                style={styles.modalInput}
+                type="date"
+              />
+
+              <Text style={styles.fieldLabel}>Fecha Retiro (opcional)</Text>
+              <TextInput
+                value={editPickupDate}
+                onChangeText={setEditPickupDate}
+                placeholder="YYYY-MM-DD"
+                placeholderTextColor="#8a92a1"
+                style={styles.modalInput}
+                type="date"
+              />
+
+              <View style={styles.switchRow}>
+                <View style={styles.switchTextWrap}>
+                  <Text style={styles.fieldLabel}>Notificado</Text>
+                  <Text style={styles.switchHint}>{editNotified ? 'Activo' : 'Inactivo'}</Text>
+                </View>
+                <Switch value={editNotified} onValueChange={setEditNotified} trackColor={{ false: '#c7ccda', true: '#8a6be4' }} thumbColor="#ffffff" />
+              </View>
+
+              {editError.length > 0 && <Text style={styles.errorText}>{editError}</Text>}
+            </ScrollView>
 
             <View style={styles.modalActionsRow}>
               <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={closeEditModal}>

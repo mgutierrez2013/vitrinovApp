@@ -267,7 +267,7 @@ export async function addClient({ token, name }) {
   };
 }
 
-export async function updateClient({ token, clientId, name }) {
+export async function updateClient({ token, clientId, name, numCliente = null, fechaCobro = null, fechaRetiro = null, notificado = 0 }) {
   const tokenValidation = await ensureToken(token);
 
   if (!tokenValidation.ok) {
@@ -281,7 +281,13 @@ export async function updateClient({ token, clientId, name }) {
         Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({
+      name,
+      num_cliente: numCliente,
+      fecha_cobro: fechaCobro,
+      fecha_retiro: fechaRetiro,
+      notificado,
+    }),
   });
 
   const data = await parseResponse(response);

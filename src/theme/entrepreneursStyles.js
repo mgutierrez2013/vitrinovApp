@@ -195,6 +195,29 @@ export const entrepreneursStyles = StyleSheet.create({
     borderColor: '#cc4a59',
     borderWidth: 2,
   },
+
+  editFormScroll: {
+    maxHeight: 360,
+  },
+  editFormContent: {
+    paddingBottom: 4,
+  },
+  switchRow: {
+    marginTop: 6,
+    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  switchTextWrap: {
+    flex: 1,
+    marginRight: 12,
+  },
+  switchHint: {
+    color: '#596174',
+    fontSize: 13,
+    fontWeight: '600',
+  },
   errorText: {
     color: '#c2475b',
     fontSize: 13,
