@@ -432,3 +432,103 @@ export async function addBankAccount({ token, idCliente, nameBank, nameClient, n
     message: data.message ?? 'No fue posible agregar la cuenta bancaria.',
   };
 }
+
+
+export async function getBankAccountsByClient({ token, clientId }) {
+  const tokenValidation = await ensureToken(token);
+
+  if (!tokenValidation.ok) {
+    return tokenValidation;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/bankaccount/list/${clientId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await parseResponse(response);
+
+  if (isSuccessStatus(response.status)) {
+    return {
+      ok: true,
+      accounts: Array.isArray(data) ? data : [],
+      message: '',
+    };
+  }
+
+  return {
+    ok: false,
+    tokenExpired: false,
+    message: data.message ?? 'No se obtuvieron cuentas bancarias.',
+    accounts: [],
+  };
+}
+
+export async function updateBankAccount({ token, accountId, numAccount, nameClient, typeAccount, nameBank }) {
+  const tokenValidation = await ensureToken(token);
+
+  if (!tokenValidation.ok) {
+    return tokenValidation;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/bankaccount/update/${accountId}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      num_account: numAccount,
+      name_client: nameClient,
+      type_account: typeAccount,
+      name_bank: nameBank,
+    }),
+  });
+
+  const data = await parseResponse(response);
+
+  if (isSuccessStatus(response.status)) {
+    return {
+      ok: true,
+      message: data.message ?? 'Cuenta bancaria actualizada exitosamente',
+    };
+  }
+
+  return {
+    ok: false,
+    tokenExpired: false,
+    message: data.message ?? 'No fue posible actualizar la cuenta bancaria.',
+  };
+}
+
+export async function deleteBankAccount({ token, accountId }) {
+  const tokenValidation = await ensureToken(token);
+
+  if (!tokenValidation.ok) {
+    return tokenValidation;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/bankaccount/delete/${accountId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await parseResponse(response);
+
+  if (isSuccessStatus(response.status)) {
+    return {
+      ok: true,
+      message: data.message ?? 'Cuenta bancaria eliminada exitosamente',
+    };
+  }
+
+  return {
+    ok: false,
+    tokenExpired: false,
+    message: data.message ?? 'No fue posible eliminar la cuenta bancaria.',
+  };
+}
