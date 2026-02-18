@@ -30,6 +30,8 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
   const [bankSearch, setBankSearch] = useState('');
   const [pickerTypeOpen, setPickerTypeOpen] = useState(false);
   const [pickerBankOpen, setPickerBankOpen] = useState(false);
+  const [pickerClientOpen, setPickerClientOpen] = useState(false);
+  const [clientSearch, setClientSearch] = useState('');
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -69,6 +71,12 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
     return clients.filter((c) => (c?.name || '').toLowerCase().includes(term));
   }, [clients, search]);
 
+  const filteredClientsForPicker = useMemo(() => {
+    const term = clientSearch.trim().toLowerCase();
+    if (!term) return clients;
+    return clients.filter((c) => (c?.name || '').toLowerCase().includes(term));
+  }, [clients, clientSearch]);
+
   const filteredBanks = useMemo(() => {
     const term = bankSearch.trim().toLowerCase();
     if (!term) return BANK_OPTIONS;
@@ -83,6 +91,8 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
     setBankSearch('');
     setPickerTypeOpen(false);
     setPickerBankOpen(false);
+    setPickerClientOpen(false);
+    setClientSearch('');
     setFormError('');
   };
 
@@ -206,7 +216,9 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
             </View>
 
             <Text style={styles.fieldLabel}>Emprendedor *</Text>
-            <View style={styles.readonlyField}><Text style={styles.readonlyFieldText}>{(selectedClient?.name || 'Selecciona un emprendedor en el listado').toUpperCase()}</Text></View>
+            <Pressable style={styles.pickerButton} onPress={() => setPickerClientOpen(true)}>
+              <Text style={styles.pickerButtonText}>{(selectedClient?.name || 'Seleccionar emprendedor').toUpperCase()}</Text>
+            </Pressable>
 
             <Text style={styles.fieldLabel}>Número de Cuenta *</Text>
             <TextInput value={accountNumber} onChangeText={(v) => setAccountNumber(v.replace(/[^0-9]/g, ''))} placeholder="Solo números" placeholderTextColor="#8a92a1" style={styles.modalInput} keyboardType="number-pad" />
@@ -229,21 +241,9 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
             )}
 
             <Text style={styles.fieldLabel}>Banco *</Text>
-            <Pressable style={styles.pickerButton} onPress={() => setPickerBankOpen((p) => !p)}>
+            <Pressable style={styles.pickerButton} onPress={() => setPickerBankOpen(true)}>
               <Text style={styles.pickerButtonText}>{bankName || 'Seleccionar banco'}</Text>
             </Pressable>
-            {pickerBankOpen && (
-              <View style={styles.pickerListLarge}>
-                <TextInput value={bankSearch} onChangeText={setBankSearch} placeholder="Buscar banco" placeholderTextColor="#8a92a1" style={styles.bankSearchInput} />
-                <ScrollView nestedScrollEnabled>
-                  {filteredBanks.map((bank) => (
-                    <Pressable key={bank} style={styles.pickerItem} onPress={() => { setBankName(bank); setPickerBankOpen(false); }}>
-                      <Text style={styles.pickerItemText}>{bank}</Text>
-                    </Pressable>
-                  ))}
-                </ScrollView>
-              </View>
-            )}
 
             {formError.length > 0 && <Text style={styles.errorText}>{formError}</Text>}
 
@@ -254,6 +254,73 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
           </View>
         </View>
       </Modal>
+
+      <Modal transparent animationType="fade" visible={pickerClientOpen} onRequestClose={() => setPickerClientOpen(false)}>
+        <View style={styles.modalBackdrop}>
+          <View style={styles.pickerModalCard}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Seleccionar Emprendedor</Text>
+              <Pressable onPress={() => setPickerClientOpen(false)}><Feather name="x" size={24} color="#2a2f3d" /></Pressable>
+            </View>
+            <TextInput
+              value={clientSearch}
+              onChangeText={setClientSearch}
+              placeholder="Buscar emprendedor"
+              placeholderTextColor="#8a92a1"
+              style={styles.bankSearchInput}
+            />
+            <ScrollView style={styles.pickerScroll} nestedScrollEnabled>
+              {filteredClientsForPicker.map((client) => (
+                <Pressable
+                  key={String(client.id)}
+                  style={styles.pickerItem}
+                  onPress={() => {
+                    setSelectedClient(client);
+                    setPickerClientOpen(false);
+                  }}
+                >
+                  <Text style={styles.pickerItemText}>{(client.name || 'EMPRENDEDOR').toUpperCase()}</Text>
+                </Pressable>
+              ))}
+              {filteredClientsForPicker.length === 0 && <Text style={styles.emptyText}>No se encontraron emprendedores.</Text>}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal transparent animationType="fade" visible={pickerBankOpen} onRequestClose={() => setPickerBankOpen(false)}>
+        <View style={styles.modalBackdrop}>
+          <View style={styles.pickerModalCard}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Seleccionar Banco</Text>
+              <Pressable onPress={() => setPickerBankOpen(false)}><Feather name="x" size={24} color="#2a2f3d" /></Pressable>
+            </View>
+            <TextInput
+              value={bankSearch}
+              onChangeText={setBankSearch}
+              placeholder="Buscar banco"
+              placeholderTextColor="#8a92a1"
+              style={styles.bankSearchInput}
+            />
+            <ScrollView style={styles.pickerScroll} nestedScrollEnabled>
+              {filteredBanks.map((bank) => (
+                <Pressable
+                  key={bank}
+                  style={styles.pickerItem}
+                  onPress={() => {
+                    setBankName(bank);
+                    setPickerBankOpen(false);
+                  }}
+                >
+                  <Text style={styles.pickerItemText}>{bank}</Text>
+                </Pressable>
+              ))}
+              {filteredBanks.length === 0 && <Text style={styles.emptyText}>No se encontraron bancos.</Text>}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
     </View>
   );
 }
