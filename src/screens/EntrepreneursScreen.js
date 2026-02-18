@@ -31,6 +31,28 @@ function toApiDate(date) {
   return `${year}-${month}-${day}`;
 }
 
+function normalizeBackendDate(value) {
+  if (!value) {
+    return '';
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return value;
+  }
+
+  const parsed = new Date(value);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return '';
+  }
+
+  const year = parsed.getUTCFullYear();
+  const month = String(parsed.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(parsed.getUTCDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
 function toDisplayDate(dateString) {
   const parsed = parseApiDate(dateString);
 
@@ -68,6 +90,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
   const [editDatePickerVisible, setEditDatePickerVisible] = useState(false);
   const [editDatePickerField, setEditDatePickerField] = useState('charge');
   const [editError, setEditError] = useState('');
+  const [editErrorField, setEditErrorField] = useState('');
   const [editLoading, setEditLoading] = useState(false);
 
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -179,10 +202,11 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
     setEditingClient(item);
     setEditName(item?.name || '');
     setEditPhone(String(item?.num_cliente || ''));
-    setEditChargeDate(item?.fecha_cobro || '');
-    setEditPickupDate(item?.fecha_retiro || '');
+    setEditChargeDate(normalizeBackendDate(item?.fecha_cobro));
+    setEditPickupDate(normalizeBackendDate(item?.fecha_retiro));
     setEditNotified(Number(item?.notificado || 0) === 1);
     setEditError('');
+    setEditErrorField('');
     setEditModalVisible(true);
   };
 
@@ -198,6 +222,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
     setEditDatePickerVisible(false);
     setEditDatePickerField('charge');
     setEditError('');
+    setEditErrorField('');
   };
 
 
@@ -219,10 +244,12 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
     if (editDatePickerField === 'charge') {
       setEditChargeDate(next);
+      setEditErrorField((prev) => (prev === 'chargeDate' ? '' : prev));
       return;
     }
 
     setEditPickupDate(next);
+    setEditErrorField((prev) => (prev === 'pickupDate' ? '' : prev));
   };
 
   const handleUpdateClient = async () => {
@@ -236,6 +263,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
     if (!editingClient?.id) {
       setEditError('No se encontró el emprendedor.');
+      setEditErrorField('');
       return;
     }
 
@@ -246,27 +274,32 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
     if (trimmed.length < 5) {
       setEditError('El nombre debe tener al menos 5 caracteres.');
+      setEditErrorField('name');
       return;
     }
 
     if (phone.length > 0 && !/^\d{8}$/.test(phone)) {
       setEditError('El teléfono debe contener exactamente 8 números.');
+      setEditErrorField('phone');
       return;
     }
 
     if (chargeDate.length > 0 && !/^\d{4}-\d{2}-\d{2}$/.test(chargeDate)) {
       setEditError('La fecha de cobro debe tener formato YYYY-MM-DD.');
+      setEditErrorField('chargeDate');
       return;
     }
 
     if (pickupDate.length > 0 && !/^\d{4}-\d{2}-\d{2}$/.test(pickupDate)) {
       setEditError('La fecha de retiro debe tener formato YYYY-MM-DD.');
+      setEditErrorField('pickupDate');
       return;
     }
 
     try {
       setEditLoading(true);
       setEditError('');
+      setEditErrorField('');
 
       const result = await updateClient({
         token: session.token,
@@ -286,6 +319,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
       if (!result.ok) {
         setEditError(result.message || 'No fue posible actualizar el emprendedor.');
+        setEditErrorField('');
         return;
       }
 
@@ -293,6 +327,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
       setRefreshTick((prev) => prev + 1);
     } catch (_e) {
       setEditError('No fue posible actualizar el emprendedor.');
+      setEditErrorField('');
     } finally {
       setEditLoading(false);
     }
@@ -508,7 +543,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
                 onChangeText={setEditName}
                 placeholder="Nombre"
                 placeholderTextColor="#8a92a1"
-                style={[styles.modalInput, editError ? styles.modalInputError : null]}
+                style={[styles.modalInput, editErrorField === 'name' ? styles.modalInputError : null]}
               />
 
               <Text style={styles.fieldLabel}>Teléfono (opcional)</Text>
@@ -517,40 +552,60 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
                 onChangeText={(value) => setEditPhone(value.replace(/[^0-9]/g, '').slice(0, 8))}
                 placeholder="00000000"
                 placeholderTextColor="#8a92a1"
-                style={styles.modalInput}
+                style={[styles.modalInput, editErrorField === 'phone' ? styles.modalInputError : null]}
                 keyboardType="number-pad"
               />
 
               <Text style={styles.fieldLabel}>Fecha Cobro (opcional)</Text>
               {Platform.OS === 'web' ? (
+                <>
                 <TextInput
                   value={editChargeDate}
                   onChangeText={setEditChargeDate}
                   placeholder="YYYY-MM-DD"
                   placeholderTextColor="#8a92a1"
-                  style={styles.modalInput}
+                  style={[styles.modalInput, editErrorField === 'chargeDate' ? styles.modalInputError : null]}
                   type="date"
                 />
-              ) : (
-                <Pressable style={styles.datePickerButton} onPress={() => openEditDatePicker('charge')}>
-                  <Text style={styles.datePickerButtonText}>{editChargeDate ? toDisplayDate(editChargeDate) : 'Seleccionar fecha'}</Text>
+                <Pressable style={styles.clearDateButtonWeb} onPress={() => { setEditChargeDate(''); setEditErrorField((prev) => (prev === 'chargeDate' ? '' : prev)); }}>
+                  <Text style={styles.clearDateButtonText}>Limpiar fecha</Text>
                 </Pressable>
+                </>
+              ) : (
+                <View style={styles.datePickerRow}>
+                  <Pressable style={[styles.datePickerButton, editErrorField === 'chargeDate' ? styles.modalInputError : null]} onPress={() => openEditDatePicker('charge')}>
+                    <Text style={styles.datePickerButtonText}>{editChargeDate ? toDisplayDate(editChargeDate) : 'Seleccionar fecha'}</Text>
+                  </Pressable>
+                  <Pressable style={styles.clearDateButton} onPress={() => { setEditChargeDate(''); setEditErrorField((prev) => (prev === 'chargeDate' ? '' : prev)); }}>
+                    <Text style={styles.clearDateButtonText}>Limpiar</Text>
+                  </Pressable>
+                </View>
               )}
 
               <Text style={styles.fieldLabel}>Fecha Retiro (opcional)</Text>
               {Platform.OS === 'web' ? (
+                <>
                 <TextInput
                   value={editPickupDate}
                   onChangeText={setEditPickupDate}
                   placeholder="YYYY-MM-DD"
                   placeholderTextColor="#8a92a1"
-                  style={styles.modalInput}
+                  style={[styles.modalInput, editErrorField === 'pickupDate' ? styles.modalInputError : null]}
                   type="date"
                 />
-              ) : (
-                <Pressable style={styles.datePickerButton} onPress={() => openEditDatePicker('pickup')}>
-                  <Text style={styles.datePickerButtonText}>{editPickupDate ? toDisplayDate(editPickupDate) : 'Seleccionar fecha'}</Text>
+                <Pressable style={styles.clearDateButtonWeb} onPress={() => { setEditPickupDate(''); setEditErrorField((prev) => (prev === 'pickupDate' ? '' : prev)); }}>
+                  <Text style={styles.clearDateButtonText}>Limpiar fecha</Text>
                 </Pressable>
+                </>
+              ) : (
+                <View style={styles.datePickerRow}>
+                  <Pressable style={[styles.datePickerButton, editErrorField === 'pickupDate' ? styles.modalInputError : null]} onPress={() => openEditDatePicker('pickup')}>
+                    <Text style={styles.datePickerButtonText}>{editPickupDate ? toDisplayDate(editPickupDate) : 'Seleccionar fecha'}</Text>
+                  </Pressable>
+                  <Pressable style={styles.clearDateButton} onPress={() => { setEditPickupDate(''); setEditErrorField((prev) => (prev === 'pickupDate' ? '' : prev)); }}>
+                    <Text style={styles.clearDateButtonText}>Limpiar</Text>
+                  </Pressable>
+                </View>
               )}
 
               <View style={styles.switchRow}>

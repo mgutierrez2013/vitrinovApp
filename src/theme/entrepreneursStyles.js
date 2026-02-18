@@ -233,6 +233,30 @@ export const entrepreneursStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+  datePickerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 6,
+  },
+  clearDateButton: {
+    borderRadius: 10,
+    backgroundColor: '#eceef8',
+    paddingHorizontal: 12,
+    minHeight: 42,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  clearDateButtonWeb: {
+    alignSelf: 'flex-end',
+    marginBottom: 8,
+    marginTop: -2,
+  },
+  clearDateButtonText: {
+    color: '#4d5570',
+    fontSize: 13,
+    fontWeight: '700',
+  },
   errorText: {
     color: '#c2475b',
     fontSize: 13,
