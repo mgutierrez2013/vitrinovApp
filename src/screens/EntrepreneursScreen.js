@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, Image, Modal, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
+import { FlatList, Image, Modal, Platform, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import {
@@ -13,6 +14,36 @@ import { entrepreneursStyles as styles } from '../theme/entrepreneursStyles';
 
 const logoUri =
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s';
+
+
+function parseApiDate(dateString) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString || '')) {
+    return null;
+  }
+
+  return new Date(`${dateString}T00:00:00`);
+}
+
+function toApiDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function toDisplayDate(dateString) {
+  const parsed = parseApiDate(dateString);
+
+  if (!parsed) {
+    return '';
+  }
+
+  const day = String(parsed.getDate()).padStart(2, '0');
+  const month = String(parsed.getMonth() + 1).padStart(2, '0');
+  const year = parsed.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
 
 export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOpenAccount }) {
   const [loading, setLoading] = useState(true);
@@ -34,6 +65,8 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
   const [editChargeDate, setEditChargeDate] = useState('');
   const [editPickupDate, setEditPickupDate] = useState('');
   const [editNotified, setEditNotified] = useState(false);
+  const [editDatePickerVisible, setEditDatePickerVisible] = useState(false);
+  const [editDatePickerField, setEditDatePickerField] = useState('charge');
   const [editError, setEditError] = useState('');
   const [editLoading, setEditLoading] = useState(false);
 
@@ -162,7 +195,34 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
     setEditChargeDate('');
     setEditPickupDate('');
     setEditNotified(false);
+    setEditDatePickerVisible(false);
+    setEditDatePickerField('charge');
     setEditError('');
+  };
+
+
+  const openEditDatePicker = (field) => {
+    setEditDatePickerField(field);
+    setEditDatePickerVisible(true);
+  };
+
+  const handleEditDateChange = (_event, selectedDate) => {
+    if (Platform.OS !== 'ios') {
+      setEditDatePickerVisible(false);
+    }
+
+    if (!selectedDate) {
+      return;
+    }
+
+    const next = toApiDate(selectedDate);
+
+    if (editDatePickerField === 'charge') {
+      setEditChargeDate(next);
+      return;
+    }
+
+    setEditPickupDate(next);
   };
 
   const handleUpdateClient = async () => {
@@ -462,24 +522,36 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
               />
 
               <Text style={styles.fieldLabel}>Fecha Cobro (opcional)</Text>
-              <TextInput
-                value={editChargeDate}
-                onChangeText={setEditChargeDate}
-                placeholder="YYYY-MM-DD"
-                placeholderTextColor="#8a92a1"
-                style={styles.modalInput}
-                type="date"
-              />
+              {Platform.OS === 'web' ? (
+                <TextInput
+                  value={editChargeDate}
+                  onChangeText={setEditChargeDate}
+                  placeholder="YYYY-MM-DD"
+                  placeholderTextColor="#8a92a1"
+                  style={styles.modalInput}
+                  type="date"
+                />
+              ) : (
+                <Pressable style={styles.datePickerButton} onPress={() => openEditDatePicker('charge')}>
+                  <Text style={styles.datePickerButtonText}>{editChargeDate ? toDisplayDate(editChargeDate) : 'Seleccionar fecha'}</Text>
+                </Pressable>
+              )}
 
               <Text style={styles.fieldLabel}>Fecha Retiro (opcional)</Text>
-              <TextInput
-                value={editPickupDate}
-                onChangeText={setEditPickupDate}
-                placeholder="YYYY-MM-DD"
-                placeholderTextColor="#8a92a1"
-                style={styles.modalInput}
-                type="date"
-              />
+              {Platform.OS === 'web' ? (
+                <TextInput
+                  value={editPickupDate}
+                  onChangeText={setEditPickupDate}
+                  placeholder="YYYY-MM-DD"
+                  placeholderTextColor="#8a92a1"
+                  style={styles.modalInput}
+                  type="date"
+                />
+              ) : (
+                <Pressable style={styles.datePickerButton} onPress={() => openEditDatePicker('pickup')}>
+                  <Text style={styles.datePickerButtonText}>{editPickupDate ? toDisplayDate(editPickupDate) : 'Seleccionar fecha'}</Text>
+                </Pressable>
+              )}
 
               <View style={styles.switchRow}>
                 <View style={styles.switchTextWrap}>
@@ -507,6 +579,16 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
           </View>
         </View>
       </Modal>
+
+
+      {editDatePickerVisible && (
+        <DateTimePicker
+          value={parseApiDate(editDatePickerField === 'charge' ? editChargeDate : editPickupDate) || new Date()}
+          mode="date"
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          onChange={handleEditDateChange}
+        />
+      )}
 
       <Modal transparent animationType="fade" visible={deleteModalVisible} onRequestClose={closeDeleteModal}>
         <View style={styles.modalBackdrop}>

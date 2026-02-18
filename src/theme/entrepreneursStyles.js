@@ -218,6 +218,21 @@ export const entrepreneursStyles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
   },
+  datePickerButton: {
+    borderWidth: 1,
+    borderColor: '#dfe3ef',
+    borderRadius: 12,
+    backgroundColor: '#ffffff',
+    minHeight: 46,
+    justifyContent: 'center',
+    paddingHorizontal: 14,
+    marginBottom: 6,
+  },
+  datePickerButtonText: {
+    color: '#263143',
+    fontSize: 16,
+    fontWeight: '500',
+  },
   errorText: {
     color: '#c2475b',
     fontSize: 13,
