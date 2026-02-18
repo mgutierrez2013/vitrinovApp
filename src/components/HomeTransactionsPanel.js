@@ -105,7 +105,7 @@ function formatDatePartsInElSalvador(date) {
   };
 }
 
-export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, onGoNotificationReports }) {
+export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, onGoNotificationReports, onGoTransactionReports }) {
   const [loading, setLoading] = useState(true);
   const [sales, setSales] = useState('0');
   const [transactions, setTransactions] = useState([]);
@@ -639,6 +639,10 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
 
         <Pressable style={homeStyles.notificationReportButton} onPress={onGoNotificationReports}>
           <Text style={homeStyles.notificationReportButtonText}>Reporte Notificaciones</Text>
+        </Pressable>
+
+        <Pressable style={homeStyles.transactionReportButton} onPress={onGoTransactionReports}>
+          <Text style={homeStyles.transactionReportButtonText}>Reporte Transacciones</Text>
         </Pressable>
       </View>
 

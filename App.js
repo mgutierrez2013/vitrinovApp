@@ -22,6 +22,7 @@ import { EntrepreneurAccountScreen } from './src/screens/EntrepreneurAccountScre
 import { BankAccountsScreen } from './src/screens/BankAccountsScreen';
 import { BankAccountsClientScreen } from './src/screens/BankAccountsClientScreen';
 import { NotificationReportScreen } from './src/screens/NotificationReportScreen';
+import { TransactionReportScreen } from './src/screens/TransactionReportScreen';
 import { authStyles } from './src/theme/authStyles';
 import { clearSession, loadSession, saveSession } from './src/services/sessionService';
 
@@ -72,7 +73,6 @@ export default function App() {
           onGoAllTransactions={() => setScreen('transactions')}
           onGoEntrepreneurs={() => setScreen('entrepreneurs')}
           onGoBankAccounts={() => setScreen('bankAccounts')}
-          onGoNotificationReports={() => setScreen('notificationReports')}
         />
       </GestureHandlerRootView>
     );
@@ -91,7 +91,6 @@ export default function App() {
             setScreen('entrepreneurAccount');
           }}
           onGoBankAccounts={() => setScreen('bankAccounts')}
-          onGoNotificationReports={() => setScreen('notificationReports')}
         />
       </GestureHandlerRootView>
     );
@@ -151,6 +150,19 @@ export default function App() {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
         <NotificationReportScreen
+          onGoHome={() => setScreen('home')}
+          onSessionExpired={handleSessionExpired}
+          onLogout={handleLogout}
+        />
+      </GestureHandlerRootView>
+    );
+  }
+
+
+  if (screen === 'transactionReports') {
+    return (
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <TransactionReportScreen
           onGoHome={() => setScreen('home')}
           onSessionExpired={handleSessionExpired}
           onLogout={handleLogout}

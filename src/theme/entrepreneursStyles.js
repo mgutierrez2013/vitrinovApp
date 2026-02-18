@@ -82,9 +82,9 @@ export const entrepreneursStyles = StyleSheet.create({
     alignItems: 'center',
   },
   clientIconWrap: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
+    width: 46,
+    height: 46,
+    borderRadius: 23,
     backgroundColor: '#d7beff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -92,6 +92,11 @@ export const entrepreneursStyles = StyleSheet.create({
   },
   clientBody: {
     flex: 1,
+  },
+  clientNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   clientName: {
     color: '#3b2f7c',

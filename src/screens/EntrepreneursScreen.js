@@ -452,13 +452,16 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
               >
                 <Pressable style={styles.clientCard} onPress={() => onOpenAccount(item)}>
                   <View style={styles.clientIconWrap}>
-                    <Feather name="users" size={24} color="#1f2433" />
+                    <Feather name="users" size={20} color="#1f2433" />
                   </View>
 
                   <View style={styles.clientBody}>
-                    <Text style={styles.clientName} numberOfLines={1}>
-                      {(item.name || 'EMPRENDEDOR').toUpperCase()}
-                    </Text>
+                    <View style={styles.clientNameRow}>
+                      <Feather name="contact" size={14} color="#7c59d7" />
+                      <Text style={styles.clientName} numberOfLines={1}>
+                        {(item.name || 'EMPRENDEDOR').toUpperCase()}
+                      </Text>
+                    </View>
                     <Text style={styles.clientSubtitle}>Emprendedor</Text>
                   </View>
                 </Pressable>

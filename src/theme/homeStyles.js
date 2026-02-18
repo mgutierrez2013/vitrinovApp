@@ -188,6 +188,20 @@ export const homeStyles = StyleSheet.create({
     fontWeight: '800',
     fontSize: 15,
   },
+  transactionReportButton: {
+    backgroundColor: '#d8f0ff',
+    borderRadius: 10,
+    paddingVertical: 11,
+    alignItems: 'center',
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: '#a9d7f6',
+  },
+  transactionReportButtonText: {
+    color: '#1f5f9a',
+    fontWeight: '800',
+    fontSize: 15,
+  },
   bottomBar: {
     position: 'absolute',
     left: 0,

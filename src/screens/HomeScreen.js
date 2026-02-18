@@ -6,7 +6,7 @@ import { homeStyles } from '../theme/homeStyles';
 const logoUri =
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s';
 
-export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, onGoEntrepreneurs, onGoBankAccounts, onGoNotificationReports }) {
+export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, onGoEntrepreneurs, onGoBankAccounts, onGoNotificationReports, onGoTransactionReports }) {
   return (
     <View style={homeStyles.container}>
       <View style={homeStyles.header}>
@@ -26,6 +26,7 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, on
         onSessionExpired={onSessionExpired}
         onGoAllTransactions={onGoAllTransactions}
         onGoNotificationReports={onGoNotificationReports}
+        onGoTransactionReports={onGoTransactionReports}
       />
 
       <View style={homeStyles.bottomBar}>
