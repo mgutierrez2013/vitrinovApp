@@ -93,11 +93,6 @@ export const entrepreneursStyles = StyleSheet.create({
   clientBody: {
     flex: 1,
   },
-  clientNameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
   clientName: {
     color: '#3b2f7c',
     fontWeight: '800',
@@ -105,7 +100,7 @@ export const entrepreneursStyles = StyleSheet.create({
   },
   clientSubtitle: {
     color: '#4a5060',
-    fontSize: 14,
+    fontSize: 13,
     marginTop: 2,
   },
   emptyText: {

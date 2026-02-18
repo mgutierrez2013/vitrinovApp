@@ -73,6 +73,8 @@ export default function App() {
           onGoAllTransactions={() => setScreen('transactions')}
           onGoEntrepreneurs={() => setScreen('entrepreneurs')}
           onGoBankAccounts={() => setScreen('bankAccounts')}
+          onGoNotificationReports={() => setScreen('notificationReports')}
+          onGoTransactionReports={() => setScreen('transactionReports')}
         />
       </GestureHandlerRootView>
     );
