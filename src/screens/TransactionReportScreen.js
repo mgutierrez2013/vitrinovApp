@@ -204,14 +204,14 @@ export function TransactionReportScreen({ onGoHome, onSessionExpired, onLogout }
       'Sin categorizar': 0,
     };
 
-    rows.forEach((row) => {
+    filteredRows.forEach((row) => {
       if (Object.prototype.hasOwnProperty.call(totals, row.tipo)) {
         totals[row.tipo] += Number(row.monto || 0);
       }
     });
 
     return totals;
-  }, [rows]);
+  }, [filteredRows]);
 
   const visibleSummary = useMemo(() => {
     if (selectedType === 'Todas') {
@@ -357,33 +357,42 @@ export function TransactionReportScreen({ onGoHome, onSessionExpired, onLogout }
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tableWrap}>
-          <View style={styles.table}>
-            <View style={styles.tableHeaderRow}>
-              <Text style={[styles.headerCell, styles.cellType]}>Tipo de Transacción</Text>
-              <Text style={[styles.headerCell, styles.cellClient]}>Emprendimiento</Text>
-              <Text style={[styles.headerCell, styles.cellDate]}>Fecha</Text>
-              <Text style={[styles.headerCell, styles.cellAmount]}>Monto</Text>
-              <Text style={[styles.headerCell, styles.cellNotes]}>Notas</Text>
-            </View>
-
-            {loading ? (
-              <Text style={styles.emptyText}>Cargando transacciones...</Text>
-            ) : filteredRows.length === 0 ? (
-              <Text style={styles.emptyText}>No se encontraron transacciones.</Text>
-            ) : (
-              filteredRows.map((row) => (
-                <View key={row.id} style={styles.tableRow}>
-                  <Text style={[styles.bodyCell, styles.cellType, styles.typeValue]}>{row.tipo}</Text>
-                  <Text style={[styles.bodyCell, styles.cellClient]}>{row.emprendimiento}</Text>
-                  <Text style={[styles.bodyCell, styles.cellDate]}>{toDisplayDate(parseApiDate(row.fecha) || new Date())}</Text>
-                  <Text style={[styles.bodyCell, styles.cellAmount]}>{formatMoney(row.monto)}</Text>
-                  <Text style={[styles.bodyCell, styles.cellNotes]}>{row.notas}</Text>
+        <View style={styles.cardsWrap}>
+          {loading ? (
+            <Text style={styles.emptyText}>Cargando transacciones...</Text>
+          ) : filteredRows.length === 0 ? (
+            <Text style={styles.emptyText}>No se encontraron transacciones.</Text>
+          ) : (
+            filteredRows.map((row) => (
+              <View key={row.id} style={styles.transactionCard}>
+                <View style={styles.cardRow}>
+                  <Text style={styles.cardLabel}>Tipo</Text>
+                  <Text style={[styles.cardValue, styles.typeValue]}>{row.tipo}</Text>
                 </View>
-              ))
-            )}
-          </View>
-        </ScrollView>
+
+                <View style={styles.cardRow}>
+                  <Text style={styles.cardLabel}>Emprendimiento</Text>
+                  <Text style={styles.cardValue}>{row.emprendimiento}</Text>
+                </View>
+
+                <View style={styles.cardRow}>
+                  <Text style={styles.cardLabel}>Fecha</Text>
+                  <Text style={styles.cardValue}>{toDisplayDate(parseApiDate(row.fecha) || new Date())}</Text>
+                </View>
+
+                <View style={styles.cardRow}>
+                  <Text style={styles.cardLabel}>Monto</Text>
+                  <Text style={styles.cardValue}>{formatMoney(row.monto)}</Text>
+                </View>
+
+                <View style={styles.cardNotesBlock}>
+                  <Text style={styles.cardLabel}>Notas</Text>
+                  <Text style={styles.cardNotes}>{row.notas || '-'}</Text>
+                </View>
+              </View>
+            ))
+          )}
+        </View>
       </ScrollView>
     </View>
   );
