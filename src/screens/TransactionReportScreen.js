@@ -226,6 +226,19 @@ export function TransactionReportScreen({ onGoHome, onSessionExpired, onLogout }
     return [{ key: selectedType, label: selectedType, amount: totalsByType[selectedType] || 0 }];
   }, [selectedType, totalsByType]);
 
+
+  const summaryRows = useMemo(() => {
+    if (selectedType !== 'Todas') {
+      return [visibleSummary];
+    }
+
+    const rowsChunked = [];
+    for (let i = 0; i < visibleSummary.length; i += 2) {
+      rowsChunked.push(visibleSummary.slice(i, i + 2));
+    }
+    return rowsChunked;
+  }, [selectedType, visibleSummary]);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -334,10 +347,14 @@ export function TransactionReportScreen({ onGoHome, onSessionExpired, onLogout }
 
         {selectedType === 'Todas' ? (
           <View style={styles.summaryGrid}>
-            {visibleSummary.map((item) => (
-              <View key={item.key} style={[styles.summaryCard, styles.summaryCardGrid]}>
-                <Text style={styles.summaryLabel}>{item.label}</Text>
-                <Text style={styles.summaryAmount}>{formatMoney(item.amount)}</Text>
+            {summaryRows.map((row, rowIndex) => (
+              <View key={`summary-row-${rowIndex}`} style={styles.summaryGridRow}>
+                {row.map((item) => (
+                  <View key={item.key} style={[styles.summaryCard, styles.summaryCardGrid]}>
+                    <Text style={styles.summaryLabel}>{item.label}</Text>
+                    <Text style={styles.summaryAmount}>{formatMoney(item.amount)}</Text>
+                  </View>
+                ))}
               </View>
             ))}
           </View>
