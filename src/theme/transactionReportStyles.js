@@ -76,9 +76,10 @@ export const transactionReportStyles = StyleSheet.create({
 
   sectionTitle: { color: '#11182b', fontSize: 18, fontWeight: '800', marginTop: 4 },
   sectionSubtitle: { color: '#5d6477', fontSize: 13, marginTop: 2, marginBottom: 10 },
-  summaryScroll: { marginBottom: 12 },
+  summaryGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 10, marginBottom: 12 },
+  summarySingleWrap: { marginBottom: 12 },
   summaryCard: {
-    width: 220,
+    width: '100%',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#d9dce8',
@@ -88,6 +89,7 @@ export const transactionReportStyles = StyleSheet.create({
   },
   summaryLabel: { color: '#1f2433', fontSize: 16, fontWeight: '700' },
   summaryAmount: { color: '#0f172a', fontSize: 24, fontWeight: '800', marginTop: 6 },
+  summaryCardGrid: { width: '48%' },
 
   resultsTitle: { color: '#11182b', fontSize: 20, fontWeight: '800' },
   resultsSubtitle: { color: '#5d6477', fontSize: 13, marginTop: 2, marginBottom: 8 },

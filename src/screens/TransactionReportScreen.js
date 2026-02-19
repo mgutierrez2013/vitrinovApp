@@ -332,14 +332,25 @@ export function TransactionReportScreen({ onGoHome, onSessionExpired, onLogout }
         <Text style={styles.sectionTitle}>Resumen de Totales</Text>
         <Text style={styles.sectionSubtitle}>Sumatoria de montos por tipo de transacción para los resultados mostrados.</Text>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.summaryScroll}>
-          {visibleSummary.map((item) => (
-            <View key={item.key} style={styles.summaryCard}>
-              <Text style={styles.summaryLabel}>{item.label}</Text>
-              <Text style={styles.summaryAmount}>{formatMoney(item.amount)}</Text>
-            </View>
-          ))}
-        </ScrollView>
+        {selectedType === 'Todas' ? (
+          <View style={styles.summaryGrid}>
+            {visibleSummary.map((item) => (
+              <View key={item.key} style={[styles.summaryCard, styles.summaryCardGrid]}>
+                <Text style={styles.summaryLabel}>{item.label}</Text>
+                <Text style={styles.summaryAmount}>{formatMoney(item.amount)}</Text>
+              </View>
+            ))}
+          </View>
+        ) : (
+          <View style={styles.summarySingleWrap}>
+            {visibleSummary.map((item) => (
+              <View key={item.key} style={styles.summaryCard}>
+                <Text style={styles.summaryLabel}>{item.label}</Text>
+                <Text style={styles.summaryAmount}>{formatMoney(item.amount)}</Text>
+              </View>
+            ))}
+          </View>
+        )}
 
         <Text style={styles.resultsTitle}>Resultados del Reporte</Text>
         <Text style={styles.resultsSubtitle}>Se encontraron {filteredRows.length} transacciones que coinciden con los filtros.</Text>
