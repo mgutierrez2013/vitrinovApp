@@ -49,7 +49,7 @@ export function NotificationReportScreen({ onGoHome, onSessionExpired, onLogout 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [copyMessage, setCopyMessage] = useState('');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const run = async () => {
@@ -77,7 +77,7 @@ export function NotificationReportScreen({ onGoHome, onSessionExpired, onLogout 
     try {
       setLoading(true);
       setError('');
-      setCopyMessage('');
+      setCopied(false);
       const result = await getTransferNotificationReport({
         token: session.token,
         userId: String(userId),
@@ -153,7 +153,8 @@ export function NotificationReportScreen({ onGoHome, onSessionExpired, onLogout 
     }
 
     await Clipboard.setStringAsync(message);
-    setCopyMessage('Texto copiado al portapapeles.');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -168,54 +169,54 @@ export function NotificationReportScreen({ onGoHome, onSessionExpired, onLogout 
       </View>
 
       <View style={styles.content}>
-        <Pressable style={styles.backButton} onPress={onGoHome}>
-          <Feather name="arrow-left" size={16} color="#3d2f86" />
-          <Text style={styles.backButtonText}>Regresar</Text>
-        </Pressable>
+        <View style={styles.titleWrap}>
+          <Text style={styles.titleOverline}>Informe</Text>
+          <Text style={styles.title}>Reporte Notificaciones</Text>
+        </View>
 
-        <Text style={styles.title}>Reporte Notificaciones</Text>
+        <View style={styles.filtersCard}>
+          <View style={styles.filtersRow}>
+            <View style={styles.filterCol}>
+              <Text style={styles.filterLabel}>Fecha inicio *</Text>
+              {Platform.OS === 'web' ? (
+                <TextInput
+                  value={webStartDateInput}
+                  onChangeText={(value) => handleWebDateChange('start', value)}
+                  placeholder="YYYY-MM-DD"
+                  placeholderTextColor="#8a92a1"
+                  style={styles.webDateInput}
+                  keyboardType="numbers-and-punctuation"
+                  type="date"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              ) : (
+                <Pressable style={styles.dateButton} onPress={() => setShowStartPicker(true)}>
+                  <Text style={styles.dateButtonText}>📅 {toDisplayDate(startDate)}</Text>
+                </Pressable>
+              )}
+            </View>
 
-        <View style={styles.filtersRow}>
-          <View style={styles.filterCol}>
-            <Text style={styles.filterLabel}>Fecha inicio *</Text>
-            {Platform.OS === 'web' ? (
-              <TextInput
-                value={webStartDateInput}
-                onChangeText={(value) => handleWebDateChange('start', value)}
-                placeholder="YYYY-MM-DD"
-                placeholderTextColor="#8a92a1"
-                style={styles.webDateInput}
-                keyboardType="numbers-and-punctuation"
-                type="date"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-            ) : (
-              <Pressable style={styles.dateButton} onPress={() => setShowStartPicker(true)}>
-                <Text style={styles.dateButtonText}>{toDisplayDate(startDate)}</Text>
-              </Pressable>
-            )}
-          </View>
-
-          <View style={styles.filterCol}>
-            <Text style={styles.filterLabel}>Fecha fin *</Text>
-            {Platform.OS === 'web' ? (
-              <TextInput
-                value={webEndDateInput}
-                onChangeText={(value) => handleWebDateChange('end', value)}
-                placeholder="YYYY-MM-DD"
-                placeholderTextColor="#8a92a1"
-                style={styles.webDateInput}
-                keyboardType="numbers-and-punctuation"
-                type="date"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-            ) : (
-              <Pressable style={styles.dateButton} onPress={() => setShowEndPicker(true)}>
-                <Text style={styles.dateButtonText}>{toDisplayDate(endDate)}</Text>
-              </Pressable>
-            )}
+            <View style={styles.filterCol}>
+              <Text style={styles.filterLabel}>Fecha fin *</Text>
+              {Platform.OS === 'web' ? (
+                <TextInput
+                  value={webEndDateInput}
+                  onChangeText={(value) => handleWebDateChange('end', value)}
+                  placeholder="YYYY-MM-DD"
+                  placeholderTextColor="#8a92a1"
+                  style={styles.webDateInput}
+                  keyboardType="numbers-and-punctuation"
+                  type="date"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              ) : (
+                <Pressable style={styles.dateButton} onPress={() => setShowEndPicker(true)}>
+                  <Text style={styles.dateButtonText}>📅 {toDisplayDate(endDate)}</Text>
+                </Pressable>
+              )}
+            </View>
           </View>
         </View>
 
@@ -257,10 +258,14 @@ export function NotificationReportScreen({ onGoHome, onSessionExpired, onLogout 
         </View>
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
-        {copyMessage ? <Text style={styles.successText}>{copyMessage}</Text> : null}
 
-        <Pressable style={styles.copyButton} onPress={handleCopy}>
-          <Text style={styles.copyButtonText}>Copiar</Text>
+        <Pressable style={[styles.copyButton, copied ? styles.copyButtonDone : null]} onPress={handleCopy}>
+          <Text style={styles.copyButtonText}>{copied ? '✓ Copiado' : '📋 Copiar'}</Text>
+        </Pressable>
+
+        <Pressable style={styles.backButton} onPress={onGoHome}>
+          <Feather name="arrow-left" size={16} color="#2563A8" />
+          <Text style={styles.backButtonText}>Regresar</Text>
         </Pressable>
       </View>
     </View>
