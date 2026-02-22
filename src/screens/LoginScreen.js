@@ -53,7 +53,13 @@ export function LoginScreen({ onGoRegister, onAuthSuccess }) {
           onChangeText={setEmail}
           placeholder="Ingresa tu email"
           autoCapitalize="none"
+          autoCorrect={false}
+          spellCheck={false}
+          autoComplete="off"
+          textContentType="none"
+          importantForAutofill="no"
           keyboardType="email-address"
+          selectionColor="#7b59df"
           style={[authStyles.input, hasEmailError && authStyles.inputError]}
           placeholderTextColor="#9aa3b2"
         />
@@ -68,6 +74,12 @@ export function LoginScreen({ onGoRegister, onAuthSuccess }) {
             onChangeText={setPassword}
             placeholder="Ingresa tu contraseña"
             secureTextEntry={!showPassword}
+            autoCorrect={false}
+            spellCheck={false}
+            autoComplete="off"
+            textContentType="none"
+            importantForAutofill="no"
+            selectionColor="#7b59df"
             style={authStyles.passwordInput}
             placeholderTextColor="#9aa3b2"
           />
