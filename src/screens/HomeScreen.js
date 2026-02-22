@@ -31,7 +31,7 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, on
 
       <View style={homeStyles.bottomBar}>
         <View style={homeStyles.bottomIconWrapActive}>
-          <Feather name="home" size={24} color="#ffffff" />
+          <Feather name="home" size={24} color="#0f6dbb" />
         </View>
         <Pressable style={homeStyles.bottomIconWrap} onPress={onGoEntrepreneurs}>
           <Feather name="users" size={24} color="#0f6dbb" />

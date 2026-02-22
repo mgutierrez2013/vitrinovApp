@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export const bankAccountsClientStyles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f6fb' },
   header: {
-    backgroundColor: '#0f6dbb',
+    backgroundColor: '#f59e0b',
     paddingTop: 22,
     paddingBottom: 18,
     paddingHorizontal: 16,
@@ -13,7 +13,7 @@ export const bankAccountsClientStyles = StyleSheet.create({
   },
   logoBox: { width: 102, height: 82, backgroundColor: '#fff', borderRadius: 8, overflow: 'hidden' },
   logoImage: { width: '100%', height: '100%' },
-  logoutButton: { backgroundColor: '#f59e0b', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10 },
+  logoutButton: { backgroundColor: '#0f6dbb', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10 },
   logoutText: { color: '#fff', fontSize: 14, fontWeight: '700' },
 
   content: { flex: 1, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 10 },
@@ -65,7 +65,7 @@ export const bankAccountsClientStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  editBtn: { backgroundColor: '#0f6dbb' },
+  editBtn: { backgroundColor: '#f59e0b' },
   deleteBtn: { backgroundColor: '#ef4040' },
   actionText: { color: '#fff', fontWeight: '700', fontSize: 13 },
 
