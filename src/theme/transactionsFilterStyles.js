@@ -261,6 +261,25 @@ export const transactionsFilterStyles = StyleSheet.create({
   },
 
 
+  pickerModalCard: {
+    borderRadius: 14,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+  },
+  pickerTitle: {
+    color: '#1a3f6f',
+    fontSize: 20,
+    fontWeight: '800',
+    marginBottom: 8,
+  },
+  pickerActionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+    marginTop: 8,
+  },
+
   deleteModalCard: {
     borderRadius: 14,
     backgroundColor: '#ffffff',

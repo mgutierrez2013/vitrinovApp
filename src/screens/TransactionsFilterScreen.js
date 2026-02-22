@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, Image, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
@@ -135,6 +135,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
 
   const [pickerVisible, setPickerVisible] = useState(false);
   const [pickerField, setPickerField] = useState('start');
+  const [pickerTempDate, setPickerTempDate] = useState(today);
 
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -247,31 +248,22 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
   };
 
   const openDatePicker = (field) => {
+    const currentValue = field === 'start' ? startDate : endDate;
     setPickerField(field);
-
-    if (Platform.OS === 'android') {
-      const currentValue = field === 'start' ? startDate : endDate;
-
-      DateTimePickerAndroid.open({
-        value: isValidDate(currentValue) ? currentValue : today,
-        mode: 'date',
-        is24Hour: true,
-        onChange: handleDateChange,
-      });
-      return;
-    }
-
+    setPickerTempDate(isValidDate(currentValue) ? currentValue : today);
     setPickerVisible(true);
   };
 
   const handleDateChange = (_event, selectedDate) => {
-    if (Platform.OS !== 'ios') {
-      setPickerVisible(false);
-    }
-
     if (!selectedDate) {
       return;
     }
+
+    setPickerTempDate(selectedDate);
+  };
+
+  const applyDatePicker = () => {
+    const selectedDate = isValidDate(pickerTempDate) ? pickerTempDate : today;
 
     if (pickerField === 'start') {
       setStartDate(selectedDate);
@@ -284,6 +276,8 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
         setStartDate(selectedDate);
       }
     }
+
+    setPickerVisible(false);
   };
 
   const closeAllSwipeables = () => {
@@ -752,14 +746,27 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
         </View>
       </Modal>
 
-      {pickerVisible && (
-        <DateTimePicker
-          value={isValidDate(pickerField === 'start' ? startDate : endDate) ? (pickerField === 'start' ? startDate : endDate) : today}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleDateChange}
-        />
-      )}
+      <Modal transparent animationType="fade" visible={pickerVisible} onRequestClose={() => setPickerVisible(false)}>
+        <View style={styles.modalBackdrop}>
+          <View style={styles.pickerModalCard}>
+            <Text style={styles.pickerTitle}>{pickerField === 'start' ? 'Fecha desde' : 'Fecha hasta'}</Text>
+            <DateTimePicker
+              value={isValidDate(pickerTempDate) ? pickerTempDate : today}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={handleDateChange}
+            />
+            <View style={styles.pickerActionsRow}>
+              <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={() => setPickerVisible(false)}>
+                <Text style={styles.modalCancelBtnText}>Cancelar</Text>
+              </Pressable>
+              <Pressable style={[styles.modalActionBtn, styles.modalConfirmBtn]} onPress={applyDatePicker}>
+                <Text style={styles.modalActionBtnText}>Aplicar</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
