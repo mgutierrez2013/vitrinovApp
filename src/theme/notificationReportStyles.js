@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export const notificationReportStyles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f6fb' },
   header: {
-    backgroundColor: '#5b3db3',
+    backgroundColor: '#0f6dbb',
     paddingTop: 22,
     paddingBottom: 18,
     paddingHorizontal: 16,
@@ -13,7 +13,7 @@ export const notificationReportStyles = StyleSheet.create({
   },
   logoBox: { width: 102, height: 82, backgroundColor: '#fff', borderRadius: 8, overflow: 'hidden' },
   logoImage: { width: '100%', height: '100%' },
-  logoutButton: { backgroundColor: '#7f5ae1', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10 },
+  logoutButton: { backgroundColor: '#f59e0b', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10 },
   logoutText: { color: '#fff', fontSize: 14, fontWeight: '700' },
 
   content: { flex: 1, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 20 },
@@ -29,7 +29,7 @@ export const notificationReportStyles = StyleSheet.create({
     marginBottom: 10,
   },
   backButtonText: { color: '#3d2f86', fontSize: 13, fontWeight: '700' },
-  title: { color: '#35257c', fontSize: 22, fontWeight: '800', marginBottom: 12 },
+  title: { color: '#0f4f85', fontSize: 22, fontWeight: '800', marginBottom: 12 },
 
   filtersRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
   filterCol: { flex: 1 },
@@ -70,7 +70,7 @@ export const notificationReportStyles = StyleSheet.create({
 
   copyButton: {
     marginTop: 12,
-    backgroundColor: '#7c59d7',
+    backgroundColor: '#0f6dbb',
     borderRadius: 12,
     minHeight: 46,
     alignItems: 'center',

@@ -69,7 +69,7 @@ export const homeStyles = StyleSheet.create({
     marginBottom: 8,
   },
   sectionTitle: {
-    color: '#35257c',
+    color: '#0f4f85',
     fontWeight: '800',
     fontSize: 18,
   },
@@ -138,7 +138,7 @@ export const homeStyles = StyleSheet.create({
     marginBottom: 2,
   },
   transactionSubtitle: {
-    color: '#7153c6',
+    color: '#1f6fb2',
     fontSize: 16,
     fontWeight: '700',
   },
@@ -250,7 +250,7 @@ export const homeStyles = StyleSheet.create({
     marginBottom: 10,
   },
   saleModalTitle: {
-    color: '#3b2f7c',
+    color: '#0f5f9f',
     fontSize: 22,
     fontWeight: '800',
   },
@@ -401,7 +401,7 @@ export const homeStyles = StyleSheet.create({
     paddingVertical: 14,
   },
   deleteModalTitle: {
-    color: '#3b2f7c',
+    color: '#0f5f9f',
     fontSize: 22,
     fontWeight: '800',
   },

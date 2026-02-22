@@ -129,7 +129,7 @@ export const transactionsFilterStyles = StyleSheet.create({
     fontWeight: '800',
   },
   subtitleText: {
-    color: '#7153c6',
+    color: '#1f6fb2',
     fontSize: 13,
     fontWeight: '700',
   },
@@ -178,7 +178,7 @@ export const transactionsFilterStyles = StyleSheet.create({
     backgroundColor: '#e53f3f',
   },
   backBtn: {
-    backgroundColor: '#7c59d7',
+    backgroundColor: '#0f6dbb',
   },
   actionText: {
     color: '#ffffff',
@@ -194,7 +194,7 @@ export const transactionsFilterStyles = StyleSheet.create({
     paddingVertical: 14,
   },
   deleteModalTitle: {
-    color: '#3b2f7c',
+    color: '#0f5f9f',
     fontSize: 22,
     fontWeight: '800',
   },
@@ -283,7 +283,7 @@ export const transactionsFilterStyles = StyleSheet.create({
     marginBottom: 10,
   },
   modalTitle: {
-    color: '#3b2f7c',
+    color: '#0f5f9f',
     fontSize: 22,
     fontWeight: '800',
   },
@@ -383,7 +383,7 @@ export const transactionsFilterStyles = StyleSheet.create({
     paddingVertical: 11,
   },
   modalConfirmBtn: {
-    backgroundColor: '#bfaef1',
+    backgroundColor: '#1e74c6',
   },
   modalCancelBtn: {
     backgroundColor: '#ffffff',

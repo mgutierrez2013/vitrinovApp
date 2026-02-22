@@ -480,13 +480,13 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
       <View style={styles.bottomBar}>
         <Pressable style={styles.bottomIconWrap} onPress={onGoHome}>
-          <Feather name="home" size={24} color="#7c59d7" />
+          <Feather name="home" size={24} color="#0f6dbb" />
         </Pressable>
         <View style={styles.bottomIconWrapActive}>
           <Feather name="users" size={24} color="#ffffff" />
         </View>
         <Pressable style={styles.bottomIconWrap} onPress={onGoBankAccounts}>
-          <Feather name="credit-card" size={24} color="#7c59d7" />
+          <Feather name="credit-card" size={24} color="#0f6dbb" />
         </Pressable>
       </View>
 
@@ -613,7 +613,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
                   <Text style={styles.fieldLabel}>Notificado</Text>
                   <Text style={styles.switchHint}>{editNotified ? 'Activo' : 'Inactivo'}</Text>
                 </View>
-                <Switch value={editNotified} onValueChange={setEditNotified} trackColor={{ false: '#c7ccda', true: '#8a6be4' }} thumbColor="#ffffff" />
+                <Switch value={editNotified} onValueChange={setEditNotified} trackColor={{ false: '#c7ccda', true: '#1e74c6' }} thumbColor="#ffffff" />
               </View>
 
               {editError.length > 0 && <Text style={styles.errorText}>{editError}</Text>}

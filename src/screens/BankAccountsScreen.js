@@ -233,8 +233,8 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
       </View>
 
       <View style={styles.bottomBar}>
-        <Pressable style={styles.bottomIconWrap} onPress={onGoHome}><Feather name="home" size={24} color="#7c59d7" /></Pressable>
-        <Pressable style={styles.bottomIconWrap} onPress={onGoEntrepreneurs}><Feather name="users" size={24} color="#7c59d7" /></Pressable>
+        <Pressable style={styles.bottomIconWrap} onPress={onGoHome}><Feather name="home" size={24} color="#0f6dbb" /></Pressable>
+        <Pressable style={styles.bottomIconWrap} onPress={onGoEntrepreneurs}><Feather name="users" size={24} color="#0f6dbb" /></Pressable>
         <View style={styles.bottomIconWrapActive}><Feather name="credit-card" size={24} color="#ffffff" /></View>
       </View>
 

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export const bankAccountsStyles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f6fb' },
   header: {
-    backgroundColor: '#5b3db3',
+    backgroundColor: '#0f6dbb',
     paddingTop: 22,
     paddingBottom: 18,
     paddingHorizontal: 16,
@@ -13,11 +13,11 @@ export const bankAccountsStyles = StyleSheet.create({
   },
   logoBox: { width: 102, height: 82, backgroundColor: '#fff', borderRadius: 8, overflow: 'hidden' },
   logoImage: { width: '100%', height: '100%' },
-  logoutButton: { backgroundColor: '#7f5ae1', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10 },
+  logoutButton: { backgroundColor: '#f59e0b', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10 },
   logoutText: { color: '#fff', fontSize: 14, fontWeight: '700' },
 
   content: { flex: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 90 },
-  title: { color: '#35257c', fontSize: 28, fontWeight: '800', marginBottom: 10 },
+  title: { color: '#0f4f85', fontSize: 28, fontWeight: '800', marginBottom: 10 },
   searchInput: {
     borderWidth: 1,
     borderColor: '#e5e6ef',
@@ -41,24 +41,24 @@ export const bankAccountsStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  clientCardSelected: { borderColor: '#7c59d7', borderWidth: 2 },
+  clientCardSelected: { borderColor: '#0f6dbb', borderWidth: 2 },
   clientIconWrap: {
     width: 46,
     height: 46,
     borderRadius: 23,
-    backgroundColor: '#d7beff',
+    backgroundColor: '#dbeefd',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
   clientBody: { flex: 1 },
-  clientName: { color: '#3b2f7c', fontWeight: '800', fontSize: 16 },
+  clientName: { color: '#0f5f9f', fontWeight: '800', fontSize: 16 },
   clientSubtitle: { color: '#4a5060', fontSize: 13, marginTop: 2 },
 
   primaryButton: {
     marginTop: 8,
     marginBottom: 8,
-    backgroundColor: '#7c59d7',
+    backgroundColor: '#0f6dbb',
     borderRadius: 12,
     minHeight: 52,
     alignItems: 'center',
@@ -67,7 +67,7 @@ export const bankAccountsStyles = StyleSheet.create({
   primaryButtonText: { color: '#fff', fontSize: 17, fontWeight: '800' },
 
   accountsTitle: {
-    color: '#35257c',
+    color: '#0f4f85',
     fontSize: 18,
     fontWeight: '800',
     marginTop: 6,
@@ -83,7 +83,7 @@ export const bankAccountsStyles = StyleSheet.create({
     marginBottom: 10,
   },
   accountLine: { color: '#2f3446', fontSize: 14, marginBottom: 2 },
-  accountLabel: { fontWeight: '800', color: '#3b2f7c' },
+  accountLabel: { fontWeight: '800', color: '#0f5f9f' },
   accountActionsRow: { flexDirection: 'row', justifyContent: 'flex-end', gap: 8, marginTop: 8 },
   smallBtn: {
     minHeight: 34,
@@ -92,7 +92,7 @@ export const bankAccountsStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  editBtn: { backgroundColor: '#7c59d7' },
+  editBtn: { backgroundColor: '#0f6dbb' },
   deleteBtn: { backgroundColor: '#ef4040' },
   smallBtnText: { color: '#fff', fontWeight: '700', fontSize: 13 },
 
@@ -114,7 +114,7 @@ export const bankAccountsStyles = StyleSheet.create({
     width: 56,
     height: 46,
     borderRadius: 12,
-    backgroundColor: '#7c59d7',
+    backgroundColor: '#0f6dbb',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -122,7 +122,7 @@ export const bankAccountsStyles = StyleSheet.create({
   modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'center', paddingHorizontal: 14 },
   modalCard: { borderRadius: 14, backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 14, maxHeight: '92%' },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
-  modalTitle: { color: '#3b2f7c', fontSize: 20, fontWeight: '800' },
+  modalTitle: { color: '#0f5f9f', fontSize: 20, fontWeight: '800' },
   fieldLabel: { color: '#1f2433', fontSize: 14, fontWeight: '700', marginBottom: 6 },
   modalInput: {
     borderWidth: 1,
@@ -180,7 +180,7 @@ export const bankAccountsStyles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 14,
   },
-  modalConfirmBtn: { backgroundColor: '#bfaef1' },
+  modalConfirmBtn: { backgroundColor: '#1e74c6' },
   deleteBtnModal: { backgroundColor: '#ef4040' },
   modalCancelBtn: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#dfe3ef' },
   modalActionBtnText: { color: '#fff', fontWeight: '800', fontSize: 15 },

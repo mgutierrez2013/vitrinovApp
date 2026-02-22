@@ -269,7 +269,7 @@ export function BankAccountsClientScreen({ client, onGoBack, onSessionExpired, o
       <View style={styles.content}>
         <View style={styles.pageHeaderRow}>
           <Pressable style={styles.backBtn} onPress={onGoBack}>
-            <Feather name="arrow-left" size={18} color="#3b2f7c" />
+            <Feather name="arrow-left" size={18} color="#0f5f9f" />
             <Text style={styles.backBtnText}>Regresar</Text>
           </Pressable>
         </View>
@@ -287,7 +287,7 @@ export function BankAccountsClientScreen({ client, onGoBack, onSessionExpired, o
 
         {loading ? (
           <View style={styles.loadingWrap}>
-            <ActivityIndicator size="small" color="#7c59d7" />
+            <ActivityIndicator size="small" color="#0f6dbb" />
             <Text style={styles.emptyText}>Cargando cuentas...</Text>
           </View>
         ) : (

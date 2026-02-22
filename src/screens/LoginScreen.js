@@ -59,7 +59,7 @@ export function LoginScreen({ onGoRegister, onAuthSuccess }) {
           textContentType="none"
           importantForAutofill="no"
           keyboardType="email-address"
-          selectionColor="#7b59df"
+          selectionColor="#0f6dbb"
           style={[authStyles.input, hasEmailError && authStyles.inputError]}
           placeholderTextColor="#9aa3b2"
         />
@@ -79,7 +79,7 @@ export function LoginScreen({ onGoRegister, onAuthSuccess }) {
             autoComplete="off"
             textContentType="none"
             importantForAutofill="no"
-            selectionColor="#7b59df"
+            selectionColor="#0f6dbb"
             style={authStyles.passwordInput}
             placeholderTextColor="#9aa3b2"
           />

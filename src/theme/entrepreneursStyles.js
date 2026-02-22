@@ -6,7 +6,7 @@ export const entrepreneursStyles = StyleSheet.create({
     backgroundColor: '#f5f6fb',
   },
   header: {
-    backgroundColor: '#5b3db3',
+    backgroundColor: '#0f6dbb',
     paddingTop: 22,
     paddingBottom: 18,
     paddingHorizontal: 16,
@@ -26,7 +26,7 @@ export const entrepreneursStyles = StyleSheet.create({
     height: '100%',
   },
   logoutButton: {
-    backgroundColor: '#7f5ae1',
+    backgroundColor: '#f59e0b',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 10,
@@ -43,7 +43,7 @@ export const entrepreneursStyles = StyleSheet.create({
     paddingBottom: 90,
   },
   title: {
-    color: '#35257c',
+    color: '#0f4f85',
     fontSize: 28,
     fontWeight: '800',
     marginBottom: 10,
@@ -85,7 +85,7 @@ export const entrepreneursStyles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 23,
-    backgroundColor: '#d7beff',
+    backgroundColor: '#dbeefd',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -94,7 +94,7 @@ export const entrepreneursStyles = StyleSheet.create({
     flex: 1,
   },
   clientName: {
-    color: '#3b2f7c',
+    color: '#0f5f9f',
     fontWeight: '800',
     fontSize: 16,
   },
@@ -111,7 +111,7 @@ export const entrepreneursStyles = StyleSheet.create({
   primaryButton: {
     marginTop: 8,
     marginBottom: 6,
-    backgroundColor: '#7c59d7',
+    backgroundColor: '#0f6dbb',
     borderRadius: 12,
     minHeight: 54,
     alignItems: 'center',
@@ -139,7 +139,7 @@ export const entrepreneursStyles = StyleSheet.create({
     width: 56,
     height: 46,
     borderRadius: 12,
-    backgroundColor: '#7c59d7',
+    backgroundColor: '#0f6dbb',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -170,7 +170,7 @@ export const entrepreneursStyles = StyleSheet.create({
     marginBottom: 14,
   },
   modalTitle: {
-    color: '#3b2f7c',
+    color: '#0f5f9f',
     fontSize: 22,
     fontWeight: '800',
   },
@@ -278,7 +278,7 @@ export const entrepreneursStyles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   modalConfirmBtn: {
-    backgroundColor: '#bfaef1',
+    backgroundColor: '#1e74c6',
   },
   modalCancelBtn: {
     backgroundColor: '#ffffff',

@@ -11,7 +11,7 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, on
     <View style={homeStyles.container}>
       <View style={homeStyles.header}>
         <View style={homeStyles.logoBox}>
-          <Image source={{ uri: logoUri }} style={homeStyles.logoImage} resizeMode="cover" />
+          <Image source={{ uri: logoUri }} style={homeStyles.logoImage} resizeMode="contain" />
         </View>
 
         <Pressable style={homeStyles.logoutButton} onPress={onLogout}>
@@ -34,10 +34,10 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, on
           <Feather name="home" size={24} color="#ffffff" />
         </View>
         <Pressable style={homeStyles.bottomIconWrap} onPress={onGoEntrepreneurs}>
-          <Feather name="users" size={24} color="#7c59d7" />
+          <Feather name="users" size={24} color="#0f6dbb" />
         </Pressable>
         <Pressable style={homeStyles.bottomIconWrap} onPress={onGoBankAccounts}>
-          <Feather name="credit-card" size={24} color="#7c59d7" />
+          <Feather name="credit-card" size={24} color="#0f6dbb" />
         </Pressable>
       </View>
     </View>
