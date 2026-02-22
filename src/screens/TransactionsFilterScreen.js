@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, Image, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
+import { FlatList, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
@@ -9,8 +9,6 @@ import { deleteTransaction, getTransactionsByDateRange, updateTransaction } from
 import { getCachedSession } from '../services/sessionService';
 import { transactionsFilterStyles as styles } from '../theme/transactionsFilterStyles';
 
-const logoUri =
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s';
 const EL_SALVADOR_TZ = 'America/El_Salvador';
 const API_BASE_URL = 'https://apivitrinovapp.clobitech.com';
 
@@ -452,63 +450,93 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.topRow}>
-          <Image source={{ uri: logoUri }} style={styles.miniLogo} resizeMode="cover" />
+          <View>
+            <Text style={styles.reportLabel}>Reporte</Text>
+            <Text style={styles.title}>Filtrar{`
+`}Transacciones</Text>
+          </View>
           <Pressable style={styles.closeBtn} onPress={onGoHome}>
-            <Feather name="x" size={24} color="#23283a" />
+            <Feather name="x" size={20} color="#23283a" />
           </Pressable>
         </View>
-
-        <Text style={styles.title}>Filtrar Transacciones</Text>
 
         <View style={styles.datesRow}>
           {Platform.OS === 'web' ? (
             <>
-              <TextInput
-                value={webStartDateInput}
-                onChangeText={(value) => handleWebDateChange('start', value)}
-                style={styles.webDateInput}
-                placeholder="YYYY-MM-DD"
-                placeholderTextColor="#8a92a1"
-                type="date"
-              />
-              <TextInput
-                value={webEndDateInput}
-                onChangeText={(value) => handleWebDateChange('end', value)}
-                style={styles.webDateInput}
-                placeholder="YYYY-MM-DD"
-                placeholderTextColor="#8a92a1"
-                type="date"
-              />
+              <View style={styles.dateCol}>
+                <Text style={styles.filterLabel}>Desde</Text>
+                <TextInput
+                  value={webStartDateInput}
+                  onChangeText={(value) => handleWebDateChange('start', value)}
+                  style={styles.webDateInput}
+                  placeholder="YYYY-MM-DD"
+                  placeholderTextColor="#8a92a1"
+                  type="date"
+                />
+              </View>
+              <View style={styles.dateCol}>
+                <Text style={styles.filterLabel}>Hasta</Text>
+                <TextInput
+                  value={webEndDateInput}
+                  onChangeText={(value) => handleWebDateChange('end', value)}
+                  style={styles.webDateInput}
+                  placeholder="YYYY-MM-DD"
+                  placeholderTextColor="#8a92a1"
+                  type="date"
+                />
+              </View>
             </>
           ) : (
             <>
-              <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('start')}>
-                <Text style={styles.dateInputButtonText}>{toDisplayDate(startDate)}</Text>
-              </Pressable>
-              <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('end')}>
-                <Text style={styles.dateInputButtonText}>{toDisplayDate(endDate)}</Text>
-              </Pressable>
+              <View style={styles.dateCol}>
+                <Text style={styles.filterLabel}>Desde</Text>
+                <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('start')}>
+                  <Text style={styles.dateInputButtonIcon}>📅</Text>
+                  <Text style={styles.dateInputButtonText}>{toDisplayDate(startDate)}</Text>
+                </Pressable>
+              </View>
+              <View style={styles.dateCol}>
+                <Text style={styles.filterLabel}>Hasta</Text>
+                <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('end')}>
+                  <Text style={styles.dateInputButtonIcon}>📅</Text>
+                  <Text style={styles.dateInputButtonText}>{toDisplayDate(endDate)}</Text>
+                </Pressable>
+              </View>
             </>
           )}
         </View>
 
-        <TextInput
-          value={clientName}
-          onChangeText={setClientName}
-          placeholder="Nombre del emprendedor"
-          style={styles.clientInput}
-          placeholderTextColor="#8791a2"
-        />
+        <View style={styles.searchWrap}>
+          <Feather name="search" size={16} color="#a1a8b8" />
+          <TextInput
+            value={clientName}
+            onChangeText={setClientName}
+            placeholder="Nombre del emprendedor"
+            style={styles.clientInput}
+            placeholderTextColor="#8791a2"
+          />
+          {clientName.length > 0 && (
+            <Pressable onPress={() => setClientName('')}>
+              <Feather name="x" size={16} color="#a1a8b8" />
+            </Pressable>
+          )}
+        </View>
 
         <View style={styles.salesCard}>
-          <Text style={styles.salesTitle}>Ventas</Text>
-          <Text style={styles.salesValue}>{Number(sales || 0).toFixed(2)} USD</Text>
+          <View style={styles.salesLeft}>
+            <Text style={styles.salesIcon}>💰</Text>
+            <Text style={styles.salesTitle}>Ventas</Text>
+          </View>
+          <View style={styles.salesRight}>
+            <Text style={styles.salesHint}>TOTAL</Text>
+            <Text style={styles.salesValue}>{Number(sales || 0).toFixed(2)} USD</Text>
+          </View>
         </View>
 
         {loading ? (
           <Text style={styles.emptyText}>Buscando transacciones...</Text>
         ) : rows.length === 0 ? (
-          <Text style={styles.emptyText}>{error || 'No se encontraron transacciones.'}</Text>
+          <Text style={styles.emptyText}>😕 {error || 'Sin resultados'}</Text>
         ) : (
           <FlatList
             data={rows}
@@ -539,13 +567,15 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
 
                     <View style={styles.body}>
                       <Text style={styles.titleText}>{isIncome ? 'Vendiste' : 'Egreso'}</Text>
-                      <Text style={styles.subtitleText}>{(item.client_name || 'Cliente').toUpperCase()}</Text>
+                      <Text style={styles.subtitleText} numberOfLines={1}>{(item.client_name || 'Cliente').toUpperCase()}</Text>
                       <Text style={styles.dateText}>{formatTxnDate(item.transaction_date)}</Text>
                     </View>
 
-                    <Text style={isIncome ? styles.amountIncome : styles.amountExpense}>
-                      {sign}${Number(item.amount || 0).toFixed(2)} USD
-                    </Text>
+                    <View style={styles.amountPill}>
+                      <Text style={isIncome ? styles.amountIncome : styles.amountExpense}>
+                        {sign}${Number(item.amount || 0).toFixed(2)} USD
+                      </Text>
+                    </View>
                   </View>
                 </Swipeable>
               );
@@ -559,10 +589,10 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
 
       <View style={styles.bottomActions}>
         <Pressable style={[styles.actionButton, styles.clearBtn]} onPress={handleClear}>
-          <Text style={styles.actionText}>Limpiar Filtros</Text>
+          <Text style={styles.actionText}>🗑 Limpiar Filtros</Text>
         </Pressable>
         <Pressable style={[styles.actionButton, styles.backBtn]} onPress={onGoHome}>
-          <Text style={styles.actionText}>Regresar Home</Text>
+          <Text style={styles.actionText}>🏠 Regresar Home</Text>
         </Pressable>
       </View>
 
