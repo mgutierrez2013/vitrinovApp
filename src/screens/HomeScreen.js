@@ -4,7 +4,7 @@ import { HomeTransactionsPanel } from '../components/HomeTransactionsPanel';
 import { homeStyles } from '../theme/homeStyles';
 
 const logoUri =
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s';
+  'https://img.icons8.com/color/192/online-store.png';
 
 export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, onGoEntrepreneurs, onGoBankAccounts, onGoNotificationReports, onGoTransactionReports }) {
   return (

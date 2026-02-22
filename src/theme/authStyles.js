@@ -82,10 +82,10 @@ export const authStyles = StyleSheet.create({
     marginTop: 6,
     height: 42,
     borderRadius: 999,
-    backgroundColor: '#bba8f6',
+    backgroundColor: '#1e74c6',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#7b59df',
+    shadowColor: '#0e5fa8',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.2,
     shadowRadius: 16,
@@ -104,7 +104,7 @@ export const authStyles = StyleSheet.create({
   switchText: {
     marginTop: 14,
     textAlign: 'center',
-    color: '#7459cd',
+    color: '#0f6dbb',
     fontSize: 12,
     fontWeight: '700',
     textDecorationLine: 'underline',
@@ -146,7 +146,7 @@ export const authStyles = StyleSheet.create({
     backgroundColor: '#edf0f8',
   },
   modalButtonPrimary: {
-    backgroundColor: '#7b59df',
+    backgroundColor: '#1e74c6',
   },
   modalButtonTextSecondary: {
     color: '#36415c',
