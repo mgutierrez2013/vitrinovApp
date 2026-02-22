@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, Image, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
+import { FlatList, Image, Keyboard, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
@@ -271,6 +271,8 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
   };
 
   const openDatePicker = (field) => {
+    Keyboard.dismiss();
+
     const currentValue = field === 'start' ? startDate : endDate;
     const safeValue = isValidDate(currentValue) ? currentValue : today;
 
@@ -567,16 +569,24 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
             <>
               <View style={styles.dateCol}>
                 <Text style={styles.filterLabel}>Desde</Text>
-                <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('start')}>
+                <Pressable
+                  style={[styles.dateInputButton, calendarField === 'start' && styles.dateInputButtonActive]}
+                  onPress={() => openDatePicker('start')}
+                  hitSlop={10}
+                >
                   <Text style={styles.dateInputButtonIcon}>📅</Text>
-                  <Text style={styles.dateInputButtonText}>{toDisplayDate(startDate)}</Text>
+                  <Text style={styles.dateInputButtonText}>{toDisplayDate(isValidDate(startDate) ? startDate : today)}</Text>
                 </Pressable>
               </View>
               <View style={styles.dateCol}>
                 <Text style={styles.filterLabel}>Hasta</Text>
-                <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('end')}>
+                <Pressable
+                  style={[styles.dateInputButton, calendarField === 'end' && styles.dateInputButtonActive]}
+                  onPress={() => openDatePicker('end')}
+                  hitSlop={10}
+                >
                   <Text style={styles.dateInputButtonIcon}>📅</Text>
-                  <Text style={styles.dateInputButtonText}>{toDisplayDate(endDate)}</Text>
+                  <Text style={styles.dateInputButtonText}>{toDisplayDate(isValidDate(endDate) ? endDate : today)}</Text>
                 </Pressable>
               </View>
             </>

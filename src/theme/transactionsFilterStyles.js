@@ -52,6 +52,7 @@ export const transactionsFilterStyles = StyleSheet.create({
   },
   dateCol: {
     flex: 1,
+    minHeight: 82,
   },
   filterLabel: {
     fontSize: 10,
@@ -66,19 +67,28 @@ export const transactionsFilterStyles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     backgroundColor: '#ffffff',
-    borderColor: '#eeeeee',
+    borderColor: '#e6e8ee',
     borderWidth: 1.5,
     borderRadius: 12,
-    height: 48,
+    minHeight: 56,
     paddingHorizontal: 14,
+    shadowColor: '#000',
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 1,
   },
   dateInputButtonIcon: {
-    fontSize: 14,
+    fontSize: 16,
   },
   dateInputButtonText: {
-    fontSize: 13,
+    flex: 1,
+    fontSize: 14,
     color: '#1a3f6f',
-    fontWeight: '600',
+    fontWeight: '700',
+  },
+  dateInputButtonActive: {
+    borderColor: '#f5a623',
   },
   webDateInput: {
     flex: 1,
