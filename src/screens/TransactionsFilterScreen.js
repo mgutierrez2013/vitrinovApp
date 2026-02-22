@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, Image, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
@@ -11,6 +11,11 @@ import { transactionsFilterStyles as styles } from '../theme/transactionsFilterS
 
 const EL_SALVADOR_TZ = 'America/El_Salvador';
 const API_BASE_URL = 'https://apivitrinovapp.clobitech.com';
+
+
+function isValidDate(value) {
+  return value instanceof Date && !Number.isNaN(value.getTime());
+}
 
 function formatDatePartsInElSalvador(date) {
   const parts = new Intl.DateTimeFormat('en-US', {
@@ -29,11 +34,19 @@ function formatDatePartsInElSalvador(date) {
 }
 
 function toApiDate(date) {
+  if (!isValidDate(date)) {
+    return '';
+  }
+
   const { year, month, day } = formatDatePartsInElSalvador(date);
   return `${year}-${month}-${day}`;
 }
 
 function toDisplayDate(date) {
+  if (!isValidDate(date)) {
+    return '--/--/----';
+  }
+
   const { year, month, day } = formatDatePartsInElSalvador(date);
   return `${day}/${month}/${year}`;
 }
@@ -110,8 +123,8 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
   const today = useMemo(() => todayInElSalvador(), []);
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
-  const [webStartDateInput, setWebStartDateInput] = useState(toApiDate(today));
-  const [webEndDateInput, setWebEndDateInput] = useState(toApiDate(today));
+  const [webStartDateInput, setWebStartDateInput] = useState(toApiDate(today) || '');
+  const [webEndDateInput, setWebEndDateInput] = useState(toApiDate(today) || '');
   const [clientName, setClientName] = useState('');
   const [refreshTick, setRefreshTick] = useState(0);
 
@@ -235,6 +248,19 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
 
   const openDatePicker = (field) => {
     setPickerField(field);
+
+    if (Platform.OS === 'android') {
+      const currentValue = field === 'start' ? startDate : endDate;
+
+      DateTimePickerAndroid.open({
+        value: isValidDate(currentValue) ? currentValue : today,
+        mode: 'date',
+        is24Hour: true,
+        onChange: handleDateChange,
+      });
+      return;
+    }
+
     setPickerVisible(true);
   };
 
@@ -728,7 +754,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
 
       {pickerVisible && (
         <DateTimePicker
-          value={pickerField === 'start' ? startDate : endDate}
+          value={isValidDate(pickerField === 'start' ? startDate : endDate) ? (pickerField === 'start' ? startDate : endDate) : today}
           mode="date"
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           onChange={handleDateChange}
