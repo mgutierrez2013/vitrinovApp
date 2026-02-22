@@ -717,60 +717,74 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
 
       <Modal transparent animationType="fade" visible={editModalVisible} onRequestClose={closeEditModal}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalCard}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Editar Venta</Text>
-              <Pressable onPress={closeEditModal}>
-                <Feather name="x" size={28} color="#2a2f3d" />
+          <View style={styles.editModalCard}>
+            <View style={styles.editModalHeader}>
+              <View>
+                <Text style={styles.editModalOverline}>Modificar</Text>
+                <Text style={styles.editModalTitle}>Editar Venta</Text>
+              </View>
+              <Pressable style={styles.editCloseBtn} onPress={closeEditModal}>
+                <Feather name="x" size={18} color="#555" />
               </Pressable>
             </View>
 
             <Text style={styles.fieldLabel}>Emprendimiento</Text>
-            <View style={styles.readonlyField}>
-              <Text style={styles.readonlyFieldText} numberOfLines={1}>
+            <View style={styles.editReadonlyCard}>
+              <View style={styles.editReadonlyAvatar}>
+                <Text style={styles.editReadonlyAvatarText}>{getInitials(editingTransaction?.client_name || '')}</Text>
+              </View>
+              <Text style={styles.editReadonlyName} numberOfLines={1}>
                 {(editingTransaction?.client_name || 'Cliente').toUpperCase()}
               </Text>
             </View>
 
             <Text style={styles.fieldLabel}>Cantidad *</Text>
-            <TextInput
-              value={editAmount}
-              onChangeText={handleEditAmountChange}
-              placeholder="Ingrese la cantidad de venta"
-              style={styles.modalInput}
-              keyboardType="decimal-pad"
-              placeholderTextColor="#8a92a1"
-            />
+            <View style={styles.amountInputWrap}>
+              <View style={styles.amountPrefix}><Text style={styles.amountPrefixText}>$</Text></View>
+              <TextInput
+                value={editAmount}
+                onChangeText={handleEditAmountChange}
+                placeholder="0.00"
+                style={styles.amountInput}
+                keyboardType="decimal-pad"
+                placeholderTextColor="#8a92a1"
+              />
+              <Text style={styles.amountSuffix}>USD</Text>
+            </View>
 
             <Text style={styles.fieldLabel}>Foto (opcional)</Text>
-            <Pressable style={styles.fileButton} onPress={pickEditImage}>
-              <Text style={styles.fileButtonText}>Seleccionar archivo</Text>
-            </Pressable>
             {editImagePreviewUri ? (
-              <View style={styles.imagePreviewWrap}>
+              <View style={styles.editPreviewCard}>
                 <Pressable onPress={() => setImageZoomVisible(true)}>
-                  <Image source={{ uri: editImagePreviewUri }} style={styles.imagePreview} resizeMode="cover" />
+                  <Image source={{ uri: editImagePreviewUri }} style={styles.editPreviewImage} resizeMode="cover" />
                 </Pressable>
-                <Pressable
-                  style={styles.removeImageBtn}
-                  onPress={() => {
-                    setEditImagePreviewUri('');
-                    setEditImageAsset(null);
-                    setImageZoomVisible(false);
-                  }}
-                >
-                  <Feather name="x" size={12} color="#ffffff" />
-                </Pressable>
+                <View style={styles.editPreviewActions}>
+                  <Pressable style={styles.photoActionBtn} onPress={pickEditImage}>
+                    <Text style={styles.photoActionText}>🔄 Cambiar foto</Text>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.photoActionBtn, styles.photoActionDanger]}
+                    onPress={() => {
+                      setEditImagePreviewUri('');
+                      setEditImageAsset(null);
+                      setImageZoomVisible(false);
+                    }}
+                  >
+                    <Text style={styles.photoActionText}>🗑 Quitar</Text>
+                  </Pressable>
+                </View>
               </View>
             ) : (
-              <Text style={styles.smallText}>Sin archivos seleccionados</Text>
+              <Pressable style={styles.fileButton} onPress={pickEditImage}>
+                <Text style={styles.fileButtonText}>📎 Seleccionar archivo</Text>
+              </Pressable>
             )}
 
             <Text style={styles.fieldLabel}>Notas (opcional)</Text>
             <TextInput
               value={editNotes}
               onChangeText={setEditNotes}
-              placeholder="Escribe una nota (opcional)"
+              placeholder="Agrega una nota..."
               style={[styles.modalInput, styles.notesInput]}
               placeholderTextColor="#8a92a1"
               multiline
@@ -778,16 +792,16 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
 
             {editMessage.length > 0 && <Text style={styles.errorText}>{editMessage}</Text>}
 
-            <View style={styles.modalActionsRow}>
+            <View style={styles.editModalActions}>
               <Pressable
-                style={[styles.modalActionBtn, styles.modalConfirmBtn, editLoading && { opacity: 0.6 }]}
+                style={[styles.editSaveBtn, editLoading && { opacity: 0.7 }]}
                 onPress={handleUpdateTransaction}
                 disabled={editLoading}
               >
-                <Text style={styles.modalActionBtnText}>{editLoading ? 'Guardando...' : 'Actualizar'}</Text>
+                <Text style={styles.editSaveText}>{editLoading ? 'Guardando...' : 'Actualizar'}</Text>
               </Pressable>
-              <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={closeEditModal}>
-                <Text style={styles.modalCancelBtnText}>Cancelar</Text>
+              <Pressable style={styles.editCancelBtn} onPress={closeEditModal}>
+                <Text style={styles.editCancelText}>Cancelar</Text>
               </Pressable>
             </View>
           </View>
