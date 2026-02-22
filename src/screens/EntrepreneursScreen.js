@@ -480,13 +480,13 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
       <View style={styles.bottomBar}>
         <Pressable style={styles.bottomIconWrap} onPress={onGoHome}>
-          <Feather name="home" size={24} color="#0f6dbb" />
+          <Feather name="home" size={24} color="#fff" />
         </Pressable>
         <View style={styles.bottomIconWrapActive}>
-          <Feather name="users" size={24} color="#0f6dbb" />
+          <Feather name="users" size={24} color="#fff" />
         </View>
         <Pressable style={styles.bottomIconWrap} onPress={onGoBankAccounts}>
-          <Feather name="credit-card" size={24} color="#0f6dbb" />
+          <Feather name="credit-card" size={24} color="#fff" />
         </Pressable>
       </View>
 

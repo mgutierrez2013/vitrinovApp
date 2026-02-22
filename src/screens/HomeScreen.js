@@ -22,6 +22,8 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, on
         </Pressable>
       </View>
 
+      <View style={homeStyles.headerWave} />
+
       <HomeTransactionsPanel
         onSessionExpired={onSessionExpired}
         onGoAllTransactions={onGoAllTransactions}
@@ -31,13 +33,13 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, on
 
       <View style={homeStyles.bottomBar}>
         <View style={homeStyles.bottomIconWrapActive}>
-          <Feather name="home" size={24} color="#0f6dbb" />
+          <Feather name="home" size={24} color="#f5a623" />
         </View>
         <Pressable style={homeStyles.bottomIconWrap} onPress={onGoEntrepreneurs}>
-          <Feather name="users" size={24} color="#0f6dbb" />
+          <Feather name="users" size={24} color="#2563a8" />
         </Pressable>
         <Pressable style={homeStyles.bottomIconWrap} onPress={onGoBankAccounts}>
-          <Feather name="credit-card" size={24} color="#0f6dbb" />
+          <Feather name="credit-card" size={24} color="#2563a8" />
         </Pressable>
       </View>
     </View>

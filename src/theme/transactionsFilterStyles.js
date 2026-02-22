@@ -77,7 +77,7 @@ export const transactionsFilterStyles = StyleSheet.create({
     marginBottom: 12,
   },
   salesCard: {
-    backgroundColor: '#0f6dbb',
+    backgroundColor: '#d97706',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,

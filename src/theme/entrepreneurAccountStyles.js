@@ -72,7 +72,7 @@ export const entrepreneurAccountStyles = StyleSheet.create({
     color: '#273143',
   },
   salesCard: {
-    backgroundColor: '#0f6dbb',
+    backgroundColor: '#d97706',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -95,7 +95,7 @@ export const entrepreneurAccountStyles = StyleSheet.create({
     marginBottom: 10,
   },
   reportBtn: {
-    backgroundColor: '#0f6dbb',
+    backgroundColor: '#d97706',
     borderRadius: 12,
     minHeight: 46,
     alignItems: 'center',

@@ -574,14 +574,14 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
     <>
       <View style={homeStyles.content}>
         <View style={homeStyles.salesCard}>
-          <Text style={homeStyles.salesTitle}>Ventas</Text>
+          <Text style={homeStyles.salesTitle}>Total de Ventas</Text>
           <Text style={homeStyles.salesValue}>${Number(sales || 0).toFixed(2)}</Text>
         </View>
 
         <View style={homeStyles.sectionHeader}>
           <Text style={homeStyles.sectionTitle}>Transacciones</Text>
           <Pressable onPress={onGoAllTransactions}>
-            <Text style={homeStyles.sectionLink}>Ver todo</Text>
+            <Text style={homeStyles.sectionLink}>Ver todo →</Text>
           </Pressable>
         </View>
 
@@ -595,7 +595,7 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
             keyExtractor={(item) => String(item.id)}
             renderSectionHeader={({ section: { title } }) => (
               <View style={homeStyles.stickyDateHeaderWrap}>
-                <Text style={homeStyles.dateTitle}>{title}</Text>
+                <Text style={homeStyles.dateTitle}>📅 {title}</Text>
               </View>
             )}
             renderItem={({ item }) => {
@@ -629,9 +629,11 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
                       </Text>
                     </View>
 
-                    <Text style={[homeStyles.amountText, isIncome ? homeStyles.amountIncome : homeStyles.amountExpense]}>
-                      {sign}${Number(item.amount || 0).toFixed(2)} USD
-                    </Text>
+                    <View style={homeStyles.amountPill}>
+                      <Text style={[homeStyles.amountText, isIncome ? homeStyles.amountIncome : homeStyles.amountExpense]}>
+                        {sign}${Number(item.amount || 0).toFixed(2)} USD
+                      </Text>
+                    </View>
                   </View>
                 </Swipeable>
               );
@@ -646,15 +648,15 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
         <View style={homeStyles.divider} />
 
         <Pressable style={homeStyles.registerSaleButton} onPress={openSaleModal}>
-          <Text style={homeStyles.registerSaleText}>Registrar Venta</Text>
+          <Text style={homeStyles.registerSaleText}>+ Registrar Venta</Text>
         </Pressable>
 
         <Pressable style={homeStyles.notificationReportButton} onPress={handleGoNotificationReports}>
-          <Text style={homeStyles.notificationReportButtonText}>Reporte Notificaciones</Text>
+          <Text style={homeStyles.notificationReportButtonText}>🔔 Reporte Notificaciones</Text>
         </Pressable>
 
         <Pressable style={homeStyles.transactionReportButton} onPress={handleGoTransactionReports}>
-          <Text style={homeStyles.transactionReportButtonText}>Reporte Transacciones</Text>
+          <Text style={homeStyles.transactionReportButtonText}>📊 Reporte Transacciones</Text>
         </Pressable>
       </View>
 

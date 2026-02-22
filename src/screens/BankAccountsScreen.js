@@ -233,9 +233,9 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
       </View>
 
       <View style={styles.bottomBar}>
-        <Pressable style={styles.bottomIconWrap} onPress={onGoHome}><Feather name="home" size={24} color="#0f6dbb" /></Pressable>
-        <Pressable style={styles.bottomIconWrap} onPress={onGoEntrepreneurs}><Feather name="users" size={24} color="#0f6dbb" /></Pressable>
-        <View style={styles.bottomIconWrapActive}><Feather name="credit-card" size={24} color="#0f6dbb" /></View>
+        <Pressable style={styles.bottomIconWrap} onPress={onGoHome}><Feather name="home" size={24} color="#fff" /></Pressable>
+        <Pressable style={styles.bottomIconWrap} onPress={onGoEntrepreneurs}><Feather name="users" size={24} color="#fff" /></Pressable>
+        <View style={styles.bottomIconWrapActive}><Feather name="credit-card" size={24} color="#fff" /></View>
       </View>
 
       <Modal transparent animationType="fade" visible={modalVisible} onRequestClose={closeModal}>

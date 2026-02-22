@@ -26,7 +26,7 @@ export const entrepreneursStyles = StyleSheet.create({
     height: '100%',
   },
   logoutButton: {
-    backgroundColor: '#0f6dbb',
+    backgroundColor: '#d97706',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 10,
