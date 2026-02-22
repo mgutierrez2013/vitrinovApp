@@ -685,16 +685,27 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
 
       <Modal transparent animationType="fade" visible={deleteModalVisible} onRequestClose={closeDeleteModal}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.deleteModalCard}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.deleteModalTitle}>Eliminar Transacción</Text>
-              <Pressable onPress={closeDeleteModal}>
-                <Feather name="x" size={28} color="#2a2f3d" />
-              </Pressable>
+          <View style={styles.deleteModalCardModern}>
+            <View style={styles.deleteIconWrap}>
+              <Text style={styles.deleteIconText}>🗑️</Text>
+            </View>
+
+            <Text style={styles.deleteModalTitle}>Eliminar Transacción</Text>
+
+            <View style={styles.deleteTxInfoCard}>
+              <View style={styles.deleteTxAvatar}>
+                <Text style={styles.deleteTxAvatarText}>{getInitials(deletingTransaction?.client_name || '')}</Text>
+              </View>
+              <View style={styles.deleteTxBody}>
+                <Text style={styles.deleteTxName} numberOfLines={1}>{(deletingTransaction?.client_name || 'Cliente').toUpperCase()}</Text>
+                <Text style={styles.deleteTxAmount}>
+                  {(deletingTransaction?.transaction_type === 'income' ? '+' : '-')}${Number(deletingTransaction?.amount || 0).toFixed(2)} USD
+                </Text>
+              </View>
             </View>
 
             <Text style={styles.deleteModalMessage}>
-              ¿Estás seguro de que deseas eliminar esta transacción? Esta acción no se puede deshacer.
+              ¿Estás seguro de que deseas eliminar esta transacción?{' '}<Text style={styles.deleteWarnStrong}>Esta acción no se puede deshacer.</Text>
             </Text>
 
             {deleteMessage.length > 0 && <Text style={styles.errorText}>{deleteMessage}</Text>}
@@ -708,7 +719,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
                 onPress={handleDeleteTransaction}
                 disabled={deleteLoading}
               >
-                <Text style={styles.deleteConfirmText}>{deleteLoading ? 'Eliminando...' : 'Eliminar'}</Text>
+                <Text style={styles.deleteConfirmText}>{deleteLoading ? '⏳ Eliminando...' : '🗑 Eliminar'}</Text>
               </Pressable>
             </View>
           </View>

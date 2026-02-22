@@ -508,6 +508,69 @@ export const transactionsFilterStyles = StyleSheet.create({
     fontSize: 15,
   },
 
+
+  deleteModalCardModern: {
+    borderRadius: 24,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+  },
+  deleteIconWrap: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ffe8e7',
+    marginBottom: 14,
+  },
+  deleteIconText: {
+    fontSize: 30,
+  },
+  deleteTxInfoCard: {
+    backgroundColor: '#fff4e5',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginTop: 10,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  deleteTxAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#f5a623',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  deleteTxAvatarText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  deleteTxBody: {
+    flex: 1,
+  },
+  deleteTxName: {
+    color: '#2563a8',
+    fontWeight: '700',
+    fontSize: 13,
+  },
+  deleteTxAmount: {
+    color: '#1a9e5c',
+    fontWeight: '800',
+    fontSize: 13,
+    marginTop: 1,
+  },
+  deleteWarnStrong: {
+    color: '#e8453c',
+    fontWeight: '700',
+  },
+
   deleteModalCard: {
     borderRadius: 14,
     backgroundColor: '#ffffff',
@@ -515,16 +578,18 @@ export const transactionsFilterStyles = StyleSheet.create({
     paddingVertical: 14,
   },
   deleteModalTitle: {
-    color: '#0f5f9f',
-    fontSize: 22,
+    color: '#1a3f6f',
+    fontSize: 20,
     fontWeight: '800',
+    textAlign: 'center',
+    marginBottom: 2,
   },
   deleteModalMessage: {
-    color: '#3d4352',
-    fontSize: 18,
-    lineHeight: 30,
+    color: '#666',
+    fontSize: 14,
+    lineHeight: 21,
     textAlign: 'center',
-    marginTop: 14,
+    marginTop: 2,
     marginBottom: 22,
   },
   deleteActionsRow: {
@@ -534,27 +599,27 @@ export const transactionsFilterStyles = StyleSheet.create({
   },
   deleteBtn: {
     flex: 1,
-    borderRadius: 26,
-    minHeight: 52,
+    borderRadius: 14,
+    minHeight: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
   deleteCancelBtn: {
-    borderWidth: 1,
-    borderColor: '#dfdfec',
-    backgroundColor: '#ffffff',
+    borderWidth: 1.5,
+    borderColor: '#eee',
+    backgroundColor: '#f2f4f7',
   },
   deleteConfirmBtn: {
-    backgroundColor: '#ef4040',
+    backgroundColor: '#e8453c',
   },
   deleteCancelText: {
-    color: '#2d3342',
-    fontSize: 16,
+    color: '#555',
+    fontSize: 14,
     fontWeight: '700',
   },
   deleteConfirmText: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '800',
   },
 
