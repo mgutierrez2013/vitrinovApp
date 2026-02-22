@@ -662,43 +662,78 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
 
       <Modal transparent animationType="fade" visible={saleModalVisible} onRequestClose={closeSaleModal}>
         <View style={homeStyles.saleModalBackdrop}>
-          <View style={homeStyles.saleModalCard}>
-            <View style={homeStyles.saleModalHeader}>
-              <Text style={homeStyles.saleModalTitle}>Registrar Venta</Text>
-              <Pressable onPress={closeSaleModal}>
-                <Feather name="x" size={28} color="#2a2f3d" />
+          <View style={homeStyles.registerModalCard}>
+            <View style={homeStyles.registerModalHeader}>
+              <View>
+                <Text style={homeStyles.registerModalOverline}>Nueva</Text>
+                <Text style={homeStyles.registerModalTitle}>Registrar Venta</Text>
+              </View>
+              <Pressable style={homeStyles.registerCloseBtn} onPress={closeSaleModal}>
+                <Feather name="x" size={18} color="#4f5663" />
               </Pressable>
             </View>
 
-            <Pressable style={homeStyles.clientSelect} onPress={() => setClientSelectorVisible(true)}>
-              <Text style={homeStyles.clientSelectText} numberOfLines={1}>
-                {selectedClientName}
-              </Text>
+            <Text style={homeStyles.fieldLabel}>Emprendimiento *</Text>
+            <Pressable
+              style={[
+                homeStyles.registerClientSelect,
+                selectedClientId ? homeStyles.registerClientSelectActive : null,
+              ]}
+              onPress={() => setClientSelectorVisible(true)}
+            >
+              {selectedClientId ? (
+                <>
+                  <View style={homeStyles.registerClientAvatar}>
+                    <Text style={homeStyles.registerClientAvatarText}>{getInitials(selectedClientName)}</Text>
+                  </View>
+                  <Text style={homeStyles.registerClientTextActive} numberOfLines={1}>
+                    {selectedClientName}
+                  </Text>
+                  <Text style={homeStyles.registerClientHint}>Cambiar ›</Text>
+                </>
+              ) : (
+                <>
+                  <Text style={homeStyles.registerClientIcon}>👤</Text>
+                  <Text style={homeStyles.registerClientText}>Selecciona un emprendedor</Text>
+                  <Text style={homeStyles.registerClientArrow}>›</Text>
+                </>
+              )}
             </Pressable>
 
             <Text style={homeStyles.fieldLabel}>Cantidad *</Text>
-            <TextInput
-              value={amount}
-              onChangeText={handleAmountChange}
-              placeholder="Ingrese la cantidad de venta"
-              style={homeStyles.modalInput}
-              keyboardType="decimal-pad"
-              placeholderTextColor="#8a92a1"
-            />
+            <View style={homeStyles.amountInputWrap}>
+              <View style={homeStyles.amountPrefix}>
+                <Text style={homeStyles.amountPrefixText}>$</Text>
+              </View>
+              <TextInput
+                value={amount}
+                onChangeText={handleAmountChange}
+                placeholder="0.00"
+                style={homeStyles.amountInput}
+                keyboardType="decimal-pad"
+                placeholderTextColor="#8a92a1"
+              />
+              <Text style={homeStyles.amountSuffix}>USD</Text>
+            </View>
 
             <Text style={homeStyles.fieldLabel}>Foto (opcional)</Text>
-            <Pressable style={homeStyles.fileButton} onPress={pickImage}>
-              <Text style={homeStyles.fileButtonText}>Seleccionar archivo</Text>
-            </Pressable>
             {imageAsset?.uri ? (
-              <View style={homeStyles.imagePreviewWrap}>
-                <Image source={{ uri: imageAsset.uri }} style={homeStyles.imagePreview} resizeMode="cover" />
-                <Pressable style={homeStyles.removeImageBtn} onPress={() => setImageAsset(null)}>
-                  <Feather name="x" size={12} color="#ffffff" />
-                </Pressable>
+              <View style={homeStyles.editPreviewCard}>
+                <Image source={{ uri: imageAsset.uri }} style={homeStyles.editPreviewImage} resizeMode="cover" />
+                <View style={homeStyles.editPreviewActions}>
+                  <Pressable style={homeStyles.photoActionBtn} onPress={pickImage}>
+                    <Text style={homeStyles.photoActionText}>🔄 Cambiar</Text>
+                  </Pressable>
+                  <Pressable style={[homeStyles.photoActionBtn, homeStyles.photoActionDanger]} onPress={() => setImageAsset(null)}>
+                    <Text style={homeStyles.photoActionText}>🗑 Quitar</Text>
+                  </Pressable>
+                </View>
               </View>
             ) : (
-              <Text style={homeStyles.smallText}>Sin archivos seleccionados</Text>
+              <Pressable style={homeStyles.fileButton} onPress={pickImage}>
+                <Text style={homeStyles.fileButtonText}>📎 Seleccionar archivo</Text>
+                <Text style={homeStyles.smallText}>Sin archivos seleccionados</Text>
+              </Pressable>
             )}
 
             <Text style={homeStyles.fieldLabel}>Notas (opcional)</Text>
@@ -712,22 +747,23 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
             />
 
             <Text style={homeStyles.fieldLabel}>Fecha</Text>
-            <View style={homeStyles.dateDisplayWrap}>
+            <View style={homeStyles.registerDateWrap}>
+              <Text style={homeStyles.registerDateIcon}>🕐</Text>
               <Text style={homeStyles.dateDisplayText}>{saleDateDisplay}</Text>
             </View>
 
             {saleMessage.length > 0 && <Text style={homeStyles.saleErrorText}>{saleMessage}</Text>}
 
-            <View style={homeStyles.modalActionsRow}>
+            <View style={homeStyles.editModalActions}>
               <Pressable
-                style={[homeStyles.modalActionBtn, homeStyles.modalConfirmBtn, saleLoading && { opacity: 0.6 }]}
+                style={[homeStyles.editSaveBtn, saleLoading && { opacity: 0.6 }]}
                 onPress={handleConfirmSale}
                 disabled={saleLoading || clientsLoading}
               >
-                <Text style={homeStyles.modalActionBtnText}>{saleLoading ? 'Guardando...' : 'Confirmar'}</Text>
+                <Text style={homeStyles.editSaveText}>{saleLoading ? 'Guardando...' : 'Confirmar'}</Text>
               </Pressable>
-              <Pressable style={[homeStyles.modalActionBtn, homeStyles.modalCancelBtn]} onPress={closeSaleModal}>
-                <Text style={homeStyles.modalCancelBtnText}>Cancelar</Text>
+              <Pressable style={homeStyles.editCancelBtn} onPress={closeSaleModal}>
+                <Text style={homeStyles.editCancelText}>Cancelar</Text>
               </Pressable>
             </View>
           </View>
@@ -736,53 +772,69 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
 
       <Modal transparent animationType="fade" visible={editModalVisible} onRequestClose={closeEditModal}>
         <View style={homeStyles.saleModalBackdrop}>
-          <View style={homeStyles.saleModalCard}>
-            <View style={homeStyles.saleModalHeader}>
-              <Text style={homeStyles.saleModalTitle}>Editar Venta</Text>
-              <Pressable onPress={closeEditModal}>
-                <Feather name="x" size={28} color="#2a2f3d" />
+          <View style={homeStyles.editModalCard}>
+            <View style={homeStyles.editModalHeader}>
+              <View>
+                <Text style={homeStyles.editModalOverline}>Modificar</Text>
+                <Text style={homeStyles.editModalTitle}>Editar Venta</Text>
+              </View>
+              <Pressable style={homeStyles.editCloseBtn} onPress={closeEditModal}>
+                <Feather name="x" size={18} color="#4f5663" />
               </Pressable>
             </View>
 
             <Text style={homeStyles.fieldLabel}>Emprendimiento</Text>
-            <View style={homeStyles.readonlyField}>
-              <Text style={homeStyles.readonlyFieldText} numberOfLines={1}>
+            <View style={homeStyles.editReadonlyCard}>
+              <View style={homeStyles.editReadonlyAvatar}>
+                <Text style={homeStyles.editReadonlyAvatarText}>{getInitials(editingTransaction?.client_name || '')}</Text>
+              </View>
+              <Text style={homeStyles.editReadonlyName} numberOfLines={1}>
                 {(editingTransaction?.client_name || 'Cliente').toUpperCase()}
               </Text>
             </View>
 
             <Text style={homeStyles.fieldLabel}>Cantidad *</Text>
-            <TextInput
-              value={editAmount}
-              onChangeText={handleEditAmountChange}
-              placeholder="Ingrese la cantidad de venta"
-              style={homeStyles.modalInput}
-              keyboardType="decimal-pad"
-              placeholderTextColor="#8a92a1"
-            />
+            <View style={homeStyles.amountInputWrap}>
+              <View style={homeStyles.amountPrefix}>
+                <Text style={homeStyles.amountPrefixText}>$</Text>
+              </View>
+              <TextInput
+                value={editAmount}
+                onChangeText={handleEditAmountChange}
+                placeholder="Ingrese la cantidad de venta"
+                style={homeStyles.amountInput}
+                keyboardType="decimal-pad"
+                placeholderTextColor="#8a92a1"
+              />
+              <Text style={homeStyles.amountSuffix}>USD</Text>
+            </View>
 
             <Text style={homeStyles.fieldLabel}>Foto (opcional)</Text>
-            <Pressable style={homeStyles.fileButton} onPress={pickEditImage}>
-              <Text style={homeStyles.fileButtonText}>Seleccionar archivo</Text>
-            </Pressable>
             {editImagePreviewUri ? (
-              <View style={homeStyles.imagePreviewWrap}>
+              <View style={homeStyles.editPreviewCard}>
                 <Pressable onPress={() => setImageZoomVisible(true)}>
-                  <Image source={{ uri: editImagePreviewUri }} style={homeStyles.imagePreview} resizeMode="cover" />
+                  <Image source={{ uri: editImagePreviewUri }} style={homeStyles.editPreviewImage} resizeMode="cover" />
                 </Pressable>
-                <Pressable
-                  style={homeStyles.removeImageBtn}
-                  onPress={() => {
-                    setEditImagePreviewUri('');
-                    setEditImageAsset(null);
-                    setImageZoomVisible(false);
-                  }}
-                >
-                  <Feather name="x" size={12} color="#ffffff" />
-                </Pressable>
+                <View style={homeStyles.editPreviewActions}>
+                  <Pressable style={homeStyles.photoActionBtn} onPress={pickEditImage}>
+                    <Text style={homeStyles.photoActionText}>🔄 Cambiar foto</Text>
+                  </Pressable>
+                  <Pressable
+                    style={[homeStyles.photoActionBtn, homeStyles.photoActionDanger]}
+                    onPress={() => {
+                      setEditImagePreviewUri('');
+                      setEditImageAsset(null);
+                      setImageZoomVisible(false);
+                    }}
+                  >
+                    <Text style={homeStyles.photoActionText}>🗑 Quitar</Text>
+                  </Pressable>
+                </View>
               </View>
             ) : (
-              <Text style={homeStyles.smallText}>Sin archivos seleccionados</Text>
+              <Pressable style={homeStyles.fileButton} onPress={pickEditImage}>
+                <Text style={homeStyles.fileButtonText}>📎 Seleccionar archivo</Text>
+              </Pressable>
             )}
 
             <Text style={homeStyles.fieldLabel}>Notas (opcional)</Text>
@@ -797,16 +849,16 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
 
             {editMessage.length > 0 && <Text style={homeStyles.saleErrorText}>{editMessage}</Text>}
 
-            <View style={homeStyles.modalActionsRow}>
+            <View style={homeStyles.editModalActions}>
               <Pressable
-                style={[homeStyles.modalActionBtn, homeStyles.modalConfirmBtn, editLoading && { opacity: 0.6 }]}
+                style={[homeStyles.editSaveBtn, editLoading && { opacity: 0.6 }]}
                 onPress={handleUpdateTransaction}
                 disabled={editLoading}
               >
-                <Text style={homeStyles.modalActionBtnText}>{editLoading ? 'Guardando...' : 'Actualizar'}</Text>
+                <Text style={homeStyles.editSaveText}>{editLoading ? 'Guardando...' : 'Actualizar'}</Text>
               </Pressable>
-              <Pressable style={[homeStyles.modalActionBtn, homeStyles.modalCancelBtn]} onPress={closeEditModal}>
-                <Text style={homeStyles.modalCancelBtnText}>Cancelar</Text>
+              <Pressable style={homeStyles.editCancelBtn} onPress={closeEditModal}>
+                <Text style={homeStyles.editCancelText}>Cancelar</Text>
               </Pressable>
             </View>
           </View>
@@ -815,16 +867,28 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
 
       <Modal transparent animationType="fade" visible={deleteModalVisible} onRequestClose={closeDeleteModal}>
         <View style={homeStyles.saleModalBackdrop}>
-          <View style={homeStyles.deleteModalCard}>
-            <View style={homeStyles.saleModalHeader}>
-              <Text style={homeStyles.deleteModalTitle}>Eliminar Transacción</Text>
-              <Pressable onPress={closeDeleteModal}>
-                <Feather name="x" size={28} color="#2a2f3d" />
-              </Pressable>
+          <View style={homeStyles.deleteModalCardModern}>
+            <View style={homeStyles.deleteIconWrap}>
+              <Text style={homeStyles.deleteIconText}>🗑️</Text>
+            </View>
+
+            <Text style={homeStyles.deleteModalTitle}>Eliminar Transacción</Text>
+
+            <View style={homeStyles.deleteTxInfoCard}>
+              <View style={homeStyles.deleteTxAvatar}>
+                <Text style={homeStyles.deleteTxAvatarText}>{getInitials(deletingTransaction?.client_name || '')}</Text>
+              </View>
+              <View style={homeStyles.deleteTxBody}>
+                <Text style={homeStyles.deleteTxName} numberOfLines={1}>
+                  {(deletingTransaction?.client_name || 'Cliente').toUpperCase()}
+                </Text>
+                <Text style={homeStyles.deleteTxAmount}>+${Number(deletingTransaction?.amount || 0).toFixed(2)} USD</Text>
+              </View>
             </View>
 
             <Text style={homeStyles.deleteModalMessage}>
-              ¿Estás seguro de que deseas eliminar esta transacción? Esta acción no se puede deshacer.
+              ¿Estás seguro de que deseas eliminar esta transacción?{' '}
+              <Text style={homeStyles.deleteWarnStrong}>Esta acción no se puede deshacer.</Text>
             </Text>
 
             {deleteMessage.length > 0 && <Text style={homeStyles.saleErrorText}>{deleteMessage}</Text>}
@@ -838,7 +902,7 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
                 onPress={handleDeleteTransaction}
                 disabled={deleteLoading}
               >
-                <Text style={homeStyles.deleteConfirmText}>{deleteLoading ? 'Eliminando...' : 'Eliminar'}</Text>
+                <Text style={homeStyles.deleteConfirmText}>{deleteLoading ? '⏳ Eliminando...' : '🗑 Eliminar'}</Text>
               </Pressable>
             </View>
           </View>
@@ -862,26 +926,44 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
         visible={clientSelectorVisible}
         onRequestClose={() => setClientSelectorVisible(false)}
       >
-        <View style={homeStyles.saleModalBackdrop}>
-          <View style={homeStyles.clientListCard}>
-            <Text style={homeStyles.clientListTitle}>Selecciona un emprendedor</Text>
+        <View style={homeStyles.bottomSheetBackdrop}>
+          <View style={homeStyles.clientBottomSheet}>
+            <View style={homeStyles.sheetHandle} />
 
-            <TextInput
-              value={clientSearch}
-              onChangeText={setClientSearch}
-              placeholder="Buscar emprendedor..."
-              style={homeStyles.clientSearchInput}
-              placeholderTextColor="#8a92a1"
-            />
+            <View style={homeStyles.clientSheetHeader}>
+              <View>
+                <Text style={homeStyles.clientSheetOverline}>Emprendimiento</Text>
+                <Text style={homeStyles.clientListTitle}>Selecciona un emprendedor</Text>
+              </View>
+              <Pressable style={homeStyles.registerCloseBtn} onPress={() => setClientSelectorVisible(false)}>
+                <Feather name="x" size={18} color="#4f5663" />
+              </Pressable>
+            </View>
+
+            <View style={homeStyles.clientSearchWrap}>
+              <Text style={homeStyles.clientSearchIcon}>🔍</Text>
+              <TextInput
+                value={clientSearch}
+                onChangeText={setClientSearch}
+                placeholder="Buscar emprendedor..."
+                style={homeStyles.clientSearchInputModern}
+                placeholderTextColor="#8a92a1"
+              />
+              {!!clientSearch && (
+                <Pressable onPress={() => setClientSearch('')}>
+                  <Text style={homeStyles.clientSearchClear}>✕</Text>
+                </Pressable>
+              )}
+            </View>
 
             {clientsLoading ? (
               <Text style={homeStyles.smallText}>Cargando emprendedores...</Text>
             ) : (
-              <ScrollView style={{ maxHeight: 280 }} keyboardShouldPersistTaps="always">
+              <ScrollView style={homeStyles.clientListScroll} keyboardShouldPersistTaps="always">
                 {filteredClients.map((item) => (
                   <Pressable
                     key={item.id}
-                    style={homeStyles.clientRow}
+                    style={homeStyles.clientRowModern}
                     onPress={() => {
                       setSelectedClientId(item.id);
                       setSelectedClientName(item.name);
@@ -889,7 +971,11 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
                       setClientSelectorVisible(false);
                     }}
                   >
-                    <Text style={homeStyles.clientRowText}>{item.name}</Text>
+                    <View style={homeStyles.clientRowAvatar}>
+                      <Text style={homeStyles.clientRowAvatarText}>{getInitials(item.name)}</Text>
+                    </View>
+                    <Text style={homeStyles.clientRowTextModern} numberOfLines={1}>{item.name}</Text>
+                    <Text style={homeStyles.clientRowArrow}>›</Text>
                   </Pressable>
                 ))}
                 {!filteredClients.length && (
@@ -897,13 +983,6 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
                 )}
               </ScrollView>
             )}
-
-            <Pressable
-              style={[homeStyles.modalActionBtn, homeStyles.modalCancelBtn]}
-              onPress={() => setClientSelectorVisible(false)}
-            >
-              <Text style={homeStyles.modalCancelBtnText}>Cerrar</Text>
-            </Pressable>
           </View>
         </View>
       </Modal>
