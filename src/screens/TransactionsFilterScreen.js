@@ -39,11 +39,18 @@ function toDisplayDate(date) {
 }
 
 function parseApiDate(dateString) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString || '')) {
-    return null;
+  const value = String(dateString || '').trim();
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return new Date(`${value}T00:00:00`);
   }
 
-  return new Date(`${dateString}T00:00:00`);
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
+    const [day, month, year] = value.split('/');
+    return new Date(`${year}-${month}-${day}T00:00:00`);
+  }
+
+  return null;
 }
 
 function todayInElSalvador() {
@@ -469,7 +476,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
                   value={webStartDateInput}
                   onChangeText={(value) => handleWebDateChange('start', value)}
                   style={styles.webDateInput}
-                  placeholder="YYYY-MM-DD"
+                  placeholder="YYYY-MM-DD o DD/MM/YYYY"
                   placeholderTextColor="#8a92a1"
                   type="date"
                 />
@@ -480,7 +487,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
                   value={webEndDateInput}
                   onChangeText={(value) => handleWebDateChange('end', value)}
                   style={styles.webDateInput}
-                  placeholder="YYYY-MM-DD"
+                  placeholder="YYYY-MM-DD o DD/MM/YYYY"
                   placeholderTextColor="#8a92a1"
                   type="date"
                 />
