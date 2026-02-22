@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, Image, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
@@ -11,6 +10,10 @@ import { transactionsFilterStyles as styles } from '../theme/transactionsFilterS
 
 const EL_SALVADOR_TZ = 'America/El_Salvador';
 const API_BASE_URL = 'https://apivitrinovapp.clobitech.com';
+
+
+const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+const WEEK_DAYS = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'];
 
 
 function isValidDate(value) {
@@ -133,9 +136,10 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
   const [rows, setRows] = useState([]);
   const [error, setError] = useState('');
 
-  const [pickerVisible, setPickerVisible] = useState(false);
-  const [pickerField, setPickerField] = useState('start');
-  const [pickerTempDate, setPickerTempDate] = useState(today);
+  const [calendarVisible, setCalendarVisible] = useState(false);
+  const [calendarField, setCalendarField] = useState('start');
+  const [calendarYear, setCalendarYear] = useState(today.getFullYear());
+  const [calendarMonth, setCalendarMonth] = useState(today.getMonth());
 
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -269,39 +273,61 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
   const openDatePicker = (field) => {
     const currentValue = field === 'start' ? startDate : endDate;
     const safeValue = isValidDate(currentValue) ? currentValue : today;
-    setPickerField(field);
 
-    if (Platform.OS === 'android') {
-      DateTimePickerAndroid.open({
-        value: safeValue,
-        mode: 'date',
-        is24Hour: true,
-        onChange: (event, selectedDate) => {
-          if (event.type !== 'set') {
-            return;
-          }
+    setCalendarField(field);
+    setCalendarYear(safeValue.getFullYear());
+    setCalendarMonth(safeValue.getMonth());
+    setCalendarVisible(true);
+  };
 
-          applyPickedDate(field, selectedDate);
-        },
-      });
+  const goPrevMonth = () => {
+    if (calendarMonth === 0) {
+      setCalendarMonth(11);
+      setCalendarYear((prev) => prev - 1);
       return;
     }
 
-    setPickerTempDate(safeValue);
-    setPickerVisible(true);
+    setCalendarMonth((prev) => prev - 1);
   };
 
-  const handleDateChange = (_event, selectedDate) => {
-    if (!selectedDate) {
+  const goNextMonth = () => {
+    if (calendarMonth === 11) {
+      setCalendarMonth(0);
+      setCalendarYear((prev) => prev + 1);
       return;
     }
 
-    setPickerTempDate(selectedDate);
+    setCalendarMonth((prev) => prev + 1);
   };
 
-  const applyDatePicker = () => {
-    applyPickedDate(pickerField, isValidDate(pickerTempDate) ? pickerTempDate : today);
-    setPickerVisible(false);
+  const calendarCells = useMemo(() => {
+    const firstDay = new Date(calendarYear, calendarMonth, 1);
+    const startDow = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+    const cells = [];
+
+    for (let i = 0; i < startDow; i += 1) cells.push(null);
+    for (let d = 1; d <= daysInMonth; d += 1) cells.push(d);
+
+    return cells;
+  }, [calendarMonth, calendarYear]);
+
+  const selectedForCalendar = useMemo(() => {
+    const source = calendarField === 'start' ? startDate : endDate;
+    return isValidDate(source) ? source : null;
+  }, [calendarField, startDate, endDate]);
+
+  const handleSelectCalendarDay = (day) => {
+    if (!day) {
+      return;
+    }
+
+    const mm = String(calendarMonth + 1).padStart(2, '0');
+    const dd = String(day).padStart(2, '0');
+    const selectedDate = new Date(`${calendarYear}-${mm}-${dd}T00:00:00`);
+
+    applyPickedDate(calendarField, selectedDate);
+    setCalendarVisible(false);
   };
 
   const closeAllSwipeables = () => {
@@ -770,22 +796,53 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
         </View>
       </Modal>
 
-      <Modal transparent animationType="fade" visible={pickerVisible && Platform.OS === 'ios'} onRequestClose={() => setPickerVisible(false)}>
+      <Modal transparent animationType="fade" visible={calendarVisible} onRequestClose={() => setCalendarVisible(false)}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.pickerModalCard}>
-            <Text style={styles.pickerTitle}>{pickerField === 'start' ? 'Fecha desde' : 'Fecha hasta'}</Text>
-            <DateTimePicker
-              value={isValidDate(pickerTempDate) ? pickerTempDate : today}
-              mode="date"
-              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-              onChange={handleDateChange}
-            />
-            <View style={styles.pickerActionsRow}>
-              <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={() => setPickerVisible(false)}>
-                <Text style={styles.modalCancelBtnText}>Cancelar</Text>
+          <View style={styles.calendarModalCard}>
+            <Text style={styles.pickerTitle}>{calendarField === 'start' ? 'Fecha desde' : 'Fecha hasta'}</Text>
+
+            <View style={styles.calendarNavRow}>
+              <Pressable style={styles.calendarNavBtn} onPress={goPrevMonth}>
+                <Text style={styles.calendarNavBtnText}>‹</Text>
               </Pressable>
-              <Pressable style={[styles.modalActionBtn, styles.modalConfirmBtn]} onPress={applyDatePicker}>
-                <Text style={styles.modalActionBtnText}>Aplicar</Text>
+              <Text style={styles.calendarMonthTitle}>{MONTHS[calendarMonth]} {calendarYear}</Text>
+              <Pressable style={styles.calendarNavBtn} onPress={goNextMonth}>
+                <Text style={styles.calendarNavBtnText}>›</Text>
+              </Pressable>
+            </View>
+
+            <View style={styles.calendarGrid}>
+              {WEEK_DAYS.map((day) => (
+                <Text key={day} style={styles.calendarWeekDay}>{day}</Text>
+              ))}
+            </View>
+
+            <View style={styles.calendarGrid}>
+              {calendarCells.map((day, index) => {
+                const isSelected = Boolean(
+                  day
+                  && selectedForCalendar
+                  && selectedForCalendar.getFullYear() === calendarYear
+                  && selectedForCalendar.getMonth() === calendarMonth
+                  && selectedForCalendar.getDate() === day,
+                );
+
+                return (
+                  <Pressable
+                    key={`cell-${index}`}
+                    onPress={() => handleSelectCalendarDay(day)}
+                    disabled={!day}
+                    style={[styles.calendarDayCell, isSelected && styles.calendarDayCellSelected]}
+                  >
+                    <Text style={[styles.calendarDayText, isSelected && styles.calendarDayTextSelected]}>{day || ''}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            <View style={styles.pickerActionsRow}>
+              <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={() => setCalendarVisible(false)}>
+                <Text style={styles.modalCancelBtnText}>Cerrar</Text>
               </Pressable>
             </View>
           </View>

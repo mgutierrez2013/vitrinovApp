@@ -261,7 +261,7 @@ export const transactionsFilterStyles = StyleSheet.create({
   },
 
 
-  pickerModalCard: {
+  calendarModalCard: {
     borderRadius: 14,
     backgroundColor: '#ffffff',
     paddingHorizontal: 14,
@@ -278,6 +278,66 @@ export const transactionsFilterStyles = StyleSheet.create({
     justifyContent: 'flex-end',
     gap: 10,
     marginTop: 8,
+  },
+
+
+  calendarNavRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  calendarNavBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    backgroundColor: '#f2f4f7',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  calendarNavBtnText: {
+    color: '#1a3f6f',
+    fontSize: 18,
+    fontWeight: '700',
+    marginTop: -2,
+  },
+  calendarMonthTitle: {
+    color: '#1a3f6f',
+    fontSize: 14,
+    fontWeight: '800',
+  },
+  calendarGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 6,
+  },
+  calendarWeekDay: {
+    width: '14.2857%',
+    textAlign: 'center',
+    color: '#f5a623',
+    fontSize: 11,
+    fontWeight: '700',
+    marginBottom: 6,
+  },
+  calendarDayCell: {
+    width: '14.2857%',
+    height: 34,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 2,
+  },
+  calendarDayCellSelected: {
+    backgroundColor: '#f5a623',
+  },
+  calendarDayText: {
+    color: '#333',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  calendarDayTextSelected: {
+    color: '#fff',
+    fontWeight: '800',
   },
 
   deleteModalCard: {
