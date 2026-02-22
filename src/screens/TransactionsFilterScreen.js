@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, Image, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
@@ -247,10 +247,47 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
     }
   };
 
+  const applyPickedDate = (field, selectedDate) => {
+    if (!selectedDate || !isValidDate(selectedDate)) {
+      return;
+    }
+
+    if (field === 'start') {
+      setStartDate(selectedDate);
+      if (selectedDate > endDate) {
+        setEndDate(selectedDate);
+      }
+      return;
+    }
+
+    setEndDate(selectedDate);
+    if (selectedDate < startDate) {
+      setStartDate(selectedDate);
+    }
+  };
+
   const openDatePicker = (field) => {
     const currentValue = field === 'start' ? startDate : endDate;
+    const safeValue = isValidDate(currentValue) ? currentValue : today;
     setPickerField(field);
-    setPickerTempDate(isValidDate(currentValue) ? currentValue : today);
+
+    if (Platform.OS === 'android') {
+      DateTimePickerAndroid.open({
+        value: safeValue,
+        mode: 'date',
+        is24Hour: true,
+        onChange: (event, selectedDate) => {
+          if (event.type !== 'set') {
+            return;
+          }
+
+          applyPickedDate(field, selectedDate);
+        },
+      });
+      return;
+    }
+
+    setPickerTempDate(safeValue);
     setPickerVisible(true);
   };
 
@@ -263,20 +300,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
   };
 
   const applyDatePicker = () => {
-    const selectedDate = isValidDate(pickerTempDate) ? pickerTempDate : today;
-
-    if (pickerField === 'start') {
-      setStartDate(selectedDate);
-      if (selectedDate > endDate) {
-        setEndDate(selectedDate);
-      }
-    } else {
-      setEndDate(selectedDate);
-      if (selectedDate < startDate) {
-        setStartDate(selectedDate);
-      }
-    }
-
+    applyPickedDate(pickerField, isValidDate(pickerTempDate) ? pickerTempDate : today);
     setPickerVisible(false);
   };
 
@@ -746,7 +770,7 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
         </View>
       </Modal>
 
-      <Modal transparent animationType="fade" visible={pickerVisible} onRequestClose={() => setPickerVisible(false)}>
+      <Modal transparent animationType="fade" visible={pickerVisible && Platform.OS === 'ios'} onRequestClose={() => setPickerVisible(false)}>
         <View style={styles.modalBackdrop}>
           <View style={styles.pickerModalCard}>
             <Text style={styles.pickerTitle}>{pickerField === 'start' ? 'Fecha desde' : 'Fecha hasta'}</Text>
