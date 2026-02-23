@@ -711,15 +711,15 @@ export function TransactionsFilterScreen({ onGoHome, onSessionExpired }) {
             {deleteMessage.length > 0 && <Text style={styles.errorText}>{deleteMessage}</Text>}
 
             <View style={styles.deleteActionsRow}>
-              <Pressable style={[styles.deleteBtn, styles.deleteCancelBtn]} onPress={closeDeleteModal}>
-                <Text style={styles.deleteCancelText}>Cancelar</Text>
-              </Pressable>
               <Pressable
                 style={[styles.deleteBtn, styles.deleteConfirmBtn, deleteLoading && { opacity: 0.6 }]}
                 onPress={handleDeleteTransaction}
                 disabled={deleteLoading}
               >
                 <Text style={styles.deleteConfirmText}>{deleteLoading ? '⏳ Eliminando...' : '🗑 Eliminar'}</Text>
+              </Pressable>
+              <Pressable style={[styles.deleteBtn, styles.deleteCancelBtn]} onPress={closeDeleteModal}>
+                <Text style={styles.deleteCancelText}>Cancelar</Text>
               </Pressable>
             </View>
           </View>

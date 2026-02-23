@@ -1,28 +1,24 @@
-import { Image, Pressable, Text, View } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { View } from 'react-native';
+import { AppHeader } from '../components/AppHeader';
+import { AppFooter } from '../components/AppFooter';
 import { HomeTransactionsPanel } from '../components/HomeTransactionsPanel';
 import { homeStyles } from '../theme/homeStyles';
 
-const logoUri =
-  'https://img.icons8.com/color/192/online-store.png';
-
 export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, onGoEntrepreneurs, onGoBankAccounts, onGoNotificationReports, onGoTransactionReports }) {
+  const handleFooterChange = (index) => {
+    if (index === 1) {
+      onGoEntrepreneurs?.();
+      return;
+    }
+
+    if (index === 2) {
+      onGoBankAccounts?.();
+    }
+  };
+
   return (
     <View style={homeStyles.container}>
-      <View style={homeStyles.header}>
-        <View style={homeStyles.logoBox}>
-          <Image source={{ uri: logoUri }} style={homeStyles.logoImage} resizeMode="contain" />
-        </View>
-
-        <Pressable style={homeStyles.logoutButton} onPress={onLogout}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <Feather name="log-out" size={15} color="#ffffff" />
-            <Text style={homeStyles.logoutText}>Cerrar sesión</Text>
-          </View>
-        </Pressable>
-      </View>
-
-      <View style={homeStyles.headerWave} />
+      <AppHeader onLogout={onLogout} />
 
       <HomeTransactionsPanel
         onSessionExpired={onSessionExpired}
@@ -31,17 +27,7 @@ export function HomeScreen({ onLogout, onSessionExpired, onGoAllTransactions, on
         onGoTransactionReports={onGoTransactionReports}
       />
 
-      <View style={homeStyles.bottomBar}>
-        <View style={homeStyles.bottomIconWrapActive}>
-          <Feather name="home" size={24} color="#f5a623" />
-        </View>
-        <Pressable style={homeStyles.bottomIconWrap} onPress={onGoEntrepreneurs}>
-          <Feather name="users" size={24} color="#2563a8" />
-        </Pressable>
-        <Pressable style={homeStyles.bottomIconWrap} onPress={onGoBankAccounts}>
-          <Feather name="credit-card" size={24} color="#2563a8" />
-        </Pressable>
-      </View>
+      <AppFooter activeIndex={0} onChange={handleFooterChange} />
     </View>
   );
 }

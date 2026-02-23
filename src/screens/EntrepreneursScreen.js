@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, Image, Modal, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
+import { FlatList, Modal, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import {
@@ -10,9 +10,9 @@ import {
 } from '../services/transactionsService';
 import { getCachedSession } from '../services/sessionService';
 import { entrepreneursStyles as styles } from '../theme/entrepreneursStyles';
+import { AppHeader } from '../components/AppHeader';
+import { AppFooter } from '../components/AppFooter';
 
-const logoUri =
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s';
 
 const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 const WEEK_DAYS = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'];
@@ -454,20 +454,20 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
   const renderSwipeGhost = () => <View style={styles.swipeGhostAction} />;
 
+  const handleFooterChange = (index) => {
+    if (index === 0) {
+      onGoHome?.();
+      return;
+    }
+
+    if (index === 2) {
+      onGoBankAccounts?.();
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.logoBox}>
-          <Image source={{ uri: logoUri }} style={styles.logoImage} resizeMode="cover" />
-        </View>
-
-        <Pressable style={styles.logoutButton} onPress={onLogout}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <Feather name="log-out" size={15} color="#ffffff" />
-            <Text style={styles.logoutText}>Cerrar sesión</Text>
-          </View>
-        </Pressable>
-      </View>
+      <AppHeader onLogout={onLogout} />
 
       <View style={styles.content}>
         <View style={styles.titleBlock}>
@@ -554,26 +554,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
         </Pressable>
       </View>
 
-      <View style={styles.bottomBar}>
-        <Pressable style={styles.bottomTab} onPress={onGoHome}>
-          <View style={styles.bottomTabIcon}>
-            <Feather name="home" size={18} color="#a6aab6" />
-          </View>
-          <Text style={styles.bottomTabText}>Inicio</Text>
-        </Pressable>
-        <View style={styles.bottomTab}>
-          <View style={[styles.bottomTabIcon, styles.bottomTabIconActive]}>
-            <Feather name="users" size={18} color="#f59e0b" />
-          </View>
-          <Text style={[styles.bottomTabText, styles.bottomTabTextActive]}>Clientes</Text>
-        </View>
-        <Pressable style={styles.bottomTab} onPress={onGoBankAccounts}>
-          <View style={styles.bottomTabIcon}>
-            <Feather name="credit-card" size={18} color="#a6aab6" />
-          </View>
-          <Text style={styles.bottomTabText}>Pagos</Text>
-        </Pressable>
-      </View>
+      <AppFooter activeIndex={1} onChange={handleFooterChange} />
 
       <Modal transparent animationType="fade" visible={addModalVisible} onRequestClose={closeAddModal}>
         <View style={styles.modalBackdrop}>

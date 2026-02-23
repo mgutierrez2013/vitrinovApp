@@ -894,15 +894,15 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
             {deleteMessage.length > 0 && <Text style={homeStyles.saleErrorText}>{deleteMessage}</Text>}
 
             <View style={homeStyles.deleteActionsRow}>
-              <Pressable style={[homeStyles.deleteBtn, homeStyles.deleteCancelBtn]} onPress={closeDeleteModal}>
-                <Text style={homeStyles.deleteCancelText}>Cancelar</Text>
-              </Pressable>
               <Pressable
                 style={[homeStyles.deleteBtn, homeStyles.deleteConfirmBtn, deleteLoading && { opacity: 0.6 }]}
                 onPress={handleDeleteTransaction}
                 disabled={deleteLoading}
               >
                 <Text style={homeStyles.deleteConfirmText}>{deleteLoading ? '⏳ Eliminando...' : '🗑 Eliminar'}</Text>
+              </Pressable>
+              <Pressable style={[homeStyles.deleteBtn, homeStyles.deleteCancelBtn]} onPress={closeDeleteModal}>
+                <Text style={homeStyles.deleteCancelText}>Cancelar</Text>
               </Pressable>
             </View>
           </View>
