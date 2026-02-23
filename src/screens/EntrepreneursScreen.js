@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, Image, Modal, Platform, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import {
@@ -14,6 +13,9 @@ import { entrepreneursStyles as styles } from '../theme/entrepreneursStyles';
 
 const logoUri =
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrlgf2hRazz-UN3KEa32BKxj4T0C3RmJ0vCw&s';
+
+const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+const WEEK_DAYS = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'];
 
 
 function parseApiDate(dateString) {
@@ -67,6 +69,16 @@ function toDisplayDate(dateString) {
   return `${day}/${month}/${year}`;
 }
 
+function todayInElSalvador() {
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/El_Salvador',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  return parseApiDate(formatter.format(new Date())) || new Date();
+}
+
 export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOpenAccount, onGoBankAccounts }) {
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState([]);
@@ -87,8 +99,10 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
   const [editChargeDate, setEditChargeDate] = useState('');
   const [editPickupDate, setEditPickupDate] = useState('');
   const [editNotified, setEditNotified] = useState(false);
-  const [editDatePickerVisible, setEditDatePickerVisible] = useState(false);
-  const [editDatePickerField, setEditDatePickerField] = useState('charge');
+  const [editCalendarVisible, setEditCalendarVisible] = useState(false);
+  const [editCalendarField, setEditCalendarField] = useState('charge');
+  const [editCalendarYear, setEditCalendarYear] = useState(todayInElSalvador().getFullYear());
+  const [editCalendarMonth, setEditCalendarMonth] = useState(todayInElSalvador().getMonth());
   const [editError, setEditError] = useState('');
   const [editErrorField, setEditErrorField] = useState('');
   const [editLoading, setEditLoading] = useState(false);
@@ -219,37 +233,73 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
     setEditChargeDate('');
     setEditPickupDate('');
     setEditNotified(false);
-    setEditDatePickerVisible(false);
-    setEditDatePickerField('charge');
+    setEditCalendarVisible(false);
+    setEditCalendarField('charge');
     setEditError('');
     setEditErrorField('');
   };
 
 
   const openEditDatePicker = (field) => {
-    setEditDatePickerField(field);
-    setEditDatePickerVisible(true);
+    const baseDate = parseApiDate(field === 'charge' ? editChargeDate : editPickupDate) || todayInElSalvador();
+    setEditCalendarField(field);
+    setEditCalendarYear(baseDate.getFullYear());
+    setEditCalendarMonth(baseDate.getMonth());
+    setEditCalendarVisible(true);
   };
 
-  const handleEditDateChange = (_event, selectedDate) => {
-    if (Platform.OS !== 'ios') {
-      setEditDatePickerVisible(false);
-    }
-
-    if (!selectedDate) {
+  const goPrevEditMonth = () => {
+    if (editCalendarMonth === 0) {
+      setEditCalendarMonth(11);
+      setEditCalendarYear((prev) => prev - 1);
       return;
     }
 
-    const next = toApiDate(selectedDate);
+    setEditCalendarMonth((prev) => prev - 1);
+  };
 
-    if (editDatePickerField === 'charge') {
+  const goNextEditMonth = () => {
+    if (editCalendarMonth === 11) {
+      setEditCalendarMonth(0);
+      setEditCalendarYear((prev) => prev + 1);
+      return;
+    }
+
+    setEditCalendarMonth((prev) => prev + 1);
+  };
+
+  const editCalendarCells = useMemo(() => {
+    const firstDay = new Date(editCalendarYear, editCalendarMonth, 1);
+    const offset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(editCalendarYear, editCalendarMonth + 1, 0).getDate();
+    const cells = Array(offset).fill(null);
+
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      cells.push(day);
+    }
+
+    return cells;
+  }, [editCalendarMonth, editCalendarYear]);
+
+  const selectedEditCalendarDate = useMemo(() => {
+    return parseApiDate(editCalendarField === 'charge' ? editChargeDate : editPickupDate);
+  }, [editCalendarField, editChargeDate, editPickupDate]);
+
+  const handleSelectEditCalendarDay = (day) => {
+    if (!day) {
+      return;
+    }
+
+    const next = `${editCalendarYear}-${String(editCalendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+    if (editCalendarField === 'charge') {
       setEditChargeDate(next);
       setEditErrorField((prev) => (prev === 'chargeDate' ? '' : prev));
-      return;
+    } else {
+      setEditPickupDate(next);
+      setEditErrorField((prev) => (prev === 'pickupDate' ? '' : prev));
     }
-
-    setEditPickupDate(next);
-    setEditErrorField((prev) => (prev === 'pickupDate' ? '' : prev));
+    setEditCalendarVisible(false);
   };
 
   const handleUpdateClient = async () => {
@@ -419,15 +469,27 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.title}>Emprendedores</Text>
+        <View style={styles.titleBlock}>
+          <Text style={styles.titleOverline}>Gestión</Text>
+          <Text style={styles.title}>Emprendedores</Text>
+          <Text style={styles.titleHint}>{clients.length} emprendedores registrados</Text>
+        </View>
 
-        <TextInput
-          value={search}
-          onChangeText={setSearch}
-          placeholder="Buscar emprendedor"
-          placeholderTextColor="#8a92a1"
-          style={styles.searchInput}
-        />
+        <View style={styles.searchWrap}>
+          <Feather name="search" size={15} color="#8a92a1" />
+          <TextInput
+            value={search}
+            onChangeText={setSearch}
+            placeholder="Buscar emprendedor"
+            placeholderTextColor="#8a92a1"
+            style={styles.searchInput}
+          />
+          {!!search && (
+            <Pressable onPress={() => setSearch('')}>
+              <Text style={styles.searchClear}>✕</Text>
+            </Pressable>
+          )}
+        </View>
 
         {loading ? (
           <Text style={styles.emptyText}>Cargando emprendedores...</Text>
@@ -450,9 +512,9 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
                 rightThreshold={30}
                 onSwipeableOpen={(direction) => handleSwipeOpen(direction, item)}
               >
-                <Pressable style={styles.clientCard} onPress={() => onOpenAccount(item)}>
-                  <View style={styles.clientIconWrap}>
-                    <Feather name="users" size={20} color="#1f2433" />
+                <Pressable style={[styles.clientCard, { borderLeftColor: item?.color || '#F5A623' }]} onPress={() => onOpenAccount(item)}>
+                  <View style={[styles.clientIconWrap, { backgroundColor: item?.color || '#F5A623' }]}>
+                    <Text style={styles.clientIconText}>{(item?.name || '').split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase() || 'EM'}</Text>
                   </View>
 
                   <View style={styles.clientBody}>
@@ -460,6 +522,11 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
                       {(item.name || 'EMPRENDEDOR').toUpperCase()}
                     </Text>
                     <Text style={styles.clientSubtitle}>Emprendedor</Text>
+                  </View>
+
+                  <View style={styles.clientBadges}>
+                    {Number(item?.notificado || 0) === 1 ? <Text style={styles.badgeNotified}>Notificado</Text> : null}
+                    {item?.fecha_cobro ? <Text style={styles.badgeCharge}>Cobro {toDisplayDate(normalizeBackendDate(item?.fecha_cobro))}</Text> : null}
                   </View>
                 </Pressable>
               </Swipeable>
@@ -474,7 +541,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
         )}
 
         <Pressable style={styles.primaryButton} onPress={() => setAddModalVisible(true)}>
-          <Text style={styles.primaryButtonText}>Emprendedor</Text>
+          <Text style={styles.primaryButtonText}>+ Agregar Emprendedor</Text>
         </Pressable>
       </View>
 
@@ -635,15 +702,50 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
         </View>
       </Modal>
 
+      <Modal transparent animationType="fade" visible={editCalendarVisible} onRequestClose={() => setEditCalendarVisible(false)}>
+        <View style={styles.modalBackdrop}>
+          <View style={styles.calendarModalCard}>
+            <Text style={styles.pickerTitle}>{editCalendarField === 'charge' ? 'Fecha Cobro' : 'Fecha Retiro'}</Text>
 
-      {editDatePickerVisible && (
-        <DateTimePicker
-          value={parseApiDate(editDatePickerField === 'charge' ? editChargeDate : editPickupDate) || new Date()}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleEditDateChange}
-        />
-      )}
+            <View style={styles.calendarNavRow}>
+              <Pressable style={styles.calendarNavBtn} onPress={goPrevEditMonth}>
+                <Text style={styles.calendarNavBtnText}>‹</Text>
+              </Pressable>
+              <Text style={styles.calendarMonthTitle}>{MONTHS[editCalendarMonth]} {editCalendarYear}</Text>
+              <Pressable style={styles.calendarNavBtn} onPress={goNextEditMonth}>
+                <Text style={styles.calendarNavBtnText}>›</Text>
+              </Pressable>
+            </View>
+
+            <View style={styles.calendarGrid}>
+              {WEEK_DAYS.map((day) => (
+                <Text key={day} style={styles.calendarWeekDay}>{day}</Text>
+              ))}
+            </View>
+
+            <View style={styles.calendarGrid}>
+              {editCalendarCells.map((day, index) => {
+                const isSelected = day
+                  && selectedEditCalendarDate
+                  && selectedEditCalendarDate.getFullYear() === editCalendarYear
+                  && selectedEditCalendarDate.getMonth() === editCalendarMonth
+                  && selectedEditCalendarDate.getDate() === day;
+
+                return (
+                  <Pressable
+                    key={`${day || 'blank'}-${index}`}
+                    disabled={!day}
+                    onPress={() => handleSelectEditCalendarDay(day)}
+                    style={[styles.calendarDayCell, isSelected && styles.calendarDayCellSelected]}
+                  >
+                    <Text style={[styles.calendarDayText, isSelected && styles.calendarDayTextSelected]}>{day || ''}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       <Modal transparent animationType="fade" visible={deleteModalVisible} onRequestClose={closeDeleteModal}>
         <View style={styles.modalBackdrop}>
