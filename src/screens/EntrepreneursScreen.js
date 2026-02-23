@@ -550,8 +550,9 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
       <View style={styles.primaryButtonWrap}>
         <Pressable style={styles.primaryButton} onPress={() => setAddModalVisible(true)}>
-          <Text style={styles.primaryButtonText}>+ Agregar Emprendedor</Text>
+          <Feather name="user-plus" size={24} color="#ffffff" />
         </Pressable>
+        <Text style={styles.primaryButtonText}>Agregar</Text>
       </View>
 
       <AppFooter activeIndex={1} onChange={handleFooterChange} />

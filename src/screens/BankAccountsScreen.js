@@ -262,8 +262,9 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
 
       <View style={styles.primaryButtonWrap}>
         <Pressable style={styles.primaryButton} onPress={() => setModalVisible(true)}>
-          <Text style={styles.primaryButtonText}>🏦 + Cuenta Bancaria</Text>
+          <Feather name="plus" size={26} color="#ffffff" />
         </Pressable>
+        <Text style={styles.primaryButtonText}>Cuenta</Text>
       </View>
 
       <AppFooter activeIndex={2} onChange={handleFooterChange} />

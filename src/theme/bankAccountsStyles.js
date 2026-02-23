@@ -16,7 +16,7 @@ export const bankAccountsStyles = StyleSheet.create({
   logoutButton: { backgroundColor: '#d97706', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10 },
   logoutText: { color: '#fff', fontSize: 14, fontWeight: '700' },
 
-  content: { flex: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 140 },
+  content: { flex: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 84 },
   titleBlock: { marginBottom: 12 },
   titleOverline: {
     fontSize: 11,
@@ -45,7 +45,7 @@ export const bankAccountsStyles = StyleSheet.create({
   searchClear: { opacity: 0.4, fontSize: 13 },
 
   list: { flex: 1 },
-  listContent: { paddingBottom: 6 },
+  listContent: { paddingBottom: 12 },
 
   clientCard: {
     borderWidth: 1,
@@ -80,20 +80,30 @@ export const bankAccountsStyles = StyleSheet.create({
 
   emptyText: { color: '#666b7a', fontSize: 13, marginTop: 10 },
 
-  primaryButtonWrap: { position: 'absolute', left: 16, right: 16, bottom: 92 },
+  primaryButtonWrap: { position: 'absolute', right: 18, bottom: 88, alignItems: 'center', gap: 6 },
   primaryButton: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: '#f59e0b',
-    borderRadius: 16,
-    minHeight: 54,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#F5A623',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.28,
-    shadowRadius: 16,
-    elevation: 7,
+    shadowOpacity: 0.32,
+    shadowRadius: 14,
+    elevation: 8,
   },
-  primaryButtonText: { color: '#ffffff', fontSize: 15, fontWeight: '800' },
+  primaryButtonText: {
+    color: '#0f5f9f',
+    backgroundColor: '#fff4e5',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    fontSize: 10,
+    fontWeight: '800',
+    overflow: 'hidden',
+  },
 
   bottomBar: {
     position: 'absolute',
