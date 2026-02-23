@@ -516,9 +516,15 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
         </Pressable>
       </View>
 
-      <Text style={styles.title}>Resumen de la cuenta</Text>
+      <View style={styles.titleBlock}>
+        <Text style={styles.titleOverline}>Detalle</Text>
+        <Text style={styles.title}>Resumen de la cuenta</Text>
+      </View>
 
-      <View style={styles.nameCard}>
+      <View style={[styles.nameCard, { backgroundColor: entrepreneur?.color || '#9B59B6' }]}>
+        <View style={styles.nameAvatar}>
+          <Text style={styles.nameAvatarText}>{getInitials(entrepreneur?.name || '')}</Text>
+        </View>
         <Text style={styles.nameCardText}>{entrepreneur?.name || ''}</Text>
       </View>
 
@@ -544,12 +550,18 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
           </>
         ) : (
           <>
-            <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('start')}>
-              <Text style={styles.dateInputButtonText}>{toDisplayDate(startDate)}</Text>
-            </Pressable>
-            <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('end')}>
-              <Text style={styles.dateInputButtonText}>{toDisplayDate(endDate)}</Text>
-            </Pressable>
+            <View style={styles.dateCol}>
+              <Text style={styles.dateLabel}>Desde</Text>
+              <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('start')}>
+                <Text style={styles.dateInputButtonText}>📅 {toDisplayDate(startDate)}</Text>
+              </Pressable>
+            </View>
+            <View style={styles.dateCol}>
+              <Text style={styles.dateLabel}>Hasta</Text>
+              <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('end')}>
+                <Text style={styles.dateInputButtonText}>📅 {toDisplayDate(endDate)}</Text>
+              </Pressable>
+            </View>
           </>
         )}
       </View>
@@ -561,7 +573,7 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
 
       <View style={styles.reportRow}>
         <Pressable style={[styles.reportBtn, reportLoading && { opacity: 0.6 }]} onPress={handleShareReport} disabled={reportLoading}>
-          <Text style={styles.reportBtnText}>{reportLoading ? 'Generando...' : 'Reportes'}</Text>
+          <Text style={styles.reportBtnText}>{reportLoading ? 'Generando...' : '📊 Reportes'}</Text>
         </Pressable>
       </View>
 
@@ -620,10 +632,10 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
 
       <View style={styles.bottomActions}>
         <Pressable style={[styles.actionButton, styles.clearBtn]} onPress={handleClear}>
-          <Text style={styles.actionText}>Limpiar Filtros</Text>
+          <Text style={styles.actionText}>🗑 Limpiar Filtros</Text>
         </Pressable>
         <Pressable style={[styles.actionButton, styles.backBtn]} onPress={onGoHome}>
-          <Text style={styles.actionText}>Regresar Home</Text>
+          <Text style={styles.actionText}>🏠 Regresar Home</Text>
         </Pressable>
       </View>
 

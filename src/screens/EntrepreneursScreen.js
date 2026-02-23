@@ -559,19 +559,22 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
       <Modal transparent animationType="fade" visible={addModalVisible} onRequestClose={closeAddModal}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalCard}>
+          <View style={styles.modalCardAdd}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Agregar Emprendedor</Text>
-              <Pressable onPress={closeAddModal}>
-                <Feather name="x" size={28} color="#2a2f3d" />
+              <View>
+                <Text style={styles.modalOverline}>Nuevo</Text>
+                <Text style={styles.modalTitle}>Agregar Emprendedor</Text>
+              </View>
+              <Pressable style={styles.modalCloseBtn} onPress={closeAddModal}>
+                <Feather name="x" size={20} color="#555" />
               </Pressable>
             </View>
 
-            <Text style={styles.fieldLabel}>Nombre</Text>
+            <Text style={styles.fieldLabel}>Nombre *</Text>
             <TextInput
               value={newName}
               onChangeText={setNewName}
-              placeholder="Nombre"
+              placeholder="Nombre del emprendedor"
               placeholderTextColor="#8a92a1"
               style={[styles.modalInput, addError ? styles.modalInputError : null]}
             />
@@ -595,12 +598,21 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
       <Modal transparent animationType="fade" visible={editModalVisible} onRequestClose={closeEditModal}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalCard}>
+          <View style={styles.modalCardEdit}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Editar Emprendedor</Text>
-              <Pressable onPress={closeEditModal}>
-                <Feather name="x" size={28} color="#2a2f3d" />
+              <View>
+                <Text style={styles.modalOverline}>Modificar</Text>
+                <Text style={styles.modalTitle}>Editar Emprendedor</Text>
+              </View>
+              <Pressable style={styles.modalCloseBtn} onPress={closeEditModal}>
+                <Feather name="x" size={20} color="#555" />
               </Pressable>
+            </View>
+
+            <View style={styles.editAvatarWrap}>
+              <View style={[styles.editAvatarCircle, { backgroundColor: editingClient?.color || '#f59e0b' }]}>
+                <Text style={styles.editAvatarText}>{(editName || '').split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase() || 'EM'}</Text>
+              </View>
             </View>
 
             <ScrollView style={styles.editFormScroll} contentContainerStyle={styles.editFormContent} showsVerticalScrollIndicator={false}>
@@ -614,14 +626,19 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
               />
 
               <Text style={styles.fieldLabel}>Teléfono (opcional)</Text>
-              <TextInput
-                value={editPhone}
-                onChangeText={(value) => setEditPhone(value.replace(/[^0-9]/g, '').slice(0, 8))}
-                placeholder="00000000"
-                placeholderTextColor="#8a92a1"
-                style={[styles.modalInput, editErrorField === 'phone' ? styles.modalInputError : null]}
-                keyboardType="number-pad"
-              />
+              <View style={styles.phoneInputWrap}>
+                <View style={styles.phonePrefix}>
+                  <Feather name="phone" size={14} color="#fff" />
+                </View>
+                <TextInput
+                  value={editPhone}
+                  onChangeText={(value) => setEditPhone(value.replace(/[^0-9]/g, '').slice(0, 8))}
+                  placeholder="00000000"
+                  placeholderTextColor="#8a92a1"
+                  style={[styles.phoneInput, editErrorField === 'phone' ? styles.modalInputError : null]}
+                  keyboardType="number-pad"
+                />
+              </View>
 
               <Text style={styles.fieldLabel}>Fecha Cobro (opcional)</Text>
               {Platform.OS === 'web' ? (
@@ -678,9 +695,9 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
               <View style={styles.switchRow}>
                 <View style={styles.switchTextWrap}>
                   <Text style={styles.fieldLabel}>Notificado</Text>
-                  <Text style={styles.switchHint}>{editNotified ? 'Activo' : 'Inactivo'}</Text>
+                  <Text style={styles.switchHint}>Marcar si ya fue notificado</Text>
                 </View>
-                <Switch value={editNotified} onValueChange={setEditNotified} trackColor={{ false: '#c7ccda', true: '#0f6dbb' }} thumbColor="#ffffff" />
+                <Switch value={editNotified} onValueChange={setEditNotified} trackColor={{ false: '#d5d8e2', true: '#f5a623' }} thumbColor="#ffffff" />
               </View>
 
               {editError.length > 0 && <Text style={styles.errorText}>{editError}</Text>}
@@ -749,17 +766,24 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
       <Modal transparent animationType="fade" visible={deleteModalVisible} onRequestClose={closeDeleteModal}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.deleteModalCard}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.deleteModalTitle}>Confirmar Eliminación</Text>
-              <Pressable onPress={closeDeleteModal}>
-                <Feather name="x" size={28} color="#2a2f3d" />
-              </Pressable>
+          <View style={styles.deleteModalCardModern}>
+            <View style={styles.deleteIconWrap}>
+              <Text style={styles.deleteIconText}>🗑️</Text>
+            </View>
+
+            <Text style={styles.deleteOverline}>Peligro</Text>
+            <Text style={styles.deleteModalTitle}>Confirmar Eliminación</Text>
+
+            <View style={styles.deleteClientInfoCard}>
+              <View style={[styles.deleteClientAvatar, { backgroundColor: deletingClient?.color || '#9B59B6' }]}>
+                <Text style={styles.deleteClientAvatarText}>{((deletingClient?.name || '').split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase() || 'EM')}</Text>
+              </View>
+              <Text style={styles.deleteClientName}>{(deletingClient?.name || '').toUpperCase()}</Text>
             </View>
 
             <Text style={styles.deleteModalMessage}>
-              ¿Está seguro de que deseas eliminar a{' '}
-              <Text style={styles.deleteModalStrong}>{(deletingClient?.name || '').toUpperCase()}</Text>?
+              ¿Estás seguro de que deseas eliminar a este emprendedor?{' '}
+              <Text style={styles.deleteModalStrong}>Esta acción no se puede deshacer.</Text>
             </Text>
 
             {deleteError.length > 0 && <Text style={styles.errorText}>{deleteError}</Text>}
