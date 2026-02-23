@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, Image, Modal, Platform, Pressable, Text, TextInput, View } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { FlatList, Image, Modal, Pressable, Text, TextInput, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
@@ -17,6 +16,8 @@ import { entrepreneurAccountStyles as styles } from '../theme/entrepreneurAccoun
 
 const API_BASE_URL = 'https://apivitrinovapp.clobitech.com';
 const EL_SALVADOR_TZ = 'America/El_Salvador';
+const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+const WEEK_DAYS = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'];
 
 function formatDatePartsInElSalvador(date) {
   const parts = new Intl.DateTimeFormat('en-US', {
@@ -109,8 +110,6 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
   const today = useMemo(() => todayInElSalvador(), []);
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
-  const [webStartDateInput, setWebStartDateInput] = useState(toApiDate(today));
-  const [webEndDateInput, setWebEndDateInput] = useState(toApiDate(today));
   const [refreshTick, setRefreshTick] = useState(0);
 
   const [loading, setLoading] = useState(false);
@@ -119,8 +118,10 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
   const [error, setError] = useState('');
   const [reportLoading, setReportLoading] = useState(false);
 
-  const [pickerVisible, setPickerVisible] = useState(false);
-  const [pickerField, setPickerField] = useState('start');
+  const [calendarVisible, setCalendarVisible] = useState(false);
+  const [calendarField, setCalendarField] = useState('start');
+  const [calendarYear, setCalendarYear] = useState(today.getFullYear());
+  const [calendarMonth, setCalendarMonth] = useState(today.getMonth());
 
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -194,67 +195,62 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
   };
 
 
-  useEffect(() => {
-    if (Platform.OS !== 'web') {
-      return;
-    }
-
-    setWebStartDateInput(toApiDate(startDate));
-    setWebEndDateInput(toApiDate(endDate));
-  }, [startDate, endDate]);
-
   const handleClear = () => {
     setStartDate(today);
     setEndDate(today);
-    setWebStartDateInput(toApiDate(today));
-    setWebEndDateInput(toApiDate(today));
   };
 
+  const calendarCells = useMemo(() => {
+    const firstDay = new Date(calendarYear, calendarMonth, 1);
+    const offset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+    const cells = Array(offset).fill(null);
 
-  const handleWebDateChange = (field, value) => {
-    if (field === 'start') {
-      setWebStartDateInput(value);
-    } else {
-      setWebEndDateInput(value);
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      cells.push(day);
     }
 
-    const nextDate = parseApiDate(value);
+    return cells;
+  }, [calendarMonth, calendarYear]);
 
-    if (!nextDate) {
-      return;
-    }
-
-    if (field === 'start') {
-      setStartDate(nextDate);
-      if (nextDate > endDate) {
-        setEndDate(nextDate);
-        setWebEndDateInput(value);
-      }
-      return;
-    }
-
-    setEndDate(nextDate);
-    if (nextDate < startDate) {
-      setStartDate(nextDate);
-      setWebStartDateInput(value);
-    }
-  };
+  const selectedForCalendar = useMemo(() => {
+    return calendarField === 'start' ? startDate : endDate;
+  }, [calendarField, endDate, startDate]);
 
   const openDatePicker = (field) => {
-    setPickerField(field);
-    setPickerVisible(true);
+    const baseDate = field === 'start' ? startDate : endDate;
+    setCalendarField(field);
+    setCalendarYear(baseDate.getFullYear());
+    setCalendarMonth(baseDate.getMonth());
+    setCalendarVisible(true);
   };
 
-  const handleDateChange = (_event, selectedDate) => {
-    if (Platform.OS !== 'ios') {
-      setPickerVisible(false);
+  const goPrevMonth = () => {
+    if (calendarMonth === 0) {
+      setCalendarMonth(11);
+      setCalendarYear((prev) => prev - 1);
+      return;
     }
+    setCalendarMonth((prev) => prev - 1);
+  };
 
-    if (!selectedDate) {
+  const goNextMonth = () => {
+    if (calendarMonth === 11) {
+      setCalendarMonth(0);
+      setCalendarYear((prev) => prev + 1);
+      return;
+    }
+    setCalendarMonth((prev) => prev + 1);
+  };
+
+  const handleSelectCalendarDay = (day) => {
+    if (!day) {
       return;
     }
 
-    if (pickerField === 'start') {
+    const selectedDate = new Date(calendarYear, calendarMonth, day);
+
+    if (calendarField === 'start') {
       setStartDate(selectedDate);
       if (selectedDate > endDate) {
         setEndDate(selectedDate);
@@ -265,6 +261,8 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
         setStartDate(selectedDate);
       }
     }
+
+    setCalendarVisible(false);
   };
 
   const closeEditModal = () => {
@@ -529,41 +527,20 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
       </View>
 
       <View style={styles.datesRow}>
-        {Platform.OS === 'web' ? (
-          <>
-            <TextInput
-              value={webStartDateInput}
-              onChangeText={(value) => handleWebDateChange('start', value)}
-              style={styles.webDateInput}
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor="#8a92a1"
-              type="date"
-            />
-            <TextInput
-              value={webEndDateInput}
-              onChangeText={(value) => handleWebDateChange('end', value)}
-              style={styles.webDateInput}
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor="#8a92a1"
-              type="date"
-            />
-          </>
-        ) : (
-          <>
-            <View style={styles.dateCol}>
-              <Text style={styles.dateLabel}>Desde</Text>
-              <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('start')}>
-                <Text style={styles.dateInputButtonText}>📅 {toDisplayDate(startDate)}</Text>
-              </Pressable>
-            </View>
-            <View style={styles.dateCol}>
-              <Text style={styles.dateLabel}>Hasta</Text>
-              <Pressable style={styles.dateInputButton} onPress={() => openDatePicker('end')}>
-                <Text style={styles.dateInputButtonText}>📅 {toDisplayDate(endDate)}</Text>
-              </Pressable>
-            </View>
-          </>
-        )}
+        <View style={styles.dateCol}>
+          <Text style={styles.dateLabel}>Desde</Text>
+          <Pressable style={[styles.dateInputButton, calendarField === 'start' && calendarVisible ? styles.dateInputButtonActive : null]} onPress={() => openDatePicker('start')}>
+            <Text style={styles.dateInputButtonIcon}>📅</Text>
+            <Text style={styles.dateInputButtonText}>{toDisplayDate(startDate)}</Text>
+          </Pressable>
+        </View>
+        <View style={styles.dateCol}>
+          <Text style={styles.dateLabel}>Hasta</Text>
+          <Pressable style={[styles.dateInputButton, calendarField === 'end' && calendarVisible ? styles.dateInputButtonActive : null]} onPress={() => openDatePicker('end')}>
+            <Text style={styles.dateInputButtonIcon}>📅</Text>
+            <Text style={styles.dateInputButtonText}>{toDisplayDate(endDate)}</Text>
+          </Pressable>
+        </View>
       </View>
 
       <View style={styles.salesCard}>
@@ -754,14 +731,49 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
         </View>
       </Modal>
 
-      {pickerVisible && (
-        <DateTimePicker
-          value={pickerField === 'start' ? startDate : endDate}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleDateChange}
-        />
-      )}
+      <Modal transparent animationType="fade" visible={calendarVisible} onRequestClose={() => setCalendarVisible(false)}>
+        <View style={styles.modalBackdrop}>
+          <View style={styles.calendarModalCard}>
+            <Text style={styles.pickerTitle}>{calendarField === 'start' ? 'Fecha desde' : 'Fecha hasta'}</Text>
+
+            <View style={styles.calendarNavRow}>
+              <Pressable style={styles.calendarNavBtn} onPress={goPrevMonth}>
+                <Text style={styles.calendarNavBtnText}>‹</Text>
+              </Pressable>
+              <Text style={styles.calendarMonthTitle}>{MONTHS[calendarMonth]} {calendarYear}</Text>
+              <Pressable style={styles.calendarNavBtn} onPress={goNextMonth}>
+                <Text style={styles.calendarNavBtnText}>›</Text>
+              </Pressable>
+            </View>
+
+            <View style={styles.calendarGrid}>
+              {WEEK_DAYS.map((day) => (
+                <Text key={day} style={styles.calendarWeekDay}>{day}</Text>
+              ))}
+            </View>
+
+            <View style={styles.calendarGrid}>
+              {calendarCells.map((day, index) => {
+                const isSelected = day
+                  && selectedForCalendar.getFullYear() === calendarYear
+                  && selectedForCalendar.getMonth() === calendarMonth
+                  && selectedForCalendar.getDate() === day;
+
+                return (
+                  <Pressable
+                    key={`${day || 'blank'}-${index}`}
+                    disabled={!day}
+                    onPress={() => handleSelectCalendarDay(day)}
+                    style={[styles.calendarDayCell, isSelected && styles.calendarDayCellSelected]}
+                  >
+                    <Text style={[styles.calendarDayText, isSelected && styles.calendarDayTextSelected]}>{day || ''}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

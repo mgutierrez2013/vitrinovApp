@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FlatList, Image, Modal, Platform, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
+import { FlatList, Image, Modal, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import {
@@ -532,15 +532,6 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
                     <Text style={styles.clientChevron}>›</Text>
                   </View>
                 </Pressable>
-
-                <View style={styles.clientActionsRow}>
-                  <Pressable style={styles.clientActionEdit} onPress={() => openEditModal(item)}>
-                    <Text style={styles.clientActionEditText}>✏️ Editar</Text>
-                  </Pressable>
-                  <Pressable style={styles.clientActionDelete} onPress={() => openDeleteModal(item)}>
-                    <Text style={styles.clientActionDeleteText}>🗑️ Eliminar</Text>
-                  </Pressable>
-                </View>
               </View>
               </Swipeable>
             )}
@@ -666,56 +657,26 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
               </View>
 
               <Text style={styles.fieldLabel}>Fecha Cobro (opcional)</Text>
-              {Platform.OS === 'web' ? (
-                <>
-                <TextInput
-                  value={editChargeDate}
-                  onChangeText={setEditChargeDate}
-                  placeholder="YYYY-MM-DD"
-                  placeholderTextColor="#8a92a1"
-                  style={[styles.modalInput, editErrorField === 'chargeDate' ? styles.modalInputError : null]}
-                  type="date"
-                />
-                <Pressable style={styles.clearDateButtonWeb} onPress={() => { setEditChargeDate(''); setEditErrorField((prev) => (prev === 'chargeDate' ? '' : prev)); }}>
+              <View style={styles.datePickerRow}>
+                <Pressable style={[styles.datePickerButton, editErrorField === 'chargeDate' ? styles.modalInputError : null]} onPress={() => openEditDatePicker('charge')}>
+                  <Text style={styles.datePickerButtonIcon}>📅</Text>
+                  <Text style={styles.datePickerButtonText}>{editChargeDate ? toDisplayDate(editChargeDate) : 'Seleccionar fecha'}</Text>
+                </Pressable>
+                <Pressable style={styles.clearDateButton} onPress={() => { setEditChargeDate(''); setEditErrorField((prev) => (prev === 'chargeDate' ? '' : prev)); }}>
                   <Feather name="x" size={14} color="#4d5570" />
                 </Pressable>
-                </>
-              ) : (
-                <View style={styles.datePickerRow}>
-                  <Pressable style={[styles.datePickerButton, editErrorField === 'chargeDate' ? styles.modalInputError : null]} onPress={() => openEditDatePicker('charge')}>
-                    <Text style={styles.datePickerButtonText}>{editChargeDate ? toDisplayDate(editChargeDate) : 'Seleccionar fecha'}</Text>
-                  </Pressable>
-                  <Pressable style={styles.clearDateButton} onPress={() => { setEditChargeDate(''); setEditErrorField((prev) => (prev === 'chargeDate' ? '' : prev)); }}>
-                    <Feather name="x" size={14} color="#4d5570" />
-                  </Pressable>
-                </View>
-              )}
+              </View>
 
               <Text style={styles.fieldLabel}>Fecha Retiro (opcional)</Text>
-              {Platform.OS === 'web' ? (
-                <>
-                <TextInput
-                  value={editPickupDate}
-                  onChangeText={setEditPickupDate}
-                  placeholder="YYYY-MM-DD"
-                  placeholderTextColor="#8a92a1"
-                  style={[styles.modalInput, editErrorField === 'pickupDate' ? styles.modalInputError : null]}
-                  type="date"
-                />
-                <Pressable style={styles.clearDateButtonWeb} onPress={() => { setEditPickupDate(''); setEditErrorField((prev) => (prev === 'pickupDate' ? '' : prev)); }}>
+              <View style={styles.datePickerRow}>
+                <Pressable style={[styles.datePickerButton, editErrorField === 'pickupDate' ? styles.modalInputError : null]} onPress={() => openEditDatePicker('pickup')}>
+                  <Text style={styles.datePickerButtonIcon}>📅</Text>
+                  <Text style={styles.datePickerButtonText}>{editPickupDate ? toDisplayDate(editPickupDate) : 'Seleccionar fecha'}</Text>
+                </Pressable>
+                <Pressable style={styles.clearDateButton} onPress={() => { setEditPickupDate(''); setEditErrorField((prev) => (prev === 'pickupDate' ? '' : prev)); }}>
                   <Feather name="x" size={14} color="#4d5570" />
                 </Pressable>
-                </>
-              ) : (
-                <View style={styles.datePickerRow}>
-                  <Pressable style={[styles.datePickerButton, editErrorField === 'pickupDate' ? styles.modalInputError : null]} onPress={() => openEditDatePicker('pickup')}>
-                    <Text style={styles.datePickerButtonText}>{editPickupDate ? toDisplayDate(editPickupDate) : 'Seleccionar fecha'}</Text>
-                  </Pressable>
-                  <Pressable style={styles.clearDateButton} onPress={() => { setEditPickupDate(''); setEditErrorField((prev) => (prev === 'pickupDate' ? '' : prev)); }}>
-                    <Feather name="x" size={14} color="#4d5570" />
-                  </Pressable>
-                </View>
-              )}
+              </View>
 
               <View style={styles.switchRow}>
                 <View style={styles.switchTextWrap}>
