@@ -14,7 +14,7 @@ export function LoginScreen({ onGoRegister, onAuthSuccess }) {
   const [apiMessage, setApiMessage] = useState('');
 
   const isEmailValid = /^\S+@\S+\.\S+$/.test(email);
-  const isPasswordValid = password.length > 5;
+  const isPasswordValid = password.length >= 5;
 
   const hasEmailError = submitted && !isEmailValid;
   const hasPasswordError = submitted && !isPasswordValid;
@@ -37,7 +37,7 @@ export function LoginScreen({ onGoRegister, onAuthSuccess }) {
       }
 
       setApiMessage(result.message);
-    } catch (error) {
+    } catch (_error) {
       setApiMessage('No fue posible conectar con el servidor.');
     } finally {
       setLoading(false);
@@ -46,29 +46,38 @@ export function LoginScreen({ onGoRegister, onAuthSuccess }) {
 
   return (
     <AuthCard>
+      <View style={authStyles.welcomeWrap}>
+        <Text style={authStyles.welcomeTitle}>¡Bienvenido de nuevo!</Text>
+        <Text style={authStyles.welcomeSubtitle}>Inicia sesión para continuar</Text>
+      </View>
+
       <View style={authStyles.fieldBlock}>
         <Text style={authStyles.label}>Email</Text>
-        <TextInput
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Ingresa tu email"
-          autoCapitalize="none"
-          autoCorrect={false}
-          spellCheck={false}
-          autoComplete="off"
-          textContentType="none"
-          importantForAutofill="no"
-          keyboardType="email-address"
-          selectionColor="#0f6dbb"
-          style={[authStyles.input, hasEmailError && authStyles.inputError]}
-          placeholderTextColor="#9aa3b2"
-        />
+        <View style={[authStyles.inputWrap, hasEmailError && authStyles.inputError]}>
+          <Feather name="mail" size={16} color="#99a0ad" />
+          <TextInput
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Ingresa tu email"
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
+            autoComplete="off"
+            textContentType="none"
+            importantForAutofill="no"
+            keyboardType="email-address"
+            selectionColor="#f5a623"
+            style={authStyles.inputControl}
+            placeholderTextColor="#9aa3b2"
+          />
+        </View>
         {hasEmailError && <Text style={authStyles.errorText}>Por favor, ingrese un correo válido.</Text>}
       </View>
 
       <View style={authStyles.fieldBlock}>
         <Text style={authStyles.label}>Contraseña</Text>
-        <View style={[authStyles.passwordContainer, hasPasswordError && authStyles.inputError]}>
+        <View style={[authStyles.inputWrap, hasPasswordError && authStyles.inputError]}>
+          <Feather name="lock" size={16} color="#99a0ad" />
           <TextInput
             value={password}
             onChangeText={setPassword}
@@ -79,24 +88,30 @@ export function LoginScreen({ onGoRegister, onAuthSuccess }) {
             autoComplete="off"
             textContentType="none"
             importantForAutofill="no"
-            selectionColor="#0f6dbb"
-            style={authStyles.passwordInput}
+            selectionColor="#f5a623"
+            style={authStyles.inputControl}
             placeholderTextColor="#9aa3b2"
           />
           <Pressable onPress={() => setShowPassword((prev) => !prev)} hitSlop={8}>
-            <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color="#7b8699" />
+            <Feather name={showPassword ? 'eye-off' : 'eye'} size={18} color="#7b8699" />
           </Pressable>
         </View>
         {hasPasswordError && (
-          <Text style={authStyles.errorText}>La contraseña debe tener más de 5 caracteres.</Text>
+          <Text style={authStyles.errorText}>La contraseña debe tener 5 o más caracteres.</Text>
         )}
       </View>
 
       {apiMessage.length > 0 && <Text style={authStyles.errorText}>{apiMessage}</Text>}
 
       <Pressable style={[authStyles.ctaButton, loading && authStyles.ctaButtonDisabled]} onPress={handleLogin}>
-        <Text style={authStyles.ctaText}>{loading ? 'Validando...' : 'Ingresar →'}</Text>
+        <Text style={authStyles.ctaText}>{loading ? 'Ingresando...' : 'Ingresar  →'}</Text>
       </Pressable>
+
+      <View style={authStyles.separatorRow}>
+        <View style={authStyles.separatorLine} />
+        <Text style={authStyles.separatorText}>o</Text>
+        <View style={authStyles.separatorLine} />
+      </View>
 
       <Pressable onPress={onGoRegister}>
         <Text style={authStyles.switchText}>¿No tienes una cuenta? Registrar</Text>

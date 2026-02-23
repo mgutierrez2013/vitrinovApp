@@ -186,8 +186,11 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <LinearGradient colors={['#0e5fa8', '#5ba6e6']} style={authStyles.gradientBackground}>
+      <LinearGradient colors={['#F5A623', '#E08A00', '#c97200']} style={authStyles.gradientBackground}>
       <StatusBar style="light" />
+      <View style={{ position: 'absolute', top: -70, right: -70, width: 210, height: 210, borderRadius: 999, backgroundColor: 'rgba(255,255,255,0.10)' }} />
+      <View style={{ position: 'absolute', top: 34, right: 18, width: 84, height: 84, borderRadius: 999, backgroundColor: 'rgba(255,255,255,0.08)' }} />
+      <View style={{ position: 'absolute', bottom: -44, left: -44, width: 170, height: 170, borderRadius: 999, backgroundColor: 'rgba(255,255,255,0.07)' }} />
       <SafeAreaView style={authStyles.safeArea}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

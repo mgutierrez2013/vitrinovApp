@@ -36,7 +36,7 @@ export function RegisterScreen({ onGoLogin }) {
       const result = await registerRequest({ name, email, password });
       setModalMessage(result.message);
       setModalVisible(true);
-    } catch (error) {
+    } catch (_error) {
       setModalMessage('No fue posible conectar con el servidor.');
       setModalVisible(true);
     } finally {
@@ -47,15 +47,23 @@ export function RegisterScreen({ onGoLogin }) {
   return (
     <>
       <AuthCard>
+        <View style={authStyles.welcomeWrap}>
+          <Text style={authStyles.welcomeTitle}>Crea tu cuenta</Text>
+          <Text style={authStyles.welcomeSubtitle}>Únete a VITRINOVA hoy</Text>
+        </View>
+
         <View style={authStyles.fieldBlock}>
           <Text style={authStyles.label}>Nombre</Text>
-          <TextInput
-            value={name}
-            onChangeText={setName}
-            placeholder="Ingresa tu nombre"
-            style={[authStyles.input, hasNameError && authStyles.inputError]}
-            placeholderTextColor="#9aa3b2"
-          />
+          <View style={[authStyles.inputWrap, hasNameError && authStyles.inputError]}>
+            <Feather name="user" size={16} color="#99a0ad" />
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              placeholder="Ingresa tu nombre"
+              style={authStyles.inputControl}
+              placeholderTextColor="#9aa3b2"
+            />
+          </View>
           {hasNameError && (
             <Text style={authStyles.errorText}>El nombre debe tener más de 5 caracteres.</Text>
           )}
@@ -63,31 +71,35 @@ export function RegisterScreen({ onGoLogin }) {
 
         <View style={authStyles.fieldBlock}>
           <Text style={authStyles.label}>Email</Text>
-          <TextInput
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Ingresa tu email"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            style={[authStyles.input, hasEmailError && authStyles.inputError]}
-            placeholderTextColor="#9aa3b2"
-          />
+          <View style={[authStyles.inputWrap, hasEmailError && authStyles.inputError]}>
+            <Feather name="mail" size={16} color="#99a0ad" />
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Ingresa tu email"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              style={authStyles.inputControl}
+              placeholderTextColor="#9aa3b2"
+            />
+          </View>
           {hasEmailError && <Text style={authStyles.errorText}>Por favor, ingrese un correo válido.</Text>}
         </View>
 
         <View style={authStyles.fieldBlock}>
           <Text style={authStyles.label}>Contraseña</Text>
-          <View style={[authStyles.passwordContainer, hasPasswordError && authStyles.inputError]}>
+          <View style={[authStyles.inputWrap, hasPasswordError && authStyles.inputError]}>
+            <Feather name="lock" size={16} color="#99a0ad" />
             <TextInput
               value={password}
               onChangeText={setPassword}
               placeholder="Ingresa tu contraseña"
               secureTextEntry={!showPassword}
-              style={authStyles.passwordInput}
+              style={authStyles.inputControl}
               placeholderTextColor="#9aa3b2"
             />
             <Pressable onPress={() => setShowPassword((prev) => !prev)} hitSlop={8}>
-              <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color="#7b8699" />
+              <Feather name={showPassword ? 'eye-off' : 'eye'} size={18} color="#7b8699" />
             </Pressable>
           </View>
           {hasPasswordError && (
@@ -96,8 +108,14 @@ export function RegisterScreen({ onGoLogin }) {
         </View>
 
         <Pressable style={[authStyles.ctaButton, loading && authStyles.ctaButtonDisabled]} onPress={handleRegister}>
-          <Text style={authStyles.ctaText}>{loading ? 'Validando...' : 'Registrar →'}</Text>
+          <Text style={authStyles.ctaText}>{loading ? 'Registrando...' : 'Registrar  →'}</Text>
         </Pressable>
+
+        <View style={authStyles.separatorRow}>
+          <View style={authStyles.separatorLine} />
+          <Text style={authStyles.separatorText}>o</Text>
+          <View style={authStyles.separatorLine} />
+        </View>
 
         <Pressable onPress={onGoLogin}>
           <Text style={authStyles.switchText}>¿Ya tienes una cuenta? Ingresar Sesión</Text>
