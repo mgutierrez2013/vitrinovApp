@@ -492,6 +492,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
           )}
         </View>
 
+        <View style={styles.homeListWrap}>
         {loading ? (
           <Text style={styles.emptyText}>Cargando emprendedores...</Text>
         ) : (
@@ -543,6 +544,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
             showsVerticalScrollIndicator={false}
           />
         )}
+        </View>
 
       </View>
 

@@ -40,7 +40,7 @@ export const entrepreneursStyles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 14,
-    paddingBottom: 140,
+    paddingBottom: 12,
   },
   title: {
     color: '#0f4f85',
@@ -81,6 +81,9 @@ export const entrepreneursStyles = StyleSheet.create({
     color: '#273143',
   },
   searchClear: { opacity: 0.4, fontSize: 13 },
+  homeListWrap: {
+    height: '76%',
+  },
   list: {
     flex: 1,
   },

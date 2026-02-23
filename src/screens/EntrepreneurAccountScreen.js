@@ -556,6 +556,7 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
 
       {error.length > 0 && rows.length > 0 && !loading && <Text style={styles.errorText}>{error}</Text>}
 
+      <View style={styles.summaryListWrap}>
       {loading ? (
         <Text style={styles.emptyText}>Cargando transacciones...</Text>
       ) : rows.length === 0 ? (
@@ -606,6 +607,7 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
           showsVerticalScrollIndicator={false}
         />
       )}
+      </View>
 
       <View style={styles.bottomActions}>
         <Pressable style={[styles.actionButton, styles.clearBtn]} onPress={handleClear}>
@@ -618,16 +620,17 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
 
       <Modal transparent animationType="fade" visible={deleteModalVisible} onRequestClose={closeDeleteModal}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.deleteModalCard}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.deleteModalTitle}>Eliminar Transacción</Text>
-              <Pressable onPress={closeDeleteModal}>
-                <Feather name="x" size={28} color="#2a2f3d" />
-              </Pressable>
+          <View style={styles.deleteModalCardModern}>
+            <View style={styles.deleteIconWrap}>
+              <Text style={styles.deleteIconText}>🗑️</Text>
             </View>
 
+            <Text style={styles.deleteOverline}>Peligro</Text>
+            <Text style={styles.deleteModalTitle}>Eliminar Transacción</Text>
+
             <Text style={styles.deleteModalMessage}>
-              ¿Estás seguro de que deseas eliminar esta transacción? Esta acción no se puede deshacer.
+              ¿Estás seguro de que deseas eliminar esta transacción?{' '}
+              <Text style={styles.deleteModalStrong}>Esta acción no se puede deshacer.</Text>
             </Text>
 
             {deleteMessage.length > 0 && <Text style={styles.errorText}>{deleteMessage}</Text>}
@@ -650,11 +653,14 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
 
       <Modal transparent animationType="fade" visible={editModalVisible} onRequestClose={closeEditModal}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalCard}>
+          <View style={styles.modalCardEdit}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Editar Venta</Text>
-              <Pressable onPress={closeEditModal}>
-                <Feather name="x" size={28} color="#2a2f3d" />
+              <View>
+                <Text style={styles.modalOverline}>Modificar</Text>
+                <Text style={styles.modalTitle}>Editar Transacción</Text>
+              </View>
+              <Pressable style={styles.modalCloseBtn} onPress={closeEditModal}>
+                <Feather name="x" size={20} color="#555" />
               </Pressable>
             </View>
 
@@ -705,15 +711,15 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
             {editMessage.length > 0 && <Text style={styles.errorText}>{editMessage}</Text>}
 
             <View style={styles.modalActionsRow}>
+              <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={closeEditModal}>
+                <Text style={styles.modalCancelBtnText}>Cancelar</Text>
+              </Pressable>
               <Pressable
                 style={[styles.modalActionBtn, styles.modalConfirmBtn, editLoading && { opacity: 0.6 }]}
                 onPress={handleUpdateTransaction}
                 disabled={editLoading}
               >
                 <Text style={styles.modalActionBtnText}>{editLoading ? 'Guardando...' : 'Actualizar'}</Text>
-              </Pressable>
-              <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={closeEditModal}>
-                <Text style={styles.modalCancelBtnText}>Cancelar</Text>
               </Pressable>
             </View>
           </View>

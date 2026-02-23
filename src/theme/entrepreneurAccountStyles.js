@@ -205,6 +205,9 @@ export const entrepreneurAccountStyles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '800',
   },
+  summaryListWrap: {
+    height: '42%',
+  },
   list: {
     flex: 1,
   },
@@ -252,6 +255,12 @@ export const entrepreneurAccountStyles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 14,
   },
+  modalCardEdit: {
+    borderRadius: 24,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 20,
+    paddingVertical: 22,
+  },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -262,6 +271,21 @@ export const entrepreneurAccountStyles = StyleSheet.create({
     color: '#0f5f9f',
     fontSize: 22,
     fontWeight: '800',
+  },
+  modalOverline: {
+    fontSize: 11,
+    color: '#F5A623',
+    fontWeight: '700',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  modalCloseBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#F2F4F7',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   fieldLabel: {
     color: '#1f2433',
@@ -360,36 +384,61 @@ export const entrepreneurAccountStyles = StyleSheet.create({
     fontSize: 14,
   },
 
-  deleteModalCard: {
-    borderRadius: 14,
+  deleteModalCardModern: {
+    borderRadius: 24,
     backgroundColor: '#ffffff',
-    paddingHorizontal: 14,
-    paddingVertical: 14,
+    paddingHorizontal: 22,
+    paddingVertical: 24,
+    alignItems: 'center',
+  },
+  deleteIconWrap: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#FFE8E7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  deleteIconText: {
+    fontSize: 26,
+  },
+  deleteOverline: {
+    fontSize: 11,
+    color: '#E8453C',
+    fontWeight: '700',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    marginBottom: 4,
   },
   deleteModalTitle: {
-    color: '#0f5f9f',
+    color: '#1f2433',
     fontSize: 22,
     fontWeight: '800',
   },
   deleteModalMessage: {
-    color: '#3d4352',
-    fontSize: 18,
-    lineHeight: 30,
+    color: '#666',
+    fontSize: 13,
+    lineHeight: 22,
+    marginVertical: 14,
     textAlign: 'center',
-    marginTop: 14,
-    marginBottom: 22,
+  },
+  deleteModalStrong: {
+    color: '#E8453C',
+    fontWeight: '800',
   },
   deleteActionsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 14,
+    justifyContent: 'flex-end',
+    gap: 10,
   },
   deleteBtn: {
-    flex: 1,
-    borderRadius: 26,
-    minHeight: 52,
+    minWidth: 130,
+    borderRadius: 12,
+    minHeight: 50,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 16,
   },
   deleteCancelBtn: {
     borderWidth: 1,
@@ -400,13 +449,13 @@ export const entrepreneurAccountStyles = StyleSheet.create({
     backgroundColor: '#ef4040',
   },
   deleteCancelText: {
-    color: '#2d3342',
-    fontSize: 16,
+    color: '#1f2433',
+    fontSize: 17,
     fontWeight: '700',
   },
   deleteConfirmText: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '800',
   },
 
