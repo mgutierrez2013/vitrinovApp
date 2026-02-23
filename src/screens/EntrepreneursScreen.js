@@ -436,6 +436,7 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
     }
   };
 
+
   const handleSwipeOpen = (direction, item) => {
     const ref = swipeableRefs.current[item.id];
 
@@ -512,7 +513,8 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
                 rightThreshold={30}
                 onSwipeableOpen={(direction) => handleSwipeOpen(direction, item)}
               >
-                <Pressable style={[styles.clientCard, { borderLeftColor: item?.color || '#F5A623' }]} onPress={() => onOpenAccount(item)}>
+              <View style={[styles.clientCard, { borderLeftColor: item?.color || '#F5A623' }]}>
+                <Pressable style={styles.clientTopRow} onPress={() => onOpenAccount(item)}>
                   <View style={[styles.clientIconWrap, { backgroundColor: item?.color || '#F5A623' }]}>
                     <Text style={styles.clientIconText}>{(item?.name || '').split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase() || 'EM'}</Text>
                   </View>
@@ -527,8 +529,19 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
                   <View style={styles.clientBadges}>
                     {Number(item?.notificado || 0) === 1 ? <Text style={styles.badgeNotified}>Notificado</Text> : null}
                     {item?.fecha_cobro ? <Text style={styles.badgeCharge}>Cobro {toDisplayDate(normalizeBackendDate(item?.fecha_cobro))}</Text> : null}
+                    <Text style={styles.clientChevron}>›</Text>
                   </View>
                 </Pressable>
+
+                <View style={styles.clientActionsRow}>
+                  <Pressable style={styles.clientActionEdit} onPress={() => openEditModal(item)}>
+                    <Text style={styles.clientActionEditText}>✏️ Editar</Text>
+                  </Pressable>
+                  <Pressable style={styles.clientActionDelete} onPress={() => openDeleteModal(item)}>
+                    <Text style={styles.clientActionDeleteText}>🗑️ Eliminar</Text>
+                  </Pressable>
+                </View>
+              </View>
               </Swipeable>
             )}
             ListEmptyComponent={
@@ -540,20 +553,32 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
           />
         )}
 
+      </View>
+
+      <View style={styles.primaryButtonWrap}>
         <Pressable style={styles.primaryButton} onPress={() => setAddModalVisible(true)}>
           <Text style={styles.primaryButtonText}>+ Agregar Emprendedor</Text>
         </Pressable>
       </View>
 
       <View style={styles.bottomBar}>
-        <Pressable style={styles.bottomIconWrap} onPress={onGoHome}>
-          <Feather name="home" size={24} color="#fff" />
+        <Pressable style={styles.bottomTab} onPress={onGoHome}>
+          <View style={styles.bottomTabIcon}>
+            <Feather name="home" size={18} color="#a6aab6" />
+          </View>
+          <Text style={styles.bottomTabText}>Inicio</Text>
         </Pressable>
-        <View style={styles.bottomIconWrapActive}>
-          <Feather name="users" size={24} color="#fff" />
+        <View style={styles.bottomTab}>
+          <View style={[styles.bottomTabIcon, styles.bottomTabIconActive]}>
+            <Feather name="users" size={18} color="#f59e0b" />
+          </View>
+          <Text style={[styles.bottomTabText, styles.bottomTabTextActive]}>Clientes</Text>
         </View>
-        <Pressable style={styles.bottomIconWrap} onPress={onGoBankAccounts}>
-          <Feather name="credit-card" size={24} color="#fff" />
+        <Pressable style={styles.bottomTab} onPress={onGoBankAccounts}>
+          <View style={styles.bottomTabIcon}>
+            <Feather name="credit-card" size={18} color="#a6aab6" />
+          </View>
+          <Text style={styles.bottomTabText}>Pagos</Text>
         </Pressable>
       </View>
 
