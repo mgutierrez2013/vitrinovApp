@@ -574,8 +574,13 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
     <>
       <View style={homeStyles.content}>
         <View style={homeStyles.salesCard}>
-          <Text style={homeStyles.salesTitle}>Total de Ventas</Text>
-          <Text style={homeStyles.salesValue}>${Number(sales || 0).toFixed(2)}</Text>
+          <View style={homeStyles.salesIconWrap}>
+            <Feather name="dollar-sign" size={16} color="#ffffff" />
+          </View>
+          <View style={homeStyles.salesBody}>
+            <Text style={homeStyles.salesTitle}>Total de Ventas</Text>
+            <Text style={homeStyles.salesValue}>${Number(sales || 0).toFixed(2)}</Text>
+          </View>
         </View>
 
         <View style={homeStyles.sectionHeader}>
@@ -641,23 +646,35 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
             ListEmptyComponent={<Text style={homeStyles.emptyText}>No se obtuvieron resultado.</Text>}
             stickySectionHeadersEnabled
             showsVerticalScrollIndicator={false}
-            style={{ maxHeight: 320 }}
+            style={homeStyles.transactionsList}
+            contentContainerStyle={homeStyles.transactionsListContent}
           />
         )}
 
         <View style={homeStyles.divider} />
 
-        <Pressable style={homeStyles.registerSaleButton} onPress={openSaleModal}>
-          <Text style={homeStyles.registerSaleText}>+ Registrar Venta</Text>
-        </Pressable>
+        <View style={homeStyles.quickActionsRow}>
+          <Pressable style={homeStyles.quickActionButton} onPress={openSaleModal}>
+            <View style={[homeStyles.quickActionIconWrap, homeStyles.quickActionIconPrimary]}>
+              <Feather name="plus-circle" size={14} color="#ffffff" />
+            </View>
+            <Text style={homeStyles.quickActionText}>Registrar</Text>
+          </Pressable>
 
-        <Pressable style={homeStyles.notificationReportButton} onPress={handleGoNotificationReports}>
-          <Text style={homeStyles.notificationReportButtonText}>🔔 Reporte Notificaciones</Text>
-        </Pressable>
+          <Pressable style={homeStyles.quickActionButton} onPress={handleGoNotificationReports}>
+            <View style={[homeStyles.quickActionIconWrap, homeStyles.quickActionIconInfo]}>
+              <Feather name="bell" size={14} color="#ffffff" />
+            </View>
+            <Text style={homeStyles.quickActionText}>Notificaciones</Text>
+          </Pressable>
 
-        <Pressable style={homeStyles.transactionReportButton} onPress={handleGoTransactionReports}>
-          <Text style={homeStyles.transactionReportButtonText}>📊 Reporte Transacciones</Text>
-        </Pressable>
+          <Pressable style={homeStyles.quickActionButton} onPress={handleGoTransactionReports}>
+            <View style={[homeStyles.quickActionIconWrap, homeStyles.quickActionIconWarn]}>
+              <Feather name="bar-chart-2" size={14} color="#ffffff" />
+            </View>
+            <Text style={homeStyles.quickActionText}>Transacciones</Text>
+          </Pressable>
+        </View>
       </View>
 
       <Modal transparent animationType="fade" visible={saleModalVisible} onRequestClose={closeSaleModal}>

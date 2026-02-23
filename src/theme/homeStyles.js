@@ -42,33 +42,45 @@ export const homeStyles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 8,
-    paddingBottom: 90,
+    paddingBottom: 12,
   },
   salesCard: {
     backgroundColor: '#1f6fb2',
-    borderRadius: 18,
-    paddingHorizontal: 20,
-    paddingVertical: 18,
-    marginBottom: 18,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: 10,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 10,
+  },
+  salesIconWrap: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  salesBody: {
+    flex: 1,
   },
   salesTitle: {
-    color: 'rgba(255,255,255,0.75)',
+    color: 'rgba(255,255,255,0.82)',
     fontWeight: '600',
-    fontSize: 12,
+    fontSize: 11,
   },
   salesValue: {
     color: '#ffffff',
     fontWeight: '800',
-    fontSize: 28,
+    fontSize: 20,
+    marginTop: 1,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   sectionTitle: {
     color: '#1a3f6f',
@@ -98,7 +110,7 @@ export const homeStyles = StyleSheet.create({
   transactionRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
     backgroundColor: '#fff',
     borderRadius: 14,
     borderLeftWidth: 4,
@@ -168,6 +180,12 @@ export const homeStyles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
   },
+  transactionsList: {
+    flex: 1,
+  },
+  transactionsListContent: {
+    paddingBottom: 4,
+  },
   emptyText: {
     color: '#666b7a',
     fontSize: 13,
@@ -178,45 +196,42 @@ export const homeStyles = StyleSheet.create({
     backgroundColor: '#dfdfec',
     marginVertical: 14,
   },
-  registerSaleButton: {
+  quickActionsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 4,
+  },
+  quickActionButton: {
+    flex: 1,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e6e9f0',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    gap: 5,
+  },
+  quickActionIconWrap: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickActionIconPrimary: {
     backgroundColor: '#f5a623',
-    borderRadius: 16,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginTop: 2,
   },
-  registerSaleText: {
-    color: '#ffffff',
-    fontWeight: '800',
-    fontSize: 17,
+  quickActionIconInfo: {
+    backgroundColor: '#2563a8',
   },
-  notificationReportButton: {
-    backgroundColor: '#eaf2ff',
-    borderRadius: 16,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginTop: 8,
-    borderWidth: 1,
-    borderColor: '#d5e5ff',
+  quickActionIconWarn: {
+    backgroundColor: '#e08a00',
   },
-  notificationReportButtonText: {
-    color: '#2563a8',
+  quickActionText: {
+    color: '#5f6676',
     fontWeight: '700',
-    fontSize: 15,
-  },
-  transactionReportButton: {
-    backgroundColor: '#fff4e5',
-    borderRadius: 16,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginTop: 8,
-    borderWidth: 1,
-    borderColor: '#f0dec0',
-  },
-  transactionReportButtonText: {
-    color: '#e08a00',
-    fontWeight: '700',
-    fontSize: 15,
+    fontSize: 10,
   },
   bottomBar: {
     position: 'absolute',
@@ -330,7 +345,7 @@ export const homeStyles = StyleSheet.create({
     minHeight: 46,
     justifyContent: 'center',
     paddingHorizontal: 14,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   fileButtonText: {
     color: '#1f2433',
@@ -341,12 +356,12 @@ export const homeStyles = StyleSheet.create({
     width: 66,
     height: 66,
     borderRadius: 10,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   imagePreviewWrap: {
     width: 66,
     height: 66,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   removeImageBtn: {
     position: 'absolute',
@@ -362,7 +377,7 @@ export const homeStyles = StyleSheet.create({
   smallText: {
     color: '#7a8292',
     fontSize: 12,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   notesInput: {
     minHeight: 104,
@@ -376,7 +391,7 @@ export const homeStyles = StyleSheet.create({
     minHeight: 46,
     justifyContent: 'center',
     paddingHorizontal: 14,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   dateDisplayText: {
     color: '#263143',
@@ -387,7 +402,7 @@ export const homeStyles = StyleSheet.create({
     color: '#c2475b',
     fontSize: 13,
     fontWeight: '600',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   modalActionsRow: {
     flexDirection: 'row',
@@ -572,7 +587,7 @@ export const homeStyles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 2,
     borderColor: '#f5a623',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   editPreviewImage: {
     width: '100%',
@@ -742,7 +757,7 @@ export const homeStyles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 14,
     color: '#263143',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   clientRow: {
     borderBottomWidth: 1,
@@ -925,7 +940,7 @@ export const homeStyles = StyleSheet.create({
     borderRadius: 14,
     minHeight: 58,
     paddingHorizontal: 12,
-    marginBottom: 8,
+    marginBottom: 6,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
