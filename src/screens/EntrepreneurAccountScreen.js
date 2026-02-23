@@ -729,15 +729,15 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
             {editMessage.length > 0 && <Text style={styles.errorText}>{editMessage}</Text>}
 
             <View style={styles.modalActionsRow}>
-              <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={closeEditModal}>
-                <Text style={styles.modalCancelBtnText}>Cancelar</Text>
-              </Pressable>
               <Pressable
                 style={[styles.modalActionBtn, styles.modalConfirmBtn, editLoading && { opacity: 0.6 }]}
                 onPress={handleUpdateTransaction}
                 disabled={editLoading}
               >
                 <Text style={styles.modalActionBtnText}>{editLoading ? 'Guardando...' : 'Actualizar'}</Text>
+              </Pressable>
+              <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={closeEditModal}>
+                <Text style={styles.modalCancelBtnText}>Cancelar</Text>
               </Pressable>
             </View>
           </View>
