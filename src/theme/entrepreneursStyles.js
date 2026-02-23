@@ -82,7 +82,7 @@ export const entrepreneursStyles = StyleSheet.create({
   },
   searchClear: { opacity: 0.4, fontSize: 13 },
   homeListWrap: {
-    height: '76%',
+    height: '68%',
   },
   list: {
     flex: 1,

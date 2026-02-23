@@ -657,52 +657,70 @@ export function EntrepreneurAccountScreen({ entrepreneur, onGoHome, onSessionExp
             <View style={styles.modalHeader}>
               <View>
                 <Text style={styles.modalOverline}>Modificar</Text>
-                <Text style={styles.modalTitle}>Editar Transacción</Text>
+                <Text style={styles.modalTitle}>Editar Venta</Text>
               </View>
               <Pressable style={styles.modalCloseBtn} onPress={closeEditModal}>
                 <Feather name="x" size={20} color="#555" />
               </Pressable>
             </View>
 
+            <Text style={styles.fieldLabel}>Emprendimiento</Text>
+            <View style={styles.editReadonlyCard}>
+              <View style={styles.editReadonlyAvatar}>
+                <Text style={styles.editReadonlyAvatarText}>{getInitials(editingTransaction?.client_name || '')}</Text>
+              </View>
+              <Text style={styles.editReadonlyName} numberOfLines={1}>
+                {(editingTransaction?.client_name || 'Cliente').toUpperCase()}
+              </Text>
+            </View>
+
             <Text style={styles.fieldLabel}>Cantidad *</Text>
-            <TextInput
-              value={editAmount}
-              onChangeText={handleEditAmountChange}
-              placeholder="Ingrese la cantidad de venta"
-              style={styles.modalInput}
-              keyboardType="decimal-pad"
-              placeholderTextColor="#8a92a1"
-            />
+            <View style={styles.amountInputWrap}>
+              <View style={styles.amountPrefix}><Text style={styles.amountPrefixText}>$</Text></View>
+              <TextInput
+                value={editAmount}
+                onChangeText={handleEditAmountChange}
+                placeholder="0.00"
+                style={styles.amountInput}
+                keyboardType="decimal-pad"
+                placeholderTextColor="#8a92a1"
+              />
+              <Text style={styles.amountSuffix}>USD</Text>
+            </View>
 
             <Text style={styles.fieldLabel}>Foto (opcional)</Text>
-            <Pressable style={styles.fileButton} onPress={pickEditImage}>
-              <Text style={styles.fileButtonText}>Seleccionar archivo</Text>
-            </Pressable>
             {editImagePreviewUri ? (
-              <View style={styles.imagePreviewWrap}>
+              <View style={styles.editPreviewCard}>
                 <Pressable onPress={() => setImageZoomVisible(true)}>
-                  <Image source={{ uri: editImagePreviewUri }} style={styles.imagePreview} resizeMode="cover" />
+                  <Image source={{ uri: editImagePreviewUri }} style={styles.editPreviewImage} resizeMode="cover" />
                 </Pressable>
-                <Pressable
-                  style={styles.removeImageBtn}
-                  onPress={() => {
-                    setEditImagePreviewUri('');
-                    setEditImageAsset(null);
-                    setImageZoomVisible(false);
-                  }}
-                >
-                  <Feather name="x" size={12} color="#ffffff" />
-                </Pressable>
+                <View style={styles.editPreviewActions}>
+                  <Pressable style={styles.photoActionBtn} onPress={pickEditImage}>
+                    <Text style={styles.photoActionText}>🔄 Cambiar foto</Text>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.photoActionBtn, styles.photoActionDanger]}
+                    onPress={() => {
+                      setEditImagePreviewUri('');
+                      setEditImageAsset(null);
+                      setImageZoomVisible(false);
+                    }}
+                  >
+                    <Text style={styles.photoActionText}>🗑 Quitar</Text>
+                  </Pressable>
+                </View>
               </View>
             ) : (
-              <Text style={styles.smallText}>Sin archivos seleccionados</Text>
+              <Pressable style={styles.fileButton} onPress={pickEditImage}>
+                <Text style={styles.fileButtonText}>📎 Seleccionar archivo</Text>
+              </Pressable>
             )}
 
             <Text style={styles.fieldLabel}>Notas (opcional)</Text>
             <TextInput
               value={editNotes}
               onChangeText={setEditNotes}
-              placeholder="Escribe una nota (opcional)"
+              placeholder="Agrega una nota..."
               style={[styles.modalInput, styles.notesInput]}
               placeholderTextColor="#8a92a1"
               multiline
