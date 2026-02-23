@@ -347,8 +347,8 @@ export const entrepreneurAccountStyles = StyleSheet.create({
     marginRight: 8,
   },
   amountPrefixText: {
-    color: '#1a3f6f',
-    fontSize: 16,
+    color: '#ffffff',
+    fontSize: 12,
     fontWeight: '800',
   },
   amountInput: {
