@@ -599,15 +599,15 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
             {addError.length > 0 && <Text style={styles.errorText}>{addError}</Text>}
 
             <View style={styles.modalActionsRow}>
-              <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={closeAddModal}>
-                <Text style={styles.modalCancelBtnText}>Cancelar</Text>
-              </Pressable>
               <Pressable
                 style={[styles.modalActionBtn, styles.modalConfirmBtn, addLoading && { opacity: 0.6 }]}
                 onPress={handleAddClient}
                 disabled={addLoading}
               >
                 <Text style={styles.modalActionBtnText}>{addLoading ? 'Agregando...' : 'Agregar'}</Text>
+              </Pressable>
+              <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={closeAddModal}>
+                <Text style={styles.modalCancelBtnText}>Cancelar</Text>
               </Pressable>
             </View>
           </View>
@@ -692,15 +692,15 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
             </ScrollView>
 
             <View style={styles.modalActionsRow}>
-              <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={closeEditModal}>
-                <Text style={styles.modalCancelBtnText}>Cancelar</Text>
-              </Pressable>
               <Pressable
                 style={[styles.modalActionBtn, styles.modalConfirmBtn, editLoading && { opacity: 0.6 }]}
                 onPress={handleUpdateClient}
                 disabled={editLoading}
               >
                 <Text style={styles.modalActionBtnText}>{editLoading ? 'Guardando...' : 'Actualizar'}</Text>
+              </Pressable>
+              <Pressable style={[styles.modalActionBtn, styles.modalCancelBtn]} onPress={closeEditModal}>
+                <Text style={styles.modalCancelBtnText}>Cancelar</Text>
               </Pressable>
             </View>
           </View>
@@ -777,15 +777,15 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
             {deleteError.length > 0 && <Text style={styles.errorText}>{deleteError}</Text>}
 
             <View style={styles.deleteActionsRow}>
-              <Pressable style={[styles.deleteBtn, styles.deleteCancelBtn]} onPress={closeDeleteModal}>
-                <Text style={styles.deleteCancelText}>Cancelar</Text>
-              </Pressable>
               <Pressable
                 style={[styles.deleteBtn, styles.deleteConfirmBtn, deleteLoading && { opacity: 0.6 }]}
                 onPress={handleDeleteClient}
                 disabled={deleteLoading}
               >
                 <Text style={styles.deleteConfirmText}>{deleteLoading ? 'Eliminando...' : 'Eliminar'}</Text>
+              </Pressable>
+              <Pressable style={[styles.deleteBtn, styles.deleteCancelBtn]} onPress={closeDeleteModal}>
+                <Text style={styles.deleteCancelText}>Cancelar</Text>
               </Pressable>
             </View>
           </View>

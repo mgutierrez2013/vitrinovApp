@@ -92,7 +92,7 @@ export const entrepreneurAccountStyles = StyleSheet.create({
     borderColor: '#e6e8ee',
     borderWidth: 1.5,
     borderRadius: 12,
-    minHeight: 56,
+    minHeight: 52,
     paddingHorizontal: 14,
     shadowColor: '#000',
     shadowOpacity: 0.04,
@@ -101,7 +101,7 @@ export const entrepreneurAccountStyles = StyleSheet.create({
     elevation: 1,
   },
   dateInputButtonIcon: {
-    fontSize: 16,
+    fontSize: 14,
   },
   dateInputButtonText: {
     flex: 1,
@@ -260,7 +260,7 @@ export const entrepreneurAccountStyles = StyleSheet.create({
     backgroundColor: '#ffffff',
     paddingHorizontal: 20,
     paddingVertical: 22,
-    maxHeight: '90%',
+    maxHeight: '86%',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -337,14 +337,14 @@ export const entrepreneurAccountStyles = StyleSheet.create({
     overflow: 'hidden',
   },
   amountPrefix: {
-    width: 56,
-    height: 56,
+    width: 46,
+    height: 46,
     borderRadius: 12,
     backgroundColor: '#f5a623',
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 6,
-    marginRight: 10,
+    marginRight: 8,
   },
   amountPrefixText: {
     color: '#1a3f6f',
@@ -359,9 +359,9 @@ export const entrepreneurAccountStyles = StyleSheet.create({
   },
   amountSuffix: {
     color: '#9aa0ad',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '700',
-    paddingHorizontal: 14,
+    paddingHorizontal: 12,
   },
   modalInput: {
     borderWidth: 1,
@@ -399,7 +399,7 @@ export const entrepreneurAccountStyles = StyleSheet.create({
   },
   editPreviewImage: {
     width: '100%',
-    height: 250,
+    height: 170,
   },
   editPreviewActions: {
     position: 'absolute',
@@ -411,7 +411,7 @@ export const entrepreneurAccountStyles = StyleSheet.create({
   },
   photoActionBtn: {
     flex: 1,
-    minHeight: 44,
+    minHeight: 40,
     borderRadius: 14,
     backgroundColor: '#f5a623',
     alignItems: 'center',
@@ -443,7 +443,7 @@ export const entrepreneurAccountStyles = StyleSheet.create({
   },
   modalActionBtn: {
     borderRadius: 16,
-    minHeight: 56,
+    minHeight: 52,
     alignItems: 'center',
     justifyContent: 'center',
   },
