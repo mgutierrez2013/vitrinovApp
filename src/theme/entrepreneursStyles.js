@@ -47,8 +47,15 @@ export const entrepreneursStyles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '800',
   },
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 10,
+  },
   titleBlock: {
-    marginBottom: 12,
+    flex: 1,
+    marginRight: 12,
   },
   titleOverline: {
     fontSize: 11,
@@ -83,7 +90,7 @@ export const entrepreneursStyles = StyleSheet.create({
   searchClear: { opacity: 0.4, fontSize: 13 },
   homeListWrap: {
     flex: 1,
-    marginBottom: 84,
+    marginBottom: 10,
   },
   list: {
     flex: 1,
@@ -171,16 +178,13 @@ export const entrepreneursStyles = StyleSheet.create({
     marginTop: 10,
   },
   primaryButtonWrap: {
-    position: 'absolute',
-    right: 18,
-    bottom: 88,
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
   },
   primaryButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: '#f59e0b',
     alignItems: 'center',
     justifyContent: 'center',

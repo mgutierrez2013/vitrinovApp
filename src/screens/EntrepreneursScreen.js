@@ -470,10 +470,19 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
       <AppHeader onLogout={onLogout} />
 
       <View style={styles.content}>
-        <View style={styles.titleBlock}>
-          <Text style={styles.titleOverline}>Gestión</Text>
-          <Text style={styles.title}>Emprendedores</Text>
-          <Text style={styles.titleHint}>{clients.length} emprendedores registrados</Text>
+        <View style={styles.titleRow}>
+          <View style={styles.titleBlock}>
+            <Text style={styles.titleOverline}>Gestión</Text>
+            <Text style={styles.title}>Emprendedores</Text>
+            <Text style={styles.titleHint}>{clients.length} emprendedores registrados</Text>
+          </View>
+
+          <View style={styles.primaryButtonWrap}>
+            <Pressable style={styles.primaryButton} onPress={() => setAddModalVisible(true)}>
+              <Feather name="user-plus" size={22} color="#ffffff" />
+            </Pressable>
+            <Text style={styles.primaryButtonText}>Agregar</Text>
+          </View>
         </View>
 
         <View style={styles.searchWrap}>
@@ -546,13 +555,6 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
         )}
         </View>
 
-      </View>
-
-      <View style={styles.primaryButtonWrap}>
-        <Pressable style={styles.primaryButton} onPress={() => setAddModalVisible(true)}>
-          <Feather name="user-plus" size={24} color="#ffffff" />
-        </Pressable>
-        <Text style={styles.primaryButtonText}>Agregar</Text>
       </View>
 
       <AppFooter activeIndex={1} onChange={handleFooterChange} />

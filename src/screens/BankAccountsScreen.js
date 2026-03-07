@@ -205,10 +205,19 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
       <AppHeader onLogout={onLogout} />
 
       <View style={styles.content}>
-        <View style={styles.titleBlock}>
-          <Text style={styles.titleOverline}>Gestión</Text>
-          <Text style={styles.title}>Cuentas Bancarias</Text>
-          <Text style={styles.titleHint}>{clients.length} emprendedores registrados</Text>
+        <View style={styles.titleRow}>
+          <View style={styles.titleBlock}>
+            <Text style={styles.titleOverline}>Gestión</Text>
+            <Text style={styles.title}>Cuentas Bancarias</Text>
+            <Text style={styles.titleHint}>{clients.length} emprendedores registrados</Text>
+          </View>
+
+          <View style={styles.primaryButtonWrap}>
+            <Pressable style={styles.primaryButton} onPress={() => setModalVisible(true)}>
+              <Feather name="plus" size={24} color="#ffffff" />
+            </Pressable>
+            <Text style={styles.primaryButtonText}>Cuenta</Text>
+          </View>
         </View>
 
         <View style={styles.searchWrap}>
@@ -258,13 +267,6 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
             showsVerticalScrollIndicator={false}
           />
         )}
-      </View>
-
-      <View style={styles.primaryButtonWrap}>
-        <Pressable style={styles.primaryButton} onPress={() => setModalVisible(true)}>
-          <Feather name="plus" size={26} color="#ffffff" />
-        </Pressable>
-        <Text style={styles.primaryButtonText}>Cuenta</Text>
       </View>
 
       <AppFooter activeIndex={2} onChange={handleFooterChange} />

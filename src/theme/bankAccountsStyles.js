@@ -16,8 +16,14 @@ export const bankAccountsStyles = StyleSheet.create({
   logoutButton: { backgroundColor: '#d97706', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10 },
   logoutText: { color: '#fff', fontSize: 14, fontWeight: '700' },
 
-  content: { flex: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 84 },
-  titleBlock: { marginBottom: 12 },
+  content: { flex: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 20 },
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 10,
+  },
+  titleBlock: { flex: 1, marginRight: 12 },
   titleOverline: {
     fontSize: 11,
     color: '#F5A623',
@@ -80,11 +86,11 @@ export const bankAccountsStyles = StyleSheet.create({
 
   emptyText: { color: '#666b7a', fontSize: 13, marginTop: 10 },
 
-  primaryButtonWrap: { position: 'absolute', right: 18, bottom: 88, alignItems: 'center', gap: 6 },
+  primaryButtonWrap: { alignItems: 'center', gap: 4 },
   primaryButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: '#f59e0b',
     alignItems: 'center',
     justifyContent: 'center',
