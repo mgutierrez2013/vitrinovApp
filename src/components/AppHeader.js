@@ -1,7 +1,40 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-export function AppHeader({ onLogout }) {
+const ACTIONS = [
+  { key: 'home', label: 'Inicio', icon: 'home' },
+  { key: 'clients', label: 'Clientes', icon: 'users' },
+  { key: 'payments', label: 'Pagos', icon: 'credit-card' },
+  { key: 'logout', label: 'Salir', icon: 'log-out' },
+];
+
+export function AppHeader({ onLogout, onGoHome, onGoEntrepreneurs, onGoBankAccounts, activeTab = 'home' }) {
+  const [actionsVisible, setActionsVisible] = useState(false);
+
+  const handleAction = (key) => {
+    setActionsVisible(false);
+
+    if (key === 'home') {
+      onGoHome?.();
+      return;
+    }
+
+    if (key === 'clients') {
+      onGoEntrepreneurs?.();
+      return;
+    }
+
+    if (key === 'payments') {
+      onGoBankAccounts?.();
+      return;
+    }
+
+    if (key === 'logout') {
+      onLogout?.();
+    }
+  };
+
   return (
     <>
       <View style={styles.statusBar}>
@@ -24,15 +57,38 @@ export function AppHeader({ onLogout }) {
           </Text>
         </View>
 
-        <Pressable style={styles.logoutButton} onPress={onLogout}>
-          <Feather name="log-out" size={14} color="#fff" />
-          <Text style={styles.logoutText}>Cerrar sesión</Text>
+        <Pressable style={styles.actionsFab} onPress={() => setActionsVisible(true)}>
+          <Feather name="grid" size={16} color="#fff" />
         </Pressable>
       </View>
 
       <View style={styles.waveWrap}>
         <View style={styles.wave} />
       </View>
+
+      <Modal transparent animationType="fade" visible={actionsVisible} onRequestClose={() => setActionsVisible(false)}>
+        <Pressable style={styles.actionsBackdrop} onPress={() => setActionsVisible(false)}>
+          <View style={styles.actionsCard}>
+            <Text style={styles.actionsTitle}>Acciones</Text>
+            <View style={styles.actionsGrid}>
+              {ACTIONS.map((action) => {
+                const selected =
+                  (activeTab === 'home' && action.key === 'home')
+                  || (activeTab === 'clients' && action.key === 'clients')
+                  || (activeTab === 'payments' && action.key === 'payments');
+                return (
+                  <Pressable key={action.key} style={styles.actionItem} onPress={() => handleAction(action.key)}>
+                    <View style={[styles.actionIconWrap, selected && styles.actionIconWrapActive, action.key === 'logout' && styles.actionIconWrapLogout]}>
+                      <Feather name={action.icon} size={15} color={selected ? '#F5A623' : action.key === 'logout' ? '#e8453c' : '#1A3F6F'} />
+                    </View>
+                    <Text style={styles.actionLabel}>{action.label}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
+        </Pressable>
+      </Modal>
     </>
   );
 }
@@ -101,21 +157,15 @@ const styles = StyleSheet.create({
   logoTextHighlight: {
     color: '#F5A623',
   },
-  logoutButton: {
-    backgroundColor: 'rgba(255,255,255,0.18)',
+  actionsFab: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: 'rgba(26,63,111,0.45)',
     borderWidth: 1.5,
-    borderColor: 'rgba(255,255,255,0.5)',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    flexDirection: 'row',
+    borderColor: 'rgba(255,255,255,0.55)',
     alignItems: 'center',
-    gap: 6,
-  },
-  logoutText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '700',
+    justifyContent: 'center',
   },
   waveWrap: {
     backgroundColor: '#F5A623',
@@ -128,5 +178,60 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 120,
     borderTopRightRadius: 120,
     transform: [{ scaleX: 1.25 }],
+  },
+  actionsBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.28)',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+    paddingTop: 96,
+    paddingRight: 16,
+  },
+  actionsCard: {
+    width: 212,
+    borderRadius: 16,
+    backgroundColor: '#fff',
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+  },
+  actionsTitle: {
+    color: '#1A3F6F',
+    fontSize: 13,
+    fontWeight: '800',
+    marginBottom: 8,
+  },
+  actionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  actionItem: {
+    width: '47%',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#edf0f6',
+    backgroundColor: '#f8f9fc',
+    paddingVertical: 8,
+    gap: 4,
+  },
+  actionIconWrap: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#eaf2ff',
+  },
+  actionIconWrapActive: {
+    backgroundColor: '#fff0d6',
+  },
+  actionIconWrapLogout: {
+    backgroundColor: '#ffe9e8',
+  },
+  actionLabel: {
+    color: '#2e3448',
+    fontSize: 11,
+    fontWeight: '700',
   },
 });

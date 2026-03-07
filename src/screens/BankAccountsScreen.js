@@ -5,7 +5,6 @@ import { addBankAccount, getClientsList } from '../services/transactionsService'
 import { getCachedSession } from '../services/sessionService';
 import { bankAccountsStyles as styles } from '../theme/bankAccountsStyles';
 import { AppHeader } from '../components/AppHeader';
-import { AppFooter } from '../components/AppFooter';
 
 
 const ACCOUNT_TYPES = ['Cuenta Ahorro', 'Cuenta Corriente', 'Cuenta Empresarial', 'Cuenta Digital'];
@@ -189,20 +188,17 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
     }
   };
 
-  const handleFooterChange = (index) => {
-    if (index === 0) {
-      onGoHome?.();
-      return;
-    }
 
-    if (index === 1) {
-      onGoEntrepreneurs?.();
-    }
-  };
 
   return (
     <View style={styles.container}>
-      <AppHeader onLogout={onLogout} />
+      <AppHeader
+        onLogout={onLogout}
+        onGoHome={onGoHome}
+        onGoEntrepreneurs={onGoEntrepreneurs}
+        onGoBankAccounts={undefined}
+        activeTab="payments"
+      />
 
       <View style={styles.content}>
         <View style={styles.titleRow}>
@@ -269,7 +265,6 @@ export function BankAccountsScreen({ onGoHome, onGoEntrepreneurs, onSessionExpir
         )}
       </View>
 
-      <AppFooter activeIndex={2} onChange={handleFooterChange} />
 
       <Modal transparent animationType="fade" visible={modalVisible} onRequestClose={closeModal}>
         <View style={styles.modalBackdrop}>

@@ -11,7 +11,6 @@ import {
 import { getCachedSession } from '../services/sessionService';
 import { entrepreneursStyles as styles } from '../theme/entrepreneursStyles';
 import { AppHeader } from '../components/AppHeader';
-import { AppFooter } from '../components/AppFooter';
 
 
 const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -454,20 +453,17 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
   const renderSwipeGhost = () => <View style={styles.swipeGhostAction} />;
 
-  const handleFooterChange = (index) => {
-    if (index === 0) {
-      onGoHome?.();
-      return;
-    }
 
-    if (index === 2) {
-      onGoBankAccounts?.();
-    }
-  };
 
   return (
     <View style={styles.container}>
-      <AppHeader onLogout={onLogout} />
+      <AppHeader
+        onLogout={onLogout}
+        onGoHome={onGoHome}
+        onGoEntrepreneurs={undefined}
+        onGoBankAccounts={onGoBankAccounts}
+        activeTab="clients"
+      />
 
       <View style={styles.content}>
         <View style={styles.titleRow}>
@@ -557,7 +553,6 @@ export function EntrepreneursScreen({ onLogout, onSessionExpired, onGoHome, onOp
 
       </View>
 
-      <AppFooter activeIndex={1} onChange={handleFooterChange} />
 
       <Modal transparent animationType="fade" visible={addModalVisible} onRequestClose={closeAddModal}>
         <View style={styles.modalBackdrop}>
