@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Image,
+  KeyboardAvoidingView,
   Modal,
   Pressable,
   ScrollView,
@@ -8,6 +9,7 @@ import {
   Text,
   TextInput,
   View,
+  Platform,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
@@ -678,8 +680,19 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
       </View>
 
       <Modal transparent animationType="fade" visible={saleModalVisible} onRequestClose={closeSaleModal}>
-        <View style={homeStyles.saleModalBackdrop}>
-          <View style={homeStyles.registerModalCard}>
+        <KeyboardAvoidingView
+          style={homeStyles.modalKeyboardWrap}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 16 : 0}
+        >
+          <View style={homeStyles.saleModalBackdrop}>
+            <ScrollView
+              style={homeStyles.modalScroll}
+              contentContainerStyle={homeStyles.modalScrollContent}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={homeStyles.registerModalCard}>
             <View style={homeStyles.registerModalHeader}>
               <View>
                 <Text style={homeStyles.registerModalOverline}>Nueva</Text>
@@ -783,13 +796,26 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
                 <Text style={homeStyles.editCancelText}>Cancelar</Text>
               </Pressable>
             </View>
+              </View>
+            </ScrollView>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       <Modal transparent animationType="fade" visible={editModalVisible} onRequestClose={closeEditModal}>
-        <View style={homeStyles.saleModalBackdrop}>
-          <View style={homeStyles.editModalCard}>
+        <KeyboardAvoidingView
+          style={homeStyles.modalKeyboardWrap}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 16 : 0}
+        >
+          <View style={homeStyles.saleModalBackdrop}>
+            <ScrollView
+              style={homeStyles.modalScroll}
+              contentContainerStyle={homeStyles.modalScrollContent}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={homeStyles.editModalCard}>
             <View style={homeStyles.editModalHeader}>
               <View>
                 <Text style={homeStyles.editModalOverline}>Modificar</Text>
@@ -878,8 +904,10 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
                 <Text style={homeStyles.editCancelText}>Cancelar</Text>
               </Pressable>
             </View>
+              </View>
+            </ScrollView>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       <Modal transparent animationType="fade" visible={deleteModalVisible} onRequestClose={closeDeleteModal}>
@@ -943,8 +971,13 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
         visible={clientSelectorVisible}
         onRequestClose={() => setClientSelectorVisible(false)}
       >
-        <View style={homeStyles.bottomSheetBackdrop}>
-          <View style={homeStyles.clientBottomSheet}>
+        <KeyboardAvoidingView
+          style={homeStyles.bottomSheetKeyboardWrap}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 18 : 0}
+        >
+          <View style={homeStyles.bottomSheetBackdrop}>
+            <View style={homeStyles.clientBottomSheet}>
             <View style={homeStyles.sheetHandle} />
 
             <View style={homeStyles.clientSheetHeader}>
@@ -1000,8 +1033,9 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
                 )}
               </ScrollView>
             )}
+            </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </>
   );

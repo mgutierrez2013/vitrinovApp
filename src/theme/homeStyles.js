@@ -270,6 +270,21 @@ export const homeStyles = StyleSheet.create({
     marginBottom: 4,
   },
 
+
+  modalKeyboardWrap: {
+    flex: 1,
+  },
+  modalScroll: {
+    width: '100%',
+  },
+  modalScrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  bottomSheetKeyboardWrap: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
   saleModalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.42)',
