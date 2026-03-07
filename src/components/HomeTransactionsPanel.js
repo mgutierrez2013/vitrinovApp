@@ -142,6 +142,7 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
   const swipeableRefs = useRef({});
 
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [operationsMenuVisible, setOperationsMenuVisible] = useState(false);
   const [deletingTransaction, setDeletingTransaction] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState('');
@@ -575,14 +576,21 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
   return (
     <>
       <View style={homeStyles.content}>
-        <View style={homeStyles.salesCard}>
-          <View style={homeStyles.salesIconWrap}>
-            <Feather name="dollar-sign" size={16} color="#ffffff" />
+        <View style={homeStyles.topToolsRow}>
+          <View style={homeStyles.salesCardCompact}>
+            <View style={homeStyles.salesIconWrapCompact}>
+              <Feather name="dollar-sign" size={14} color="#ffffff" />
+            </View>
+            <View style={homeStyles.salesBody}>
+              <Text style={homeStyles.salesTitle}>Total ventas</Text>
+              <Text style={homeStyles.salesValueCompact}>${Number(sales || 0).toFixed(2)}</Text>
+            </View>
           </View>
-          <View style={homeStyles.salesBody}>
-            <Text style={homeStyles.salesTitle}>Total de Ventas</Text>
-            <Text style={homeStyles.salesValue}>${Number(sales || 0).toFixed(2)}</Text>
-          </View>
+
+          <Pressable style={homeStyles.operationsButton} onPress={() => setOperationsMenuVisible(true)}>
+            <Feather name="grid" size={16} color="#ffffff" />
+            <Text style={homeStyles.operationsButtonText}>Operaciones</Text>
+          </Pressable>
         </View>
 
         <View style={homeStyles.sectionHeader}>
@@ -653,31 +661,53 @@ export function HomeTransactionsPanel({ onSessionExpired, onGoAllTransactions, o
           />
         )}
 
-        <View style={homeStyles.divider} />
-
-        <View style={homeStyles.quickActionsRow}>
-          <Pressable style={homeStyles.quickActionButton} onPress={openSaleModal}>
-            <View style={[homeStyles.quickActionIconWrap, homeStyles.quickActionIconPrimary]}>
-              <Feather name="plus-circle" size={14} color="#ffffff" />
-            </View>
-            <Text style={homeStyles.quickActionText}>Registrar</Text>
-          </Pressable>
-
-          <Pressable style={homeStyles.quickActionButton} onPress={handleGoNotificationReports}>
-            <View style={[homeStyles.quickActionIconWrap, homeStyles.quickActionIconInfo]}>
-              <Feather name="bell" size={14} color="#ffffff" />
-            </View>
-            <Text style={homeStyles.quickActionText}>Notificaciones</Text>
-          </Pressable>
-
-          <Pressable style={homeStyles.quickActionButton} onPress={handleGoTransactionReports}>
-            <View style={[homeStyles.quickActionIconWrap, homeStyles.quickActionIconWarn]}>
-              <Feather name="bar-chart-2" size={14} color="#ffffff" />
-            </View>
-            <Text style={homeStyles.quickActionText}>Transacciones</Text>
-          </Pressable>
-        </View>
       </View>
+
+
+      <Modal transparent animationType="fade" visible={operationsMenuVisible} onRequestClose={() => setOperationsMenuVisible(false)}>
+        <View style={homeStyles.operationsBackdrop}>
+          <View style={homeStyles.operationsCard}>
+            <Text style={homeStyles.operationsTitle}>Operaciones rápidas</Text>
+
+            <Pressable
+              style={homeStyles.operationsItem}
+              onPress={() => {
+                setOperationsMenuVisible(false);
+                openSaleModal();
+              }}
+            >
+              <Feather name="plus-circle" size={16} color="#1a3f6f" />
+              <Text style={homeStyles.operationsItemText}>Registrar Venta</Text>
+            </Pressable>
+
+            <Pressable
+              style={homeStyles.operationsItem}
+              onPress={() => {
+                setOperationsMenuVisible(false);
+                handleGoNotificationReports();
+              }}
+            >
+              <Feather name="bell" size={16} color="#1a3f6f" />
+              <Text style={homeStyles.operationsItemText}>Reporte Notificaciones</Text>
+            </Pressable>
+
+            <Pressable
+              style={homeStyles.operationsItem}
+              onPress={() => {
+                setOperationsMenuVisible(false);
+                handleGoTransactionReports();
+              }}
+            >
+              <Feather name="bar-chart-2" size={16} color="#1a3f6f" />
+              <Text style={homeStyles.operationsItemText}>Reporte Transacciones</Text>
+            </Pressable>
+
+            <Pressable style={homeStyles.operationsClose} onPress={() => setOperationsMenuVisible(false)}>
+              <Text style={homeStyles.operationsCloseText}>Cerrar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
 
       <Modal transparent animationType="fade" visible={saleModalVisible} onRequestClose={closeSaleModal}>
         <KeyboardAvoidingView
