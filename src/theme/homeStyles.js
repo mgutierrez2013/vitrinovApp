@@ -279,7 +279,8 @@ export const homeStyles = StyleSheet.create({
   },
   modalScrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    paddingVertical: 18,
   },
   bottomSheetKeyboardWrap: {
     flex: 1,

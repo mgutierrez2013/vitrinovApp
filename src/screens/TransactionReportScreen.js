@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Image, Modal, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Image, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { getCachedSession } from '../services/sessionService';
 import { getTransactionClassificationReport } from '../services/transactionsService';
@@ -300,7 +300,16 @@ export function TransactionReportScreen({ onGoHome, onSessionExpired, onLogout }
         <Pressable style={styles.logoutButton} onPress={onLogout}><Text style={styles.logoutText}>Cerrar sesión</Text></Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingWrap}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 16 : 0}
+      >
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.titleRow}>
           <View>
             <Text style={styles.titleOverline}>Informe</Text>
@@ -478,6 +487,7 @@ export function TransactionReportScreen({ onGoHome, onSessionExpired, onLogout }
           )}
         </View>
       </ScrollView>
+      </KeyboardAvoidingView>
 
       <Modal transparent animationType="fade" visible={calendarVisible} onRequestClose={() => setCalendarVisible(false)}>
         <View style={styles.calendarBackdrop}>

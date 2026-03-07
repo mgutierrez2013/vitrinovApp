@@ -16,6 +16,7 @@ export const transactionReportStyles = StyleSheet.create({
   logoutButton: { backgroundColor: '#d97706', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10 },
   logoutText: { color: '#fff', fontSize: 14, fontWeight: '700' },
 
+  keyboardAvoidingWrap: { flex: 1 },
   content: { paddingHorizontal: 18, paddingTop: 10, paddingBottom: 20 },
   titleRow: {
     flexDirection: 'row',
